@@ -2,8 +2,9 @@ package de.tisan.church.untertitelinator.data;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 
 public class SongPlayer {
 	Song song;
@@ -76,16 +77,29 @@ public class SongPlayer {
 
 	public void pause() {
 		pause = !pause;
+		writeCurrentLineToFile();
 	}
 
 	private void writeCurrentLineToFile() {
 		try {
-			BufferedWriter w = new BufferedWriter(new FileWriter(fileCurrent, false));
+			BufferedWriter w = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileCurrent), "UTF-8"));
 			w.write(getCurrentLine());
 			w.flush();
 			w.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public Song getSong() {
+		return song;
+	}
+
+	public int getCurrentIndex() {
+		return index;
+	}
+
+	public boolean isPaused() {
+		return pause;
 	}
 }

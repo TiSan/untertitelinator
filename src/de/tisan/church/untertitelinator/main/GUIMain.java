@@ -3,12 +3,17 @@ package de.tisan.church.untertitelinator.main;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Toolkit;
+import java.lang.reflect.Field;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -30,13 +35,25 @@ public class GUIMain extends JFrame {
 
 	private Untertitelinator un;
 	private FlatTextBox boxCurrentLine;
+	private SentenceModel sentenceModel;
+	private JTable table;
+	private JList<String> list;
+	private FlatButton btnPause;
 
 	public GUIMain(Untertitelinator un) {
 		this.un = un;
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+				| UnsupportedLookAndFeelException e1) {
+			e1.printStackTrace();
+		}
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 
 		setUndecorated(true);
 		setSize(800, 550);
+		setResizable(false);
+		
 		setLocation((int) (dim.getWidth() / 2 - (getWidth() / 2)), (int) (dim.getHeight() / 2 - (getHeight() / 2)));
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 
@@ -47,31 +64,47 @@ public class GUIMain extends JFrame {
 		contentPane.setBackground(FlatColors.BACKGROUND);
 
 		FlatLayoutManager man = FlatLayoutManager.get(this);
-
+		man.setResizable(false);
 		FlatTitleBarWin10 bar = new FlatTitleBarWin10(man, "EVKO Untertitelinator v0.2");
 		bar.setBounds(0, 0, getWidth(), 30);
 		bar.setAnchor(Anchor.LEFT, Anchor.RIGHT);
+		bar.setMaximizable(false);
 		bar.addFlatTitleBarListener(new DefaultFlatTitleBarListener(this));
 
 		contentPane.add(bar);
 
 		DefaultListModel<String> model = new DefaultListModel<String>();
 
-		JList<String> list = new JList<String>(model);
+		list = new JList<String>(model);
+
 		list.setBounds(10, 50, 200, getHeight() - 70);
+
 		list.addListSelectionListener(new ListSelectionListener() {
 
 			@Override
 			public void valueChanged(ListSelectionEvent e) {
-				changeSong(e.getFirstIndex());
+				changeSong(list.getSelectedIndex());
+
 			}
 		});
 		contentPane.add(list);
 
 		un.getSongs().stream().map(song -> song.getTitle()).forEach(model::addElement);
 
+		FlatButton btnStart = new FlatButton(null, FlatIconFont.FAST_BACKWARD, man);
+		btnStart.setBounds(230, 50, 70, 50);
+		btnStart.addActionListener(Priority.NORMAL, new ActionListener() {
+
+			@Override
+			public void onAction(MouseClickedHandler arg0) {
+				jumpToStart();
+			}
+		});
+
+		contentPane.add(btnStart);
+
 		FlatButton btnBack = new FlatButton(null, FlatIconFont.BACKWARD, man);
-		btnBack.setBounds(230, 50, 70, 50);
+		btnBack.setBounds(310, 50, 70, 50);
 		btnBack.addActionListener(Priority.NORMAL, new ActionListener() {
 
 			@Override
@@ -79,11 +112,12 @@ public class GUIMain extends JFrame {
 				previousLine();
 			}
 		});
-		
+
 		contentPane.add(btnBack);
 
-		FlatButton btnPause = new FlatButton(null, FlatIconFont.PAUSE, man);
-		btnPause.setBounds(310, 50, 70, 50);
+		btnPause = new FlatButton(null, FlatIconFont.PAUSE, man);
+		btnPause.setBackground(FlatColors.ALIZARINRED);
+		btnPause.setBounds(390, 50, 70, 50);
 		btnPause.addActionListener(Priority.NORMAL, new ActionListener() {
 
 			@Override
@@ -91,11 +125,11 @@ public class GUIMain extends JFrame {
 				pause();
 			}
 		});
-		
+
 		contentPane.add(btnPause);
 
 		FlatButton btnForward = new FlatButton(null, FlatIconFont.FORWARD, man);
-		btnForward.setBounds(390, 50, 70, 50);
+		btnForward.setBounds(470, 50, 70, 50);
 		btnForward.addActionListener(Priority.NORMAL, new ActionListener() {
 
 			@Override
@@ -104,6 +138,18 @@ public class GUIMain extends JFrame {
 			}
 		});
 		contentPane.add(btnForward);
+
+		FlatButton btnEnd = new FlatButton(null, FlatIconFont.FAST_FORWARD, man);
+		btnEnd.setBounds(550, 50, 70, 50);
+		btnEnd.addActionListener(Priority.NORMAL, new ActionListener() {
+
+			@Override
+			public void onAction(MouseClickedHandler arg0) {
+				jumpToEnd();
+			}
+		});
+
+		contentPane.add(btnEnd);
 
 		JLabel lblCurrentLine = new JLabel("Aktuell angezeigte Zeile");
 		lblCurrentLine.setFont(FlatFont.getInstance(18, Font.PLAIN));
@@ -116,28 +162,75 @@ public class GUIMain extends JFrame {
 		boxCurrentLine.setAnchor(Anchor.LEFT, Anchor.RIGHT);
 		boxCurrentLine.setEditable(false);
 		contentPane.add(boxCurrentLine);
+
+		table = new JTable();
+		sentenceModel = new SentenceModel(table);
+		table.setModel(sentenceModel);
+
+		JScrollPane scrollPane = new JScrollPane(table);
+
+		scrollPane.setBounds(230, 200, 550, 300);
+		contentPane.add(scrollPane);
+
 		changeSong(0);
 
 	}
 
+	private void jumpToStart() {
+		un.getCurrentPlayer().jumpToStart();
+		updateUI();
+	}
+
+	private void jumpToEnd() {
+		un.getCurrentPlayer().jumpToEnd();
+		updateUI();
+	}
+
 	private void changeSong(int index) {
 		un.switchSong(un.getSongs().get(index));
-		boxCurrentLine.setText(un.getCurrentPlayer().getCurrentLine());
+		list.setSelectedIndex(index);
+		updateUI();
 	}
 
 	private void nextLine() {
 		un.getCurrentPlayer().nextLine();
-		boxCurrentLine.setText(un.getCurrentPlayer().getCurrentLine());
+		updateUI();
 	}
 
 	private void previousLine() {
 		un.getCurrentPlayer().previousLine();
-		boxCurrentLine.setText(un.getCurrentPlayer().getCurrentLine());
+		updateUI();
 	}
 
 	private void pause() {
 		un.getCurrentPlayer().pause();
+		updateUI();
+		if (un.getCurrentPlayer().isPaused()) {
+			btnPause.setBackground(FlatColors.GREEN);
+			try {
+				Field icon = btnPause.getClass().getDeclaredField("icon");
+				icon.setAccessible(true);
+				icon.set(btnPause, FlatIconFont.PLAY);
+			} catch (SecurityException | NoSuchFieldException | IllegalArgumentException | IllegalAccessException e) {
+				e.printStackTrace();
+			}
+		} else {
+			btnPause.setBackground(FlatColors.ALIZARINRED);
+			try {
+				Field icon = btnPause.getClass().getDeclaredField("icon");
+				icon.setAccessible(true);
+				icon.set(btnPause, FlatIconFont.PAUSE);
+			} catch (SecurityException | NoSuchFieldException | IllegalArgumentException | IllegalAccessException e) {
+				e.printStackTrace();
+			}
+		}
+
+	}
+
+	private void updateUI() {
+		sentenceModel.changeSong(un.getCurrentPlayer().getSong(), un.getCurrentPlayer().getCurrentIndex());
 		boxCurrentLine.setText(un.getCurrentPlayer().getCurrentLine());
+		sentenceModel.scrollToVisible(table, un.getCurrentPlayer().getCurrentIndex(), 0);
 	}
 
 }

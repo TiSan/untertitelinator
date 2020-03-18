@@ -1,6 +1,7 @@
 package de.tisan.church.untertitelinator.data;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,12 +22,17 @@ public class Untertitelinator {
 			songDir.mkdirs();
 			return;
 		}
+		FilenameFilter filter = new FilenameFilter() {
 
-		File[] songFiles = songDir.listFiles();
-		for (File song : songFiles) {
-			if (song.getName().toLowerCase().endsWith(".song")) {
-				songs.add(new Song(song));
+			@Override
+			public boolean accept(File dir, String name) {
+				return name.toLowerCase().endsWith(".song");
 			}
+
+		};
+		
+		for (File song : songDir.listFiles(filter)) {
+			songs.add(new Song(song));
 		}
 	}
 
