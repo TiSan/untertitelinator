@@ -10,7 +10,7 @@ import de.tisan.church.untertitelinator.data.Song;
 public class SentenceModel extends AbstractTableModel {
 	private static final long serialVersionUID = -2951927435443254091L;
 	private String[] columnNames = new String[] { "Aktiv", "Vers" };
-	private Object[][] data = new Object[1][2];
+	private Object[][] data = new Object[0][2];
 	private JTable table;
 
 	public SentenceModel(JTable table) {

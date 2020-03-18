@@ -22,8 +22,11 @@ import de.tisan.flatui.components.fbutton.FlatButton;
 import de.tisan.flatui.components.fcommons.Anchor;
 import de.tisan.flatui.components.fcommons.FlatColors;
 import de.tisan.flatui.components.fcommons.FlatLayoutManager;
+import de.tisan.flatui.components.fcommons.FlatMessageBox;
 import de.tisan.flatui.components.ffont.FlatFont;
 import de.tisan.flatui.components.ficon.FlatIconFont;
+import de.tisan.flatui.components.flatoptionpanes.FlatOptionPane;
+import de.tisan.flatui.components.flatoptionpanes.FlatOptionPaneTemplates;
 import de.tisan.flatui.components.flisteners.ActionListener;
 import de.tisan.flatui.components.flisteners.MouseClickedHandler;
 import de.tisan.flatui.components.flisteners.Priority;
@@ -53,7 +56,7 @@ public class GUIMain extends JFrame {
 		setUndecorated(true);
 		setSize(800, 550);
 		setResizable(false);
-		
+
 		setLocation((int) (dim.getWidth() / 2 - (getWidth() / 2)), (int) (dim.getHeight() / 2 - (getHeight() / 2)));
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 
@@ -171,7 +174,13 @@ public class GUIMain extends JFrame {
 
 		scrollPane.setBounds(230, 200, 550, 300);
 		contentPane.add(scrollPane);
-
+		if (un.getSongs().isEmpty()) {
+			FlatOptionPane errorPane = FlatOptionPane.getMessageDialog("Fehler",
+					"Es sind aktuell noch keine Songs angelegt. Ohne einen Song kann Untertitelinator nicht gestartet werden. Bitte legen Sie die passenden Song-Dateien ins Song-Verzeichnis ab (befindet sich im gleichen Ordner wie die JAR).");
+			errorPane.setAlwaysOnTop(true);
+			errorPane.showDialog();
+			errorPane.setDefaultCloseOperation(EXIT_ON_CLOSE);
+		}
 		changeSong(0);
 
 	}
@@ -187,9 +196,12 @@ public class GUIMain extends JFrame {
 	}
 
 	private void changeSong(int index) {
-		un.switchSong(un.getSongs().get(index));
-		list.setSelectedIndex(index);
-		updateUI();
+		if (un.getSongs().size() > index) {
+			un.switchSong(un.getSongs().get(index));
+			list.setSelectedIndex(index);
+			updateUI();
+
+		}
 	}
 
 	private void nextLine() {
