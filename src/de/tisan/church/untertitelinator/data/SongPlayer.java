@@ -1,42 +1,69 @@
 package de.tisan.church.untertitelinator.data;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
 public class SongPlayer {
 	Song song;
 	int index;
+	boolean pause;
+	File fileCurrent;
 
 	public SongPlayer(Song song) {
 		this.song = song;
-		index = 0;
+		this.fileCurrent = new File("currentLineForObs.utline");
+		if (fileCurrent.exists() == false) {
+			try {
+				fileCurrent.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+		setIndex(0);
+	}
+
+	private void setIndex(int index) {
+		this.index = index;
+		if (isValidIndex()) {
+			writeCurrentLineToFile();
+		}
+	}
+
+	private boolean isValidIndex() {
+		return index >= 0 && index <= song.getSongLines().size() - 1;
 	}
 
 	public void nextLine() {
-		index++;
+		setIndex(index + 1);
 		if (index >= song.getSongLines().size()) {
-			index = song.getSongLines().size() - 1;
+			setIndex(song.getSongLines().size() - 1);
 		}
 	}
 
 	public void previousLine() {
-		index--;
+		setIndex(index - 1);
 		if (index < 0) {
-			index = 0;
+			setIndex(0);
 		}
 	}
 
 	public void jumpToStart() {
-		index = 0;
+		setIndex(0);
 	}
 
 	public void jumpToEnd() {
-		index = song.getSongLines().size() - 1;
+		setIndex(song.getSongLines().size() - 1);
 	}
-	
+
 	public boolean isOnEnd() {
 		return index >= song.getSongLines().size() - 1;
 	}
-	
+
 	public String getCurrentLine() {
-		return song.getSongLines().get(index);
+		return pause ? getBlackoutLine() : song.getSongLines().get(index);
 	}
 
 	public String getBlackoutLine() {
@@ -45,5 +72,20 @@ public class SongPlayer {
 
 	public String getTitle() {
 		return song.getTitle();
+	}
+
+	public void pause() {
+		pause = !pause;
+	}
+
+	private void writeCurrentLineToFile() {
+		try {
+			BufferedWriter w = new BufferedWriter(new FileWriter(fileCurrent, false));
+			w.write(getCurrentLine());
+			w.flush();
+			w.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }

@@ -19,7 +19,9 @@ import de.tisan.flatui.components.fcommons.FlatColors;
 import de.tisan.flatui.components.fcommons.FlatLayoutManager;
 import de.tisan.flatui.components.ffont.FlatFont;
 import de.tisan.flatui.components.ficon.FlatIconFont;
-import de.tisan.flatui.components.flabel.FlatLabel;
+import de.tisan.flatui.components.flisteners.ActionListener;
+import de.tisan.flatui.components.flisteners.MouseClickedHandler;
+import de.tisan.flatui.components.flisteners.Priority;
 import de.tisan.flatui.components.ftextbox.FlatTextBox;
 import de.tisan.flatui.components.ftitlebar.DefaultFlatTitleBarListener;
 import de.tisan.flatui.components.ftitlebar.FlatTitleBarWin10;
@@ -27,6 +29,7 @@ import de.tisan.flatui.components.ftitlebar.FlatTitleBarWin10;
 public class GUIMain extends JFrame {
 
 	private Untertitelinator un;
+	private FlatTextBox boxCurrentLine;
 
 	public GUIMain(Untertitelinator un) {
 		this.un = un;
@@ -69,14 +72,37 @@ public class GUIMain extends JFrame {
 
 		FlatButton btnBack = new FlatButton(null, FlatIconFont.BACKWARD, man);
 		btnBack.setBounds(230, 50, 70, 50);
+		btnBack.addActionListener(Priority.NORMAL, new ActionListener() {
+
+			@Override
+			public void onAction(MouseClickedHandler arg0) {
+				previousLine();
+			}
+		});
+		
 		contentPane.add(btnBack);
 
 		FlatButton btnPause = new FlatButton(null, FlatIconFont.PAUSE, man);
 		btnPause.setBounds(310, 50, 70, 50);
+		btnPause.addActionListener(Priority.NORMAL, new ActionListener() {
+
+			@Override
+			public void onAction(MouseClickedHandler arg0) {
+				pause();
+			}
+		});
+		
 		contentPane.add(btnPause);
 
 		FlatButton btnForward = new FlatButton(null, FlatIconFont.FORWARD, man);
 		btnForward.setBounds(390, 50, 70, 50);
+		btnForward.addActionListener(Priority.NORMAL, new ActionListener() {
+
+			@Override
+			public void onAction(MouseClickedHandler arg0) {
+				nextLine();
+			}
+		});
 		contentPane.add(btnForward);
 
 		JLabel lblCurrentLine = new JLabel("Aktuell angezeigte Zeile");
@@ -85,15 +111,33 @@ public class GUIMain extends JFrame {
 		lblCurrentLine.setBounds(230, 110, 550, 30);
 		contentPane.add(lblCurrentLine);
 
-		FlatTextBox boxCurrentLine = new FlatTextBox(man);
+		boxCurrentLine = new FlatTextBox(man);
 		boxCurrentLine.setBounds(230, 140, 550, 50);
 		boxCurrentLine.setAnchor(Anchor.LEFT, Anchor.RIGHT);
+		boxCurrentLine.setEditable(false);
 		contentPane.add(boxCurrentLine);
+		changeSong(0);
 
 	}
 
 	private void changeSong(int index) {
 		un.switchSong(un.getSongs().get(index));
+		boxCurrentLine.setText(un.getCurrentPlayer().getCurrentLine());
+	}
+
+	private void nextLine() {
+		un.getCurrentPlayer().nextLine();
+		boxCurrentLine.setText(un.getCurrentPlayer().getCurrentLine());
+	}
+
+	private void previousLine() {
+		un.getCurrentPlayer().previousLine();
+		boxCurrentLine.setText(un.getCurrentPlayer().getCurrentLine());
+	}
+
+	private void pause() {
+		un.getCurrentPlayer().pause();
+		boxCurrentLine.setText(un.getCurrentPlayer().getCurrentLine());
 	}
 
 }
