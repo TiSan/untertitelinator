@@ -11,13 +11,24 @@ public class SongPlayer {
 	int index;
 	boolean pause;
 	File fileCurrent;
+	private File fileNext;
 
 	public SongPlayer(Song song) {
 		this.song = song;
 		this.fileCurrent = new File("currentLineForObs.utline");
+		this.fileNext = new File("nextLineForObs.utline");
+		
 		if (fileCurrent.exists() == false) {
 			try {
 				fileCurrent.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		if (fileNext.exists() == false) {
+			try {
+				fileNext.createNewFile();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -34,7 +45,7 @@ public class SongPlayer {
 	}
 
 	private boolean isValidIndex() {
-		return index >= 0 && index <= song.getSongLines().size() - 1;
+		return isValidIndex(index);
 	}
 
 	public void nextLine() {
@@ -66,6 +77,14 @@ public class SongPlayer {
 	public String getCurrentLine() {
 		return pause ? getBlackoutLine() : song.getSongLines().get(index);
 	}
+	
+	public String getNextLine() {
+		return pause ? getBlackoutLine() : (isValidIndex(index + 1) ? song.getSongLines().get(index + 1) : getBlackoutLine());
+	}
+
+	private boolean isValidIndex(int i) {
+		return i >= 0 && i <= song.getSongLines().size() - 1;
+	}
 
 	public String getBlackoutLine() {
 		return "    ";
@@ -84,6 +103,14 @@ public class SongPlayer {
 		try {
 			BufferedWriter w = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileCurrent), "UTF-8"));
 			w.write(getCurrentLine());
+			w.flush();
+			w.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		try {
+			BufferedWriter w = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileNext), "UTF-8"));
+			w.write(getNextLine());
 			w.flush();
 			w.close();
 		} catch (IOException e) {
