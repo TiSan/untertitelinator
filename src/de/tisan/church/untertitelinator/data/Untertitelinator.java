@@ -40,12 +40,16 @@ public class Untertitelinator {
 		return songs;
 	}
 
-	public SongPlayer createSongPlayerForSong(Song song) {
+	private SongPlayer createSongPlayerForSong(Song song) {
 		return new SongPlayer(song);
 	}
 
 	public void switchSong(Song song) {
-		this.currentPlayer = createSongPlayerForSong(song);
+		SongPlayer newSongPlayer = createSongPlayerForSong(song);
+		if(this.currentPlayer != null && this.currentPlayer.isPaused()) {
+			newSongPlayer.pause();
+		}
+		this.currentPlayer = newSongPlayer;
 	}
 
 	public SongPlayer getCurrentPlayer() {
