@@ -2,9 +2,10 @@ package de.tisan.church.untertitelinator.data;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,7 +31,7 @@ public class Song {
 		List<String> lines = new ArrayList<>();
 
 		try {
-			BufferedReader reader = new BufferedReader(new FileReader(dataFile));
+			BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(dataFile), "UTF-8"));
 			String line = null;
 			while ((line = reader.readLine()) != null) {
 				lines.add(line);
