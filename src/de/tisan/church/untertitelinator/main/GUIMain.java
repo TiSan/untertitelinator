@@ -34,6 +34,7 @@ import de.tisan.flatui.components.ftitlebar.FlatTitleBarWin10;
 
 public class GUIMain extends JFrame {
 
+	private static final long serialVersionUID = 6255477384834005517L;
 	private Untertitelinator un;
 	private FlatTextBox boxCurrentLine;
 	private SentenceModel sentenceModel;
@@ -66,7 +67,7 @@ public class GUIMain extends JFrame {
 
 		FlatLayoutManager man = FlatLayoutManager.get(this);
 		man.setResizable(false);
-		FlatTitleBarWin10 bar = new FlatTitleBarWin10(man, "EVKO Untertitelinator v0.2");
+		FlatTitleBarWin10 bar = new FlatTitleBarWin10(man, "EVKO Untertitelinator v0.3");
 		bar.setBounds(0, 0, getWidth(), 30);
 		bar.setAnchor(Anchor.LEFT, Anchor.RIGHT);
 		bar.setMaximizable(false);

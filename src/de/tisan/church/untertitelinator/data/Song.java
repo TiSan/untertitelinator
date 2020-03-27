@@ -34,6 +34,7 @@ public class Song {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(dataFile), "UTF-8"));
 			String line = null;
 			while ((line = reader.readLine()) != null) {
+				line = line.replaceAll("<BR>", "\n");
 				lines.add(line);
 			}
 			reader.close();

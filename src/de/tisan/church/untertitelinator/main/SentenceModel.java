@@ -33,7 +33,7 @@ public class SentenceModel extends AbstractTableModel {
 		return data[row][col];
 	}
 
-	public Class getColumnClass(int c) {
+	public Class<?> getColumnClass(int c) {
 		return getValueAt(0, c).getClass();
 	}
 
@@ -50,7 +50,7 @@ public class SentenceModel extends AbstractTableModel {
 			} else {
 				data[index][0] = "";
 			}
-			data[index][1] = line;
+			data[index][1] = line.replaceAll("\n", "<BR>");
 
 			index++;
 		}
