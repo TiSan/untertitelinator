@@ -94,7 +94,7 @@ public class SongPlayer {
 	}
 
 	public String getTitle() {
-		return song.getTitle();
+		return pause ? getBlackoutLine() : song.getTitle();
 	}
 
 	public void pause() {
