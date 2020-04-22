@@ -6,6 +6,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 
+import de.tisan.church.untertitelinator.settings.JSONPersistence;
+import de.tisan.church.untertitelinator.settings.PersistenceConstants;
+
 public class SongPlayer {
 	Song song;
 	int index;
@@ -15,8 +18,8 @@ public class SongPlayer {
 
 	public SongPlayer(Song song) {
 		this.song = song;
-		this.fileCurrent = new File("currentLineForObs.utline");
-		this.fileNext = new File("nextLineForObs.utline");
+		this.fileCurrent = new File((String) JSONPersistence.get().getSetting(PersistenceConstants.CURRENTLINEFILEPATH, "currentLineForObs.utline"));
+		this.fileNext = new File((String) JSONPersistence.get().getSetting(PersistenceConstants.NEXTLINEFILEPATH, "nextLineForObs.utline"));
 		
 		if (fileCurrent.exists() == false) {
 			try {
@@ -87,7 +90,7 @@ public class SongPlayer {
 	}
 
 	public String getBlackoutLine() {
-		return "    ";
+		return (String) JSONPersistence.get().getSetting(PersistenceConstants.BLACKOUTLINEFILLER, "    ");
 	}
 
 	public String getTitle() {

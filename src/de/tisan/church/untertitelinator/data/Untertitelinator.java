@@ -5,54 +5,71 @@ import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Untertitelinator {
+import de.tisan.church.untertitelinator.settings.JSONPersistence;
+import de.tisan.church.untertitelinator.settings.PersistenceConstants;
+
+public class Untertitelinator
+{
 
 	File currentLineFile;
 	List<Song> songs;
 	private SongPlayer currentPlayer;
 
-	public Untertitelinator() {
+	public Untertitelinator()
+	{
 		songs = new ArrayList<Song>();
 		loadSongs();
 	}
 
-	private void loadSongs() {
-		File songDir = new File("songs/");
-		if (songDir.exists() == false) {
+	private void loadSongs()
+	{
+		File songDir = new File(
+		        (String) JSONPersistence.get().getSetting(PersistenceConstants.SONGSFOLDERPATH, "songs/"));
+		if (songDir.exists() == false)
+		{
 			songDir.mkdirs();
 			return;
 		}
-		FilenameFilter filter = new FilenameFilter() {
+		FilenameFilter filter = new FilenameFilter()
+		{
 
 			@Override
-			public boolean accept(File dir, String name) {
-				return name.toLowerCase().endsWith(".song");
+			public boolean accept(File dir, String name)
+			{
+				return name.toLowerCase().endsWith(
+				        (String) JSONPersistence.get().getSetting(PersistenceConstants.SONGFILESUFFIX, ".song"));
 			}
 
 		};
-		
-		for (File song : songDir.listFiles(filter)) {
+
+		for (File song : songDir.listFiles(filter))
+		{
 			songs.add(new Song(song));
 		}
 	}
 
-	public List<Song> getSongs() {
+	public List<Song> getSongs()
+	{
 		return songs;
 	}
 
-	private SongPlayer createSongPlayerForSong(Song song) {
+	private SongPlayer createSongPlayerForSong(Song song)
+	{
 		return new SongPlayer(song);
 	}
 
-	public void switchSong(Song song) {
+	public void switchSong(Song song)
+	{
 		SongPlayer newSongPlayer = createSongPlayerForSong(song);
-		if(this.currentPlayer != null && this.currentPlayer.isPaused()) {
+		if (this.currentPlayer != null && this.currentPlayer.isPaused())
+		{
 			newSongPlayer.pause();
 		}
 		this.currentPlayer = newSongPlayer;
 	}
 
-	public SongPlayer getCurrentPlayer() {
+	public SongPlayer getCurrentPlayer()
+	{
 		return currentPlayer;
 	}
 }
