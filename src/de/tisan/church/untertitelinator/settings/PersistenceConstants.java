@@ -7,7 +7,7 @@ public enum PersistenceConstants
 	                "guiPresentatorY"), LINESEPARATOR(
 	                        "lineSeparator"), CURRENTLINEFILEPATH("currentLineFilePath"), NEXTLINEFILEPATH(
 	                                "nextLineFilePath"), BLACKOUTLINEFILLER("blackoutLineFiller"), SONGSFOLDERPATH(
-	                                        "songsFolderPath"), SONGFILESUFFIX("songFileSuffix"), CHURCHNAME("churchName");
+	                                        "songsFolderPath"), SONGFILESUFFIX("songFileSuffix"), CHURCHNAME("churchName"), SERVERPORT("8080");
 
 	private String key;
 
