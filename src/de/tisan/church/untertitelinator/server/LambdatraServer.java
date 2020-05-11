@@ -75,7 +75,7 @@ public class LambdatraServer {
 									} catch (Exception ex) {
 										res.setStatus(HttpResponseStatus.INTERNAL_SERVER_ERROR);
 										res.setHeader("Content-Type", "application/json");
-										res.write("{err: 500, message: \"" + ex.getMessage() + "\"}\n");
+										res.write("{\"err\": 500, \"message\": \"" + ex.getMessage() + "\"}\n");
 										ex.printStackTrace();
 										return;
 									}
@@ -84,7 +84,7 @@ public class LambdatraServer {
 								if (!b) {
 									res.setStatus(HttpResponseStatus.NOT_FOUND);
 									res.setHeader("Content-Type", "application/json");
-									res.write("{err: 404}\n");
+									res.write("{\"err\": 404}\n");
 								}
 							});
 						});

@@ -11,6 +11,5 @@ public class Main {
 		
 		GUIMain main = new GUIMain(un);
 		main.setVisible(true);
-		
 	}
 }
