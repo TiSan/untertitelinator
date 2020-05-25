@@ -61,8 +61,9 @@ public class GUIPresentator extends JFrame
 
 		FlatTitleBarWin10 bar = new FlatTitleBarWin10(man,
 				(String) JSONPersistence.get().getSetting(PersistenceConstants.CHURCHNAME,
-		                "Evangelische Kirchengemeinde Oberstedten") + " - Untertitelinator v0.4.0");
+		                "Evangelische Kirchengemeinde Oberstedten") + " - Untertitelinator v0.4.1");
 		bar.setBounds(0, 0, getWidth(), 30);
+		bar.setBackground(FlatColors.BLACK);
 		contentPane.add(bar);
 		bar.addFlatTitleBarListener(new DefaultFlatTitleBarListener(this));
 		bar.setMaximizable(false);
@@ -72,15 +73,15 @@ public class GUIPresentator extends JFrame
 		
 		
 		
-		Font font = FlatFont.getInstance(65, Font.PLAIN);
-		int spaceY = 30;
+		Font font = FlatFont.getInstance(195, Font.BOLD);
+		int spaceY = 60;
 		int spaceX = 30;
 		int width = getWidth() - (spaceX * 2);
-		int height = 150;
+		int height = 250;
 
 		titleLine = new FlatButton("Aktueller Titel", man);
-		titleLine.setBounds(spaceX, 50, 400, 70);
-		titleLine.setFont(FlatFont.getInstance(48, Font.PLAIN));
+		titleLine.setBounds(spaceX, 50, getWidth(), 150);
+		titleLine.setFont(FlatFont.getInstance(60, Font.BOLD));
 		titleLine.setBackground(FlatColors.BLACK);
 		titleLine.setAnchor(Anchor.LEFT, Anchor.RIGHT);
 		contentPane.add(titleLine);
@@ -99,13 +100,13 @@ public class GUIPresentator extends JFrame
 		currentLine2.setAnchor(Anchor.LEFT, Anchor.RIGHT);
 		contentPane.add(currentLine2);
 
-		height = 100;
+		height = 130;
 		spaceY = 10;
-		font = FlatFont.getInstance(45, Font.PLAIN);
+		font = FlatFont.getInstance(100, Font.BOLD);
 		Color fgColor = FlatColors.GRAY;
 
 		nextLine1 = new FlatButton("Nächste Zeile 1", man);
-		nextLine1.setBounds(spaceX, currentLine2.getY() + currentLine2.getHeight() + spaceY + 50, width, height);
+		nextLine1.setBounds(spaceX, currentLine2.getY() + currentLine2.getHeight() + spaceY, width, height);
 		nextLine1.setFont(font);
 		nextLine1.setBackground(FlatColors.BLACK);
 		nextLine1.setAnchor(Anchor.LEFT, Anchor.RIGHT);
@@ -136,7 +137,7 @@ public class GUIPresentator extends JFrame
 				catch (InterruptedException e)
 				{
 				}
-				titleLine.setText(title);
+				titleLine.setText("Aktueller Titel: " + title);
 				currentLine1.setText(line1);
 				currentLine2.setText(line2);
 				nextLine1.setText(line3);

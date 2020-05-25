@@ -76,7 +76,7 @@ public class GUIMain extends JFrame
 		man.setResizable(false);
 		FlatTitleBarWin10 bar = new FlatTitleBarWin10(man,
 		        (String) JSONPersistence.get().getSetting(PersistenceConstants.CHURCHNAME,
-		                "Evangelische Kirchengemeinde Oberstedten") + " - Untertitelinator v0.4.0");
+		                "Evangelische Kirchengemeinde Oberstedten") + " - Untertitelinator v0.4.1");
 		bar.setBounds(0, 0, getWidth(), 30);
 		bar.setAnchor(Anchor.LEFT, Anchor.RIGHT);
 		bar.setMaximizable(false);
