@@ -8,6 +8,7 @@ import java.awt.Toolkit;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import de.tisan.church.untertitelinator.data.Untertitelinator;
 import de.tisan.church.untertitelinator.settings.JSONPersistence;
 import de.tisan.church.untertitelinator.settings.PersistenceConstants;
 import de.tisan.flatui.components.fbutton.FlatButton;
@@ -61,7 +62,7 @@ public class GUIPresentator extends JFrame
 
 		FlatTitleBarWin10 bar = new FlatTitleBarWin10(man,
 				(String) JSONPersistence.get().getSetting(PersistenceConstants.CHURCHNAME,
-		                "Evangelische Kirchengemeinde Oberstedten") + " - Untertitelinator v0.4.1");
+		                "Evangelische Kirchengemeinde Oberstedten") + " - Untertitelinator v" + Untertitelinator.VERSION);
 		bar.setBounds(0, 0, getWidth(), 30);
 		bar.setBackground(FlatColors.BLACK);
 		contentPane.add(bar);
@@ -122,7 +123,7 @@ public class GUIPresentator extends JFrame
 		contentPane.add(nextLine2);
 	}
 
-	public void showNewTextLines(String title, String line1, String line2, String line3, String line4, int delay)
+	public void showNewTextLines(String title, String line1, String line2, String line3, String line4, int delay, boolean paused)
 	{
 		new Thread(new Runnable()
 		{
@@ -137,7 +138,7 @@ public class GUIPresentator extends JFrame
 				catch (InterruptedException e)
 				{
 				}
-				titleLine.setText("Aktueller Titel: " + title);
+				titleLine.setText((!paused ? "Aktueller Titel: " : "") + title);
 				currentLine1.setText(line1);
 				currentLine2.setText(line2);
 				nextLine1.setText(line3);
