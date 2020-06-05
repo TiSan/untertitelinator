@@ -1,9 +1,13 @@
 package de.tisan.church.untertitelinator.main;
 
+import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Toolkit;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
@@ -76,7 +80,7 @@ public class GUIMain extends JFrame
 		man.setResizable(false);
 		FlatTitleBarWin10 bar = new FlatTitleBarWin10(man,
 		        (String) JSONPersistence.get().getSetting(PersistenceConstants.CHURCHNAME,
-		                "Evangelische Kirchengemeinde Oberstedten") + " - Untertitelinator v0.4.1");
+		                "Evangelische Kirchengemeinde Oberstedten") + " - Untertitelinator v" + Untertitelinator.VERSION);
 		bar.setBounds(0, 0, getWidth(), 30);
 		bar.setAnchor(Anchor.LEFT, Anchor.RIGHT);
 		bar.setMaximizable(false);
@@ -203,9 +207,26 @@ public class GUIMain extends JFrame
 			errorPane.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		}
 		changeSong(0);
-
+		getAllComponents(this).forEach(this::registerKeyListener);
+		
 	}
 
+	public static List<Component> getAllComponents(final Container c) {
+	    Component[] comps = c.getComponents();
+	    List<Component> compList = new ArrayList<Component>();
+	    for (Component comp : comps) {
+	        compList.add(comp);
+	        if (comp instanceof Container)
+	            compList.addAll(getAllComponents((Container) comp));
+	    }
+	    return compList;
+	}
+	
+	
+	private void registerKeyListener(Component c) {
+		c.addKeyListener(new LukasWillsSoKeyListener(this));
+	}
+	
 	private void jumpToStart()
 	{
 		un.getCurrentPlayer().jumpToStart();
@@ -229,19 +250,19 @@ public class GUIMain extends JFrame
 		}
 	}
 
-	private void nextLine()
+	public void nextLine()
 	{
 		un.getCurrentPlayer().nextLine();
 		updateUI();
 	}
 
-	private void previousLine()
+	public void previousLine()
 	{
 		un.getCurrentPlayer().previousLine();
 		updateUI();
 	}
 
-	private void pause()
+	public void pause()
 	{
 		un.getCurrentPlayer().pause();
 		updateUI();
@@ -286,7 +307,7 @@ public class GUIMain extends JFrame
 
 		GUIPresentator.get().showNewTextLines(un.getCurrentPlayer().getTitle(), currentLines[0], (currentLines.length > 1 ? currentLines[1] : ""),
 		        nextLines[0], (nextLines.length > 1 ? nextLines[1] : ""),
-		        (Integer) JSONPersistence.get().getSetting(PersistenceConstants.GUIPRESENTATORDELAY, 1200));
+		        (Integer) JSONPersistence.get().getSetting(PersistenceConstants.GUIPRESENTATORDELAY, 1200), un.getCurrentPlayer().isPaused());
 	}
 
 }
