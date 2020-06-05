@@ -31,4 +31,12 @@ public class Verse {
 		this.lines = lines;
 	}
 
+	@Override
+	public String toString() {
+		String s = "";
+		for (String sss : lines) {
+			s += sss + "\n";
+		}
+		return s;
+	}
 }
