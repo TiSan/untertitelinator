@@ -10,7 +10,7 @@ import de.tisan.church.untertitelinator.settings.PersistenceConstants;
 
 public class Untertitelinator
 {
-	public static final String VERSION = "0.5.0";
+	public static final String VERSION = "0.6.0";
 	
 	File currentLineFile;
 	List<Song> songs;
