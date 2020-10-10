@@ -19,16 +19,13 @@ import de.tisan.flatui.components.ffont.FlatFont;
 import de.tisan.flatui.components.ftitlebar.DefaultFlatTitleBarListener;
 import de.tisan.flatui.components.ftitlebar.FlatTitleBarWin10;
 
-public class GUIPresentator extends JFrame
-{
+public class GUIPresentator extends JFrame {
 
 	private static final long serialVersionUID = 7666681011188876592L;
 	private static GUIPresentator instance;
 
-	public static GUIPresentator get()
-	{
-		if (instance == null)
-		{
+	public static GUIPresentator get() {
+		if (instance == null) {
 			instance = new GUIPresentator();
 			instance.setVisible(true);
 		}
@@ -41,15 +38,14 @@ public class GUIPresentator extends JFrame
 	private FlatButton nextLine2;
 	private FlatButton titleLine;
 
-	public GUIPresentator()
-	{
+	public GUIPresentator() {
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		screenSize = new Dimension(
-		        (Integer) JSONPersistence.get().getSetting(PersistenceConstants.GUIPRESENTATORWIDTH, 1024),
-		        (Integer) JSONPersistence.get().getSetting(PersistenceConstants.GUIPRESENTATORHEIGHT, 768));
+				(Integer) JSONPersistence.get().getSetting(PersistenceConstants.GUIPRESENTATORWIDTH, 1024),
+				(Integer) JSONPersistence.get().getSetting(PersistenceConstants.GUIPRESENTATORHEIGHT, 768));
 		setUndecorated(true);
 		setLocation((Integer) JSONPersistence.get().getSetting(PersistenceConstants.GUIPRESENTATORX, 0),
-		        (Integer) JSONPersistence.get().getSetting(PersistenceConstants.GUIPRESENTATORY, 0));
+				(Integer) JSONPersistence.get().getSetting(PersistenceConstants.GUIPRESENTATORY, 0));
 		setSize(screenSize);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setBackground(FlatColors.BLACK);
@@ -62,25 +58,32 @@ public class GUIPresentator extends JFrame
 
 		FlatTitleBarWin10 bar = new FlatTitleBarWin10(man,
 				(String) JSONPersistence.get().getSetting(PersistenceConstants.CHURCHNAME,
-		                "Evangelische Kirchengemeinde Oberstedten") + " - Untertitelinator v" + Untertitelinator.VERSION);
+						"Evangelische Kirchengemeinde Oberstedten") + " - Untertitelinator v"
+						+ Untertitelinator.VERSION);
 		bar.setBounds(0, 0, getWidth(), 30);
 		bar.setBackground(FlatColors.BLACK);
 		contentPane.add(bar);
 		bar.addFlatTitleBarListener(new DefaultFlatTitleBarListener(this));
+		bar.setCloseable(
+				(boolean) JSONPersistence.get().getSetting(PersistenceConstants.GUIPRESENTATORCLOSEABLE, false));
+		bar.setMaximizable(
+				(boolean) JSONPersistence.get().getSetting(PersistenceConstants.GUIPRESENTATORMAXIMIZABLE, true));
+		bar.setMinimizable(
+				(boolean) JSONPersistence.get().getSetting(PersistenceConstants.GUIPRESENTATORMINIMIZABLE, false));
+		bar.setMoveable((boolean) JSONPersistence.get().getSetting(PersistenceConstants.GUIPRESENTATORMOVEABLE, false));
+
 		bar.setMaximizable(false);
 		bar.setMinimizable(false);
 		bar.setMoveable(false);
 		bar.setAnchor(Anchor.LEFT, Anchor.RIGHT);
-		
-		
-		
+
 		Font font = FlatFont.getInstance(195, Font.BOLD);
 		int spaceY = 60;
 		int spaceX = 30;
 		int width = getWidth() - (spaceX * 2);
 		int height = 250;
 
-		titleLine = new FlatButton("Aktueller Titel", man);
+		titleLine = new FlatButton((String)JSONPersistence.get().getSetting(PersistenceConstants.GUIPRESENTATORCURRENTTITLETEXT, "Aktueller Titel"), man);
 		titleLine.setBounds(spaceX, 50, getWidth(), 150);
 		titleLine.setFont(FlatFont.getInstance(60, Font.BOLD));
 		titleLine.setBackground(FlatColors.BLACK);
@@ -123,22 +126,17 @@ public class GUIPresentator extends JFrame
 		contentPane.add(nextLine2);
 	}
 
-	public void showNewTextLines(String title, String line1, String line2, String line3, String line4, int delay, boolean paused)
-	{
-		new Thread(new Runnable()
-		{
+	public void showNewTextLines(String title, String line1, String line2, String line3, String line4, int delay,
+			boolean paused) {
+		new Thread(new Runnable() {
 
 			@Override
-			public void run()
-			{
-				try
-				{
+			public void run() {
+				try {
 					Thread.sleep(delay);
+				} catch (InterruptedException e) {
 				}
-				catch (InterruptedException e)
-				{
-				}
-				titleLine.setText((!paused ? "Aktueller Titel: " : "") + title);
+				titleLine.setText((!paused ? (String)JSONPersistence.get().getSetting(PersistenceConstants.GUIPRESENTATORCURRENTTITLETEXT, "Aktueller Titel") : "") + title);
 				currentLine1.setText(line1);
 				currentLine2.setText(line2);
 				nextLine1.setText(line3);

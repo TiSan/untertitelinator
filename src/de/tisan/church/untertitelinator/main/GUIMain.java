@@ -43,7 +43,9 @@ public class GUIMain extends JFrame
 
 	private static final long serialVersionUID = 6255477384834005517L;
 	private Untertitelinator un;
-	private FlatTextBox boxCurrentLine;
+	private FlatTextBox boxCurrentLine1;
+	private FlatTextBox boxCurrentLine2;
+	
 	private SentenceModel sentenceModel;
 	private JTable table;
 	private JList<String> list;
@@ -178,17 +180,23 @@ public class GUIMain extends JFrame
 
 		contentPane.add(btnEnd);
 
-		JLabel lblCurrentLine = new JLabel("Aktuell angezeigte Zeile");
+		JLabel lblCurrentLine = new JLabel("Aktuell angezeigte Zeilen");
 		lblCurrentLine.setFont(FlatFont.getInstance(18, Font.PLAIN));
 		lblCurrentLine.setForeground(FlatColors.WHITE);
 		lblCurrentLine.setBounds(230, 110, 550, 30);
 		contentPane.add(lblCurrentLine);
 
-		boxCurrentLine = new FlatTextBox(man);
-		boxCurrentLine.setBounds(230, 140, 550, 50);
-		boxCurrentLine.setAnchor(Anchor.LEFT, Anchor.RIGHT);
-		boxCurrentLine.setEditable(false);
-		contentPane.add(boxCurrentLine);
+		boxCurrentLine1 = new FlatTextBox(man);
+		boxCurrentLine1.setBounds(230, 140, 550, 25);
+		boxCurrentLine1.setAnchor(Anchor.LEFT, Anchor.RIGHT);
+		boxCurrentLine1.setEditable(false);
+		contentPane.add(boxCurrentLine1);
+		
+		boxCurrentLine2 = new FlatTextBox(man);
+		boxCurrentLine2.setBounds(230, 165, 550, 25);
+		boxCurrentLine2.setAnchor(Anchor.LEFT, Anchor.RIGHT);
+		boxCurrentLine2.setEditable(false);
+		contentPane.add(boxCurrentLine2);
 
 		table = new JTable();
 		sentenceModel = new SentenceModel(table);
@@ -300,10 +308,13 @@ public class GUIMain extends JFrame
 	private void updateUI()
 	{
 		sentenceModel.changeSong(un.getCurrentPlayer().getSong(), un.getCurrentPlayer().getCurrentIndex());
-		boxCurrentLine.setText(un.getCurrentPlayer().getCurrentLine());
-		sentenceModel.scrollToVisible(table, un.getCurrentPlayer().getCurrentIndex(), 0);
 		String[] currentLines = un.getCurrentPlayer().getCurrentLine().split("\n", 2);
 		String[] nextLines = un.getCurrentPlayer().getNextLine().split("\n", 2);
+		
+		boxCurrentLine1.setText(currentLines.length > 0 ? currentLines[0] : "");
+		boxCurrentLine2.setText(currentLines.length > 1 ? currentLines[1] : "");
+		
+		sentenceModel.scrollToVisible(table, un.getCurrentPlayer().getCurrentIndex(), 0);
 
 		GUIPresentator.get().showNewTextLines(un.getCurrentPlayer().getTitle(), currentLines[0], (currentLines.length > 1 ? currentLines[1] : ""),
 		        nextLines[0], (nextLines.length > 1 ? nextLines[1] : ""),

@@ -28,7 +28,7 @@ public class JSONPersistence extends Persistence
 		this.mapper = new ObjectMapper();
 		this.mapper.enable(SerializationFeature.INDENT_OUTPUT);
 
-		this.settingsFile = new File("settings.json");
+		this.settingsFile = new File(System.getProperty("settingsPath", "settings.json"));
 		if (createFileIfNotExists(settingsFile))
 		{
 			this.settings = new HashMap<String, Object>();

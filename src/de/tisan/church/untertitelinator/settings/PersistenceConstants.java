@@ -7,7 +7,12 @@ public enum PersistenceConstants {
 	GUIKEYERX("guiKeyerX"), GUIKEYERY("guiKeyerY"), LINESEPARATOR("lineSeparator"),
 	CURRENTLINEFILEPATH("currentLineFilePath"), NEXTLINEFILEPATH("nextLineFilePath"),
 	BLACKOUTLINEFILLER("blackoutLineFiller"), SONGSFOLDERPATH("songsFolderPath"), SONGFILESUFFIX("songFileSuffix"),
-	CHURCHNAME("churchName"), GUIKEYERBACKGROUND("guiKeyerBackground"), GUIKEYERSECONELINEENABLED ("guiKeyerSecondLineEnabled");
+	CHURCHNAME("churchName"), GUIKEYERBACKGROUND("guiKeyerBackground"),
+	GUIKEYERSECONELINEENABLED("guiKeyerSecondLineEnabled"), GUIKEYERMOVEABLE("guiKeyerMoveable"),
+	GUIKEYERMINIMIZABLE("guiKeyerMinimizable"), GUIKEYERMAXIMIZABLE("guiKeyerMaximizable"),
+	GUIKEYERCLOSEABLE("guiKeyerCloseable"), GUIPRESENTATORCLOSEABLE("guiPresentatorCloseable"),
+	GUIPRESENTATORMAXIMIZABLE("guiPresentatorMaximizable"), GUIPRESENTATORMINIMIZABLE("guiPresentatorMinimizable"),
+	GUIPRESENTATORMOVEABLE("guiPresentatorMoveable"), GUIPRESENTATORCURRENTTITLETEXT("guiPresentatorCurrentTitleText");
 
 	private String key;
 
