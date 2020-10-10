@@ -308,6 +308,11 @@ public class GUIMain extends JFrame
 		GUIPresentator.get().showNewTextLines(un.getCurrentPlayer().getTitle(), currentLines[0], (currentLines.length > 1 ? currentLines[1] : ""),
 		        nextLines[0], (nextLines.length > 1 ? nextLines[1] : ""),
 		        (Integer) JSONPersistence.get().getSetting(PersistenceConstants.GUIPRESENTATORDELAY, 1200), un.getCurrentPlayer().isPaused());
+		
+		GUIKeyer.get().showNewTextLines(un.getCurrentPlayer().getTitle(), currentLines[0], (currentLines.length > 1 ? currentLines[1] : ""),
+		        nextLines[0], (nextLines.length > 1 ? nextLines[1] : ""),
+		        (Integer) JSONPersistence.get().getSetting(PersistenceConstants.GUIPRESENTATORDELAY, 1200), un.getCurrentPlayer().isPaused());
+
 	}
 
 }
