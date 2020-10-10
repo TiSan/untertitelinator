@@ -19,11 +19,15 @@ public class LukasWillsSoKeyListener implements KeyListener {
 	public void keyPressed(KeyEvent e) {
 		if (e.getKeyCode() == KeyEvent.VK_LEFT) {
 			instance.previousLine();
+			e.consume();
 		} else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
 			instance.nextLine();
+			e.consume();
 		} else if (e.getKeyCode() == KeyEvent.VK_SPACE) {
 			instance.pause();
+			e.consume();
 		}
+		
 	}
 
 	@Override
