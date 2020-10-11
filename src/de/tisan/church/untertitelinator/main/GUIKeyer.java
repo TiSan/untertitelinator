@@ -79,7 +79,7 @@ public class GUIKeyer extends JFrame {
 
 			Font font = FlatFont.getInstance(70, Font.BOLD);
 			final int height = 100;
-			int spaceY = (int) (screenSize.height - (height * 2));
+			int spaceY = (int) (screenSize.height - (height * 3));
 			int spaceX = 30;
 			int width = getWidth() - (spaceX * 2);
 
@@ -99,7 +99,7 @@ public class GUIKeyer extends JFrame {
 
 			addComponentListener(new ComponentAdapter() {
 				public void componentResized(ComponentEvent componentEvent) {
-					currentLine1.setBounds(spaceX, (getHeight() - (height * 2)), getWidth() - (spaceX * 2), height);
+					currentLine1.setBounds(spaceX, (getHeight() - (height * 3)), getWidth() - (spaceX * 2), height);
 					currentLine2.setBounds(spaceX, currentLine1.getY() + currentLine1.getHeight(),
 							getWidth() - (spaceX * 2), height);
 				}
