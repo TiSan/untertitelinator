@@ -3,14 +3,14 @@ package de.tisan.church.untertitelinator.churchtools.api.objects;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Calendar {
+public class Domain {
 	String title;
 	String domainType;
 	String domainIdentifier;
 	String apiUrl;
 	String frontendUrl;
 	String imageUrl;
-	CalendarDomainAttributes domainAttributes;
+	DomainAttributes domainAttributes;
 
 	public String getTitle() {
 		return title;
@@ -44,11 +44,11 @@ public class Calendar {
 		this.apiUrl = apiUrl;
 	}
 
-	public CalendarDomainAttributes getDomainAttributes() {
+	public DomainAttributes getDomainAttributes() {
 		return domainAttributes;
 	}
 
-	public void setDomainAttributes(CalendarDomainAttributes domainAttributes) {
+	public void setDomainAttributes(DomainAttributes domainAttributes) {
 		this.domainAttributes = domainAttributes;
 	}
 

@@ -3,7 +3,6 @@ package de.tisan.church.untertitelinator.churchtools.api.objects;
 import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Event {
@@ -15,7 +14,7 @@ public class Event {
 	LocalDateTime endDate;
 	String chatStatus;
 	EventPermission permissions;
-	Calendar calendar;
+	Domain calendar;
 
 	public long getId() {
 		return id;
@@ -81,11 +80,11 @@ public class Event {
 		this.permissions = permissions;
 	}
 
-	public Calendar getCalendar() {
+	public Domain getCalendar() {
 		return calendar;
 	}
 
-	public void setCalendar(Calendar calendar) {
+	public void setCalendar(Domain calendar) {
 		this.calendar = calendar;
 	}
 
