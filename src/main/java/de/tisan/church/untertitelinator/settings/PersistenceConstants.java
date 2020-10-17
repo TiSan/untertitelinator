@@ -12,7 +12,8 @@ public enum PersistenceConstants {
 	GUIKEYERMINIMIZABLE("guiKeyerMinimizable"), GUIKEYERMAXIMIZABLE("guiKeyerMaximizable"),
 	GUIKEYERCLOSEABLE("guiKeyerCloseable"), GUIPRESENTATORCLOSEABLE("guiPresentatorCloseable"),
 	GUIPRESENTATORMAXIMIZABLE("guiPresentatorMaximizable"), GUIPRESENTATORMINIMIZABLE("guiPresentatorMinimizable"),
-	GUIPRESENTATORMOVEABLE("guiPresentatorMoveable"), GUIPRESENTATORCURRENTTITLETEXT("guiPresentatorCurrentTitleText");
+	GUIPRESENTATORMOVEABLE("guiPresentatorMoveable"), GUIPRESENTATORCURRENTTITLETEXT("guiPresentatorCurrentTitleText"),
+	CHURCHTOOLSUSER("churchToolsUser"), CHURCHTOOLSPASSWORD("churchToolsPassword"), CHURCHTOOLSBASEURL("churchToolsBaseUrl");
 
 	private String key;
 
