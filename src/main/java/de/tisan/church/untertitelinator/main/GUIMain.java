@@ -62,7 +62,7 @@ public class GUIMain extends JFrame {
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 
 		setUndecorated(true);
-		setSize(800, 550);
+		setSize(800, 650);
 		setResizable(false);
 
 		setLocation((int) (dim.getWidth() / 2 - (getWidth() / 2)), (int) (dim.getHeight() / 2 - (getHeight() / 2)));
@@ -224,6 +224,24 @@ public class GUIMain extends JFrame {
 			errorPane.showDialog();
 			errorPane.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		}
+		
+		FlatButton btnTitelfolie = new FlatButton("Titelfolie", man);
+		btnTitelfolie.setBounds(list.getX() + list.getWidth() + 20, scrollPane.getY() + scrollPane.getHeight() + 5, 100, 100);
+		btnTitelfolie.addActionListener(Priority.NORMAL, new ActionListener() {
+			
+			@Override
+			public void onMouseRelease(MouseReleaseHandler handler) {
+				GUIKeyer.get().toggleBeginLayer();
+				
+			}
+
+			@Override
+			public void onAction(MouseClickedHandler arg0) {
+				
+			}
+		});
+		contentPane.add(btnTitelfolie);
+		
 		changeSong(0);
 		getAllComponents(this).forEach(this::registerKeyListener);
 

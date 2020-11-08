@@ -1,6 +1,8 @@
 package de.tisan.church.untertitelinator.churchtools.api;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,6 +23,9 @@ import de.tisan.church.untertitelinator.churchtools.api.objects.AgendaItem;
 import de.tisan.church.untertitelinator.churchtools.api.objects.AgendaResponse;
 import de.tisan.church.untertitelinator.churchtools.api.objects.Event;
 import de.tisan.church.untertitelinator.churchtools.api.objects.EventResponse;
+import de.tisan.church.untertitelinator.churchtools.api.objects.EventResponse2;
+import de.tisan.church.untertitelinator.churchtools.api.objects.Service;
+import de.tisan.church.untertitelinator.churchtools.api.objects.ServiceResponse;
 import de.tisan.church.untertitelinator.settings.JSONPersistence;
 import de.tisan.church.untertitelinator.settings.PersistenceConstants;
 
@@ -92,7 +97,8 @@ public class ChurchToolsApi {
 		// TODO https://oberstedten.church.tools/api/events/409 Event anreichern!
 		if (accessToken == null) {
 			System.out.println("FEHLER! Der AccessToken ist nicht gesetzt.");
-			return Optional.empty();
+			login();
+			//return Optional.empty();
 		}
 		try {
 			Response response = client.target(baseUrl).path("api").path("events").queryParam("login_token", accessToken)
@@ -100,9 +106,56 @@ public class ChurchToolsApi {
 			EventResponse r = mapper.readValue((String) response.readEntity(String.class),
 					new TypeReference<EventResponse>() {
 					});
+			List<Event> rawEvents = r.getData();
+			List<Event> enrichedEvents = new ArrayList<Event>();
+
+			for (Event rawEvent : rawEvents) {
+				Response responseEnriched = client.target(baseUrl).path("api").path("events")
+						.path("" + rawEvent.getId()).queryParam("login_token", accessToken)
+						.request(MediaType.APPLICATION_JSON).get();
+				EventResponse2 r2 = mapper.readValue((String) responseEnriched.readEntity(String.class),
+						new TypeReference<EventResponse2>() {
+						});
+				enrichedEvents.add(r2.getData());
+
+			}
+
+			return Optional.ofNullable(enrichedEvents);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return Optional.empty();
+	}
+
+	public Optional<List<Service>> getServices() {
+		if (accessToken == null) {
+			System.out.println("FEHLER! Der AccessToken ist nicht gesetzt.");
+			login();
+			//return Optional.empty();
+		}
+		try {
+			Response response = client.target(baseUrl).path("api").path("services")
+					.queryParam("login_token", accessToken).request(MediaType.APPLICATION_JSON).get();
+			ServiceResponse r = mapper.readValue((String) response.readEntity(String.class),
+					new TypeReference<ServiceResponse>() {
+					});
 			return Optional.ofNullable(r.getData());
 		} catch (IOException e) {
 			e.printStackTrace();
+		}
+		return Optional.empty();
+	}
+
+	public Optional<Event> getNextEvent() {
+		if (accessToken == null) {
+			System.out.println("FEHLER! Der AccessToken ist nicht gesetzt.");
+			login();
+		}
+		Optional<List<Event>> allEvents = getEvents();
+		if (allEvents.isPresent()) {
+			return allEvents.get().stream()
+					.filter(event -> event.getStartDate().toLocalDate().isBefore(LocalDate.now().plusDays(2)))
+					.findFirst();
 		}
 		return Optional.empty();
 	}
