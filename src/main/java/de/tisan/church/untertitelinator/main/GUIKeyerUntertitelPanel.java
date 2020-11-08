@@ -23,6 +23,7 @@ public class GUIKeyerUntertitelPanel extends JPanel {
 
 	public GUIKeyerUntertitelPanel(FlatLayoutManager man, GUIKeyer instance, Dimension preferredSize) {
 		setLayout(null);
+		setBackground(instance.bg);
 
 		Font font = FlatFont.getInstance(70, Font.BOLD);
 		final int height = 100;
@@ -73,5 +74,13 @@ public class GUIKeyerUntertitelPanel extends JPanel {
 
 			}
 		});
+	}
+	public void showNewTextLines(String line1, String line2, String line3, String line4) {
+		currentLine1.setText(line1);
+		currentLine2.setText(line2);
+		if ((boolean) JSONPersistence.get().getSetting(PersistenceConstants.GUIKEYERSECONELINEENABLED, false)) {
+			nextLine1.setText(line3);
+			nextLine2.setText(line4);
+		}
 	}
 }
