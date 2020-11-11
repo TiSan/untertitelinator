@@ -115,9 +115,11 @@ public class GUIKeyer extends JFrame {
 
 			addComponentListener(new ComponentAdapter() {
 				public void componentResized(ComponentEvent componentEvent) {
-					// pnlUntertitel.setBounds(0, 0, getWidth(), getHeight());
+					pnlUntertitel.setBounds(0, 0, getWidth(), getHeight());
 					pnlStartPage.setBounds(0, 0, getWidth(), getHeight());
-
+					pnlEndcardPage.setBounds(0, 0, getWidth(), getHeight());
+					pnlKollekte.setBounds(0, 0, getWidth(), getHeight());
+					pnlLogo.setBounds(0, 0, getWidth(), getHeight());
 				}
 			});
 
