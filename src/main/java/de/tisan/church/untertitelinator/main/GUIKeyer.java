@@ -2,27 +2,16 @@ package de.tisan.church.untertitelinator.main;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
 
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import de.tisan.church.untertitelinator.churchtools.api.ChurchToolsApi;
@@ -31,11 +20,8 @@ import de.tisan.church.untertitelinator.churchtools.api.objects.EventService;
 import de.tisan.church.untertitelinator.churchtools.api.objects.Service;
 import de.tisan.church.untertitelinator.settings.JSONPersistence;
 import de.tisan.church.untertitelinator.settings.PersistenceConstants;
-import de.tisan.flatui.components.fbutton.FlatButton;
 import de.tisan.flatui.components.fcommons.Anchor;
-import de.tisan.flatui.components.fcommons.FlatColors;
 import de.tisan.flatui.components.fcommons.FlatLayoutManager;
-import de.tisan.flatui.components.ffont.FlatFont;
 import de.tisan.flatui.components.ftitlebar.DefaultFlatTitleBarListener;
 import de.tisan.flatui.components.ftitlebar.FlatTitleBarWin10;
 
@@ -56,6 +42,8 @@ public class GUIKeyer extends JFrame {
 	private GUIKeyerStartPagePanel pnlStartPage;
 	private FlatTitleBarWin10 bar;
 	Color bg;
+	private GUIKeyerLogoPanel pnlLogo;
+	private GUIKeyerEndcardPanel pnlEndcardPage;
 
 	public GUIKeyer() {
 		try {
@@ -79,17 +67,17 @@ public class GUIKeyer extends JFrame {
 			contentPane.setLayout(null);
 			setContentPane(contentPane);
 			contentPane.setBackground(bg);
-			
+
 			FlatLayoutManager man = FlatLayoutManager.get(this);
 			man.disableAllEffects();
-			
+
 			bar = new FlatTitleBarWin10(man, "");
 			bar.setOptionMenuToggleEnabled(false);
 			bar.setBounds(0, 0, getWidth(), 30);
 			bar.setBackground(new Color(0, 0, 0, 0));
 			bar.disableEffects();
 			contentPane.add(bar);
-			
+			bar.setOpaque(true);
 			bar.addFlatTitleBarListener(new DefaultFlatTitleBarListener(this));
 			bar.setCloseable((boolean) JSONPersistence.get().getSetting(PersistenceConstants.GUIKEYERCLOSEABLE, false));
 			bar.setMaximizable(
@@ -99,25 +87,34 @@ public class GUIKeyer extends JFrame {
 			bar.setMoveable((boolean) JSONPersistence.get().getSetting(PersistenceConstants.GUIKEYERMOVEABLE, false));
 			bar.setAnchor(Anchor.LEFT, Anchor.RIGHT);
 
+			pnlLogo = new GUIKeyerLogoPanel(man, this, screenSize);
+			pnlLogo.setBounds(0, 0, getWidth(), getHeight());
+			contentPane.add(pnlLogo);
+
 			pnlStartPage = new GUIKeyerStartPagePanel(man, this, screenSize);
 			pnlStartPage.setBounds(0, 0, getWidth(), getHeight());
 			contentPane.add(pnlStartPage);
+
+			pnlEndcardPage = new GUIKeyerEndcardPanel(man, this, screenSize);
+			pnlEndcardPage.setBounds(0, 0, getWidth(), getHeight());
+			contentPane.add(pnlEndcardPage);
+			pnlEndcardPage.setVisible(false);
 			
 			pnlUntertitel = new GUIKeyerUntertitelPanel(man, this, screenSize);
 			pnlUntertitel.setBounds(0, 0, getWidth(), getHeight());
 			contentPane.add(pnlUntertitel);
 			pnlUntertitel.setVisible(false);
-			
+
 			prepare();
-			
+
 			addComponentListener(new ComponentAdapter() {
 				public void componentResized(ComponentEvent componentEvent) {
-					//pnlUntertitel.setBounds(0, 0, getWidth(), getHeight());
+					// pnlUntertitel.setBounds(0, 0, getWidth(), getHeight());
 					pnlStartPage.setBounds(0, 0, getWidth(), getHeight());
-					
+
 				}
 			});
-			
+
 		} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
 			e.printStackTrace();
 		}
@@ -174,27 +171,80 @@ public class GUIKeyer extends JFrame {
 				}
 			}
 
-			pnlStartPage.showNextStream(event.get().getDescription(), "Thema: \"" + titleName + "\"", event.get().getStartDate().plusHours(1).format(DateTimeFormatter.ofPattern("dd.MM.yyyy - hh:mm"))
-							+ " Uhr", serviceListStr);
-			
+			pnlStartPage.showNextStream(event.get().getDescription(), "Thema: \"" + titleName + "\"",
+					event.get().getStartDate().plusHours(1).format(DateTimeFormatter.ofPattern("dd.MM.yyyy - hh:mm"))
+							+ " Uhr",
+					serviceListStr);
+
 		}
 	}
 
-	public void toggleBeginLayer() {
+//	public boolean toggleBeginLayer() {
+//		if (pnlStartPage.isVisible()) {
+//			pnlStartPage.setVisible(false);
+//
+//			bar.setBackground(bg);
+//
+//			pnlUntertitel.setVisible(true);
+//		} else {
+//			pnlUntertitel.setVisible(false);
+//			pnlStartPage.setVisible(true);
+//			pnlStartPage.fitImage(getWidth(), getHeight());
+//			
+//			bar.setBackground(new Color(0, 0, 0, 0));
+//
+//			repaint();
+//		}
+//		return pnlStartPage.isVisible();
+//	}
+
+	public boolean toggleBeginLayer() {
 		if (pnlStartPage.isVisible()) {
 			pnlStartPage.setVisible(false);
-			
-			bar.setBackground(bg);
-
-			pnlUntertitel.setVisible(true);
 		} else {
-			pnlUntertitel.setVisible(false);
 			pnlStartPage.setVisible(true);
-			pnlStartPage.fitImage(getWidth(), getHeight());
-			
-			bar.setBackground(new Color(0, 0, 0, 0));
-
-			repaint();
 		}
+		return pnlStartPage.isVisible();
+	}
+
+	public boolean toggleUntertitel() {
+		if (pnlUntertitel.isVisible()) {
+			pnlUntertitel.setVisible(false);
+			// bar.setBackground(new Color(0, 0, 0, 0));
+		} else {
+			pnlUntertitel.setVisible(true);
+			// bar.setBackground(bg);
+		}
+		return pnlUntertitel.isVisible();
+	}
+
+	public boolean toggleLogo() {
+		if (pnlLogo.isVisible()) {
+			pnlLogo.setVisible(false);
+		} else {
+			pnlLogo.setVisible(true);
+		}
+		return pnlLogo.isVisible();
+
+	}
+
+	public boolean toggleEndcard() {
+		if (pnlEndcardPage.isVisible()) {
+			pnlEndcardPage.setVisible(false);
+		} else {
+			pnlEndcardPage.setVisible(true);
+		}
+		return pnlEndcardPage.isVisible();
+
+	}
+
+	public boolean toggleWindowBar() {
+		if (bar.isVisible()) {
+			bar.setVisible(false);
+		} else {
+			bar.setVisible(true);
+		}
+		return bar.isVisible();
+
 	}
 }

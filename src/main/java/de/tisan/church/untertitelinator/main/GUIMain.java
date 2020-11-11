@@ -108,13 +108,13 @@ public class GUIMain extends JFrame {
 		FlatButton btnStart = new FlatButton(null, FlatIconFont.FAST_BACKWARD, man);
 		btnStart.setBounds(230, 50, 70, 50);
 		btnStart.addActionListener(Priority.NORMAL, new ActionListener() {
-			
+
 			@Override
 			public void onMouseRelease(MouseReleaseHandler handler) {
 				jumpToStart();
-				
+
 			}
-			
+
 			@Override
 			public void onAction(MouseClickedHandler arg0) {
 			}
@@ -126,7 +126,7 @@ public class GUIMain extends JFrame {
 		btnBack.setBounds(310, 50, 70, 50);
 
 		btnBack.addActionListener(Priority.NORMAL, new ActionListener() {
-			
+
 			@Override
 			public void onMouseRelease(MouseReleaseHandler handler) {
 				previousLine();
@@ -134,7 +134,7 @@ public class GUIMain extends JFrame {
 
 			@Override
 			public void onAction(MouseClickedHandler arg0) {
-				
+
 			}
 		});
 
@@ -144,13 +144,13 @@ public class GUIMain extends JFrame {
 		btnPause.setBackground(FlatColors.ALIZARINRED);
 		btnPause.setBounds(390, 50, 70, 50);
 		btnPause.addActionListener(Priority.NORMAL, new ActionListener() {
-			
+
 			@Override
 			public void onMouseRelease(MouseReleaseHandler handler) {
 				pause();
-				
+
 			}
-			
+
 			@Override
 			public void onAction(MouseClickedHandler arg0) {
 			}
@@ -165,9 +165,9 @@ public class GUIMain extends JFrame {
 			@Override
 			public void onMouseRelease(MouseReleaseHandler handler) {
 				nextLine();
-				
+
 			}
-			
+
 			@Override
 			public void onAction(MouseClickedHandler arg0) {
 			}
@@ -177,13 +177,13 @@ public class GUIMain extends JFrame {
 		FlatButton btnEnd = new FlatButton(null, FlatIconFont.FAST_FORWARD, man);
 		btnEnd.setBounds(550, 50, 70, 50);
 		btnEnd.addActionListener(Priority.NORMAL, new ActionListener() {
-			
+
 			@Override
 			public void onMouseRelease(MouseReleaseHandler handler) {
 				jumpToEnd();
-				
+
 			}
-			
+
 			@Override
 			public void onAction(MouseClickedHandler arg0) {
 			}
@@ -224,24 +224,108 @@ public class GUIMain extends JFrame {
 			errorPane.showDialog();
 			errorPane.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		}
-		
-		FlatButton btnTitelfolie = new FlatButton("Titelfolie", man);
-		btnTitelfolie.setBounds(list.getX() + list.getWidth() + 20, scrollPane.getY() + scrollPane.getHeight() + 5, 100, 100);
-		btnTitelfolie.addActionListener(Priority.NORMAL, new ActionListener() {
-			
+
+		JLabel lblViewHideElements = new JLabel("Ebenen im Keyer ein-/ausblenden [Unterste --> Oberste]");
+		lblViewHideElements.setFont(FlatFont.getInstance(18, Font.PLAIN));
+		lblViewHideElements.setForeground(FlatColors.WHITE);
+		lblViewHideElements.setBounds(list.getX() + list.getWidth() + 20,
+				scrollPane.getY() + scrollPane.getHeight() + 5, 550, 30);
+		contentPane.add(lblViewHideElements);
+
+		FlatButton btnUntertitel = new FlatButton("Untertitel", man);
+		btnUntertitel.setBounds(lblViewHideElements.getX(), lblViewHideElements.getY() + lblViewHideElements.getHeight() + 10, 100, 70);
+		btnUntertitel.setBackground(FlatColors.ALIZARINRED);
+		btnUntertitel.addActionListener(Priority.NORMAL, new ActionListener() {
+
 			@Override
 			public void onMouseRelease(MouseReleaseHandler handler) {
-				GUIKeyer.get().toggleBeginLayer();
-				
+				boolean state = GUIKeyer.get().toggleUntertitel();
+				btnUntertitel.setBackground(state ? FlatColors.GREEN : FlatColors.ALIZARINRED);
 			}
 
 			@Override
 			public void onAction(MouseClickedHandler arg0) {
-				
+
+			}
+		});
+		contentPane.add(btnUntertitel);
+		
+		FlatButton btnEndcard = new FlatButton("Endcard", man);
+		btnEndcard.setBounds(btnUntertitel.getX() + btnUntertitel.getWidth() + 5, btnUntertitel.getY(), 100, 70);
+		btnEndcard.setBackground(FlatColors.ALIZARINRED);
+		btnEndcard.addActionListener(Priority.NORMAL, new ActionListener() {
+
+			@Override
+			public void onMouseRelease(MouseReleaseHandler handler) {
+				boolean state = GUIKeyer.get().toggleEndcard();
+				btnEndcard.setBackground(state ? FlatColors.GREEN : FlatColors.ALIZARINRED);
+			}
+
+			@Override
+			public void onAction(MouseClickedHandler arg0) {
+
+			}
+		});
+		contentPane.add(btnEndcard);
+		
+		FlatButton btnTitelfolie = new FlatButton("Begincard", man);
+		btnTitelfolie.setBounds(btnEndcard.getX() + btnEndcard.getWidth() + 5, btnEndcard.getY(), 100, 70);
+		btnTitelfolie.setBackground(FlatColors.GREEN);
+		btnTitelfolie.addActionListener(Priority.NORMAL, new ActionListener() {
+
+			@Override
+			public void onMouseRelease(MouseReleaseHandler handler) {
+				boolean state = GUIKeyer.get().toggleBeginLayer();
+				btnTitelfolie.setBackground(state ? FlatColors.GREEN : FlatColors.ALIZARINRED);
+			}
+
+			@Override
+			public void onAction(MouseClickedHandler arg0) {
+
 			}
 		});
 		contentPane.add(btnTitelfolie);
 		
+		
+		
+		
+
+		FlatButton btnLogo = new FlatButton("Logo", man);
+		btnLogo.setBounds(btnTitelfolie.getX() + btnTitelfolie.getWidth() + 5, btnTitelfolie.getY(), 100, 70);
+		btnLogo.setBackground(FlatColors.GREEN);
+		btnLogo.addActionListener(Priority.NORMAL, new ActionListener() {
+
+			@Override
+			public void onMouseRelease(MouseReleaseHandler handler) {
+				boolean state = GUIKeyer.get().toggleLogo();
+				btnLogo.setBackground(state ? FlatColors.GREEN : FlatColors.ALIZARINRED);
+			}
+
+			@Override
+			public void onAction(MouseClickedHandler arg0) {
+
+			}
+		});
+		contentPane.add(btnLogo);
+
+		FlatButton btnWindowBar = new FlatButton("Max-Button", man);
+		btnWindowBar.setBounds(btnLogo.getX() + btnLogo.getWidth() + 5, btnTitelfolie.getY(), 100, 70);
+		btnWindowBar.setBackground(FlatColors.GREEN);
+		btnWindowBar.addActionListener(Priority.NORMAL, new ActionListener() {
+
+			@Override
+			public void onMouseRelease(MouseReleaseHandler handler) {
+				boolean state = GUIKeyer.get().toggleWindowBar();
+				btnWindowBar.setBackground(state ? FlatColors.GREEN : FlatColors.ALIZARINRED);
+			}
+
+			@Override
+			public void onAction(MouseClickedHandler arg0) {
+
+			}
+		});
+		contentPane.add(btnWindowBar);
+
 		changeSong(0);
 		getAllComponents(this).forEach(this::registerKeyListener);
 
