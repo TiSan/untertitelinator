@@ -100,7 +100,7 @@ public class GUIKeyerStartPagePanel extends JPanel {
 		/* Bild */
 		layerImage = new JLabel();
 		try {
-			image = ImageIO.read(GUIKeyer.class.getResourceAsStream("/de/tisan/church/untertitelinator/resources/bg.jpg"));
+			image = ImageIO.read(GUIKeyerStartPagePanel.class.getResourceAsStream("/de/tisan/church/untertitelinator/resources/bg.jpg"));
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
@@ -138,6 +138,9 @@ public class GUIKeyerStartPagePanel extends JPanel {
 		int y1 = heightCastBegin;
 		
 		for (String castItem : cast.keySet()) {
+			if(cast.get(castItem) == null) {
+				continue;
+			}
 			System.out.println(castItem);
 			FlatButton layerCast = new FlatButton(castItem + ": " + cast.get(castItem), man);
 			System.out.println("x1=" + x1 + ";y1=" + y1 + ";width=" + widthElements + ";height=" + heightElements);

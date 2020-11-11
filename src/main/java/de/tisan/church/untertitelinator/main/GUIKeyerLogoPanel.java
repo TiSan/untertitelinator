@@ -24,7 +24,7 @@ public class GUIKeyerLogoPanel extends JPanel {
 		layerImage = new JLabel();
 		try {
 			image = ImageIO.read(
-					GUIKeyer.class.getResourceAsStream("/de/tisan/church/untertitelinator/resources/bg_logo.png"));
+					GUIKeyerLogoPanel.class.getResourceAsStream("/de/tisan/church/untertitelinator/resources/bg_logo.png"));
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}

@@ -98,7 +98,7 @@ public class ChurchToolsApi {
 		if (accessToken == null) {
 			System.out.println("FEHLER! Der AccessToken ist nicht gesetzt.");
 			login();
-			//return Optional.empty();
+			// return Optional.empty();
 		}
 		try {
 			Response response = client.target(baseUrl).path("api").path("events").queryParam("login_token", accessToken)
@@ -131,7 +131,7 @@ public class ChurchToolsApi {
 		if (accessToken == null) {
 			System.out.println("FEHLER! Der AccessToken ist nicht gesetzt.");
 			login();
-			//return Optional.empty();
+			// return Optional.empty();
 		}
 		try {
 			Response response = client.target(baseUrl).path("api").path("services")
@@ -152,12 +152,11 @@ public class ChurchToolsApi {
 			login();
 		}
 		Optional<List<Event>> allEvents = getEvents();
-		if (allEvents.isPresent()) {
-			return allEvents.get().stream()
-					.filter(event -> event.getStartDate().toLocalDate().isBefore(LocalDate.now().plusDays(2)))
-					.findFirst();
+		if (allEvents.isPresent() && allEvents.get().size() > 0) {
+			return Optional.ofNullable(allEvents.get().get(0));
+		} else {
+			return Optional.empty();
 		}
-		return Optional.empty();
 	}
 
 	public Optional<Agenda> getAgendaForEvent(long id) {

@@ -62,7 +62,7 @@ public class GUIMain extends JFrame {
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 
 		setUndecorated(true);
-		setSize(800, 650);
+		setSize(880, 650);
 		setResizable(false);
 
 		setLocation((int) (dim.getWidth() / 2 - (getWidth() / 2)), (int) (dim.getHeight() / 2 - (getHeight() / 2)));
@@ -91,13 +91,13 @@ public class GUIMain extends JFrame {
 
 		list = new JList<String>(model);
 
-		list.setBounds(10, 50, 200, getHeight() - 70);
+		list.setBounds(10, 50, 200, getHeight() - 110);
 
 		list.addListSelectionListener(new ListSelectionListener() {
 
 			@Override
 			public void valueChanged(ListSelectionEvent e) {
-				changeSong(list.getSelectedIndex());
+				changeSong(model.getElementAt(list.getSelectedIndex()));
 
 			}
 		});
@@ -106,7 +106,7 @@ public class GUIMain extends JFrame {
 		un.getSongs().stream().map(song -> song.getTitle()).forEach(model::addElement);
 
 		FlatButton btnStart = new FlatButton(null, FlatIconFont.FAST_BACKWARD, man);
-		btnStart.setBounds(230, 50, 70, 50);
+		btnStart.setBounds(230, 50, 121, 50);
 		btnStart.addActionListener(Priority.NORMAL, new ActionListener() {
 
 			@Override
@@ -123,7 +123,7 @@ public class GUIMain extends JFrame {
 		contentPane.add(btnStart);
 
 		FlatButton btnBack = new FlatButton(null, FlatIconFont.BACKWARD, man);
-		btnBack.setBounds(310, 50, 70, 50);
+		btnBack.setBounds(btnStart.getX() + btnStart.getWidth() + 5, 50, 121, 50);
 
 		btnBack.addActionListener(Priority.NORMAL, new ActionListener() {
 
@@ -142,7 +142,7 @@ public class GUIMain extends JFrame {
 
 		btnPause = new FlatButton(null, FlatIconFont.PAUSE, man);
 		btnPause.setBackground(FlatColors.ALIZARINRED);
-		btnPause.setBounds(390, 50, 70, 50);
+		btnPause.setBounds(btnBack.getX() + btnBack.getWidth() + 5, 50, 121, 50);
 		btnPause.addActionListener(Priority.NORMAL, new ActionListener() {
 
 			@Override
@@ -159,7 +159,7 @@ public class GUIMain extends JFrame {
 		contentPane.add(btnPause);
 
 		FlatButton btnForward = new FlatButton(null, FlatIconFont.FORWARD, man);
-		btnForward.setBounds(470, 50, 70, 50);
+		btnForward.setBounds(btnPause.getX() + btnPause.getWidth() + 5, 50, 121, 50);
 		btnForward.addActionListener(Priority.NORMAL, new ActionListener() {
 
 			@Override
@@ -175,7 +175,7 @@ public class GUIMain extends JFrame {
 		contentPane.add(btnForward);
 
 		FlatButton btnEnd = new FlatButton(null, FlatIconFont.FAST_FORWARD, man);
-		btnEnd.setBounds(550, 50, 70, 50);
+		btnEnd.setBounds(btnForward.getX() + btnForward.getWidth() + 5, 50, 121, 50);
 		btnEnd.addActionListener(Priority.NORMAL, new ActionListener() {
 
 			@Override
@@ -198,13 +198,13 @@ public class GUIMain extends JFrame {
 		contentPane.add(lblCurrentLine);
 
 		boxCurrentLine1 = new FlatTextBox(man);
-		boxCurrentLine1.setBounds(230, 140, 550, 25);
+		boxCurrentLine1.setBounds(230, 140, 625, 25);
 		boxCurrentLine1.setAnchor(Anchor.LEFT, Anchor.RIGHT);
 		boxCurrentLine1.setEditable(false);
 		contentPane.add(boxCurrentLine1);
 
 		boxCurrentLine2 = new FlatTextBox(man);
-		boxCurrentLine2.setBounds(230, 165, 550, 25);
+		boxCurrentLine2.setBounds(230, 165, 625, 25);
 		boxCurrentLine2.setAnchor(Anchor.LEFT, Anchor.RIGHT);
 		boxCurrentLine2.setEditable(false);
 		contentPane.add(boxCurrentLine2);
@@ -215,7 +215,7 @@ public class GUIMain extends JFrame {
 
 		JScrollPane scrollPane = new JScrollPane(table);
 
-		scrollPane.setBounds(230, 200, 550, 300);
+		scrollPane.setBounds(230, 200, 625, 300);
 		contentPane.add(scrollPane);
 		if (un.getSongs().isEmpty()) {
 			FlatOptionPane errorPane = FlatOptionPane.getMessageDialog("Fehler",
@@ -229,11 +229,12 @@ public class GUIMain extends JFrame {
 		lblViewHideElements.setFont(FlatFont.getInstance(18, Font.PLAIN));
 		lblViewHideElements.setForeground(FlatColors.WHITE);
 		lblViewHideElements.setBounds(list.getX() + list.getWidth() + 20,
-				scrollPane.getY() + scrollPane.getHeight() + 5, 550, 30);
+				scrollPane.getY() + scrollPane.getHeight() + 20, 550, 30);
 		contentPane.add(lblViewHideElements);
 
 		FlatButton btnUntertitel = new FlatButton("Untertitel", man);
-		btnUntertitel.setBounds(lblViewHideElements.getX(), lblViewHideElements.getY() + lblViewHideElements.getHeight() + 10, 100, 70);
+		btnUntertitel.setBounds(lblViewHideElements.getX(),
+				lblViewHideElements.getY() + lblViewHideElements.getHeight() + 10, 100, 70);
 		btnUntertitel.setBackground(FlatColors.ALIZARINRED);
 		btnUntertitel.addActionListener(Priority.NORMAL, new ActionListener() {
 
@@ -249,9 +250,27 @@ public class GUIMain extends JFrame {
 			}
 		});
 		contentPane.add(btnUntertitel);
-		
+
+		FlatButton btnKollekte = new FlatButton("Kollekte", man);
+		btnKollekte.setBounds(btnUntertitel.getX() + btnUntertitel.getWidth() + 5, btnUntertitel.getY(), 100, 70);
+		btnKollekte.setBackground(FlatColors.ALIZARINRED);
+		btnKollekte.addActionListener(Priority.NORMAL, new ActionListener() {
+
+			@Override
+			public void onMouseRelease(MouseReleaseHandler handler) {
+				boolean state = GUIKeyer.get().toggleKollekte();
+				btnKollekte.setBackground(state ? FlatColors.GREEN : FlatColors.ALIZARINRED);
+			}
+
+			@Override
+			public void onAction(MouseClickedHandler arg0) {
+
+			}
+		});
+		contentPane.add(btnKollekte);
+
 		FlatButton btnEndcard = new FlatButton("Endcard", man);
-		btnEndcard.setBounds(btnUntertitel.getX() + btnUntertitel.getWidth() + 5, btnUntertitel.getY(), 100, 70);
+		btnEndcard.setBounds(btnKollekte.getX() + btnKollekte.getWidth() + 5, btnKollekte.getY(), 100, 70);
 		btnEndcard.setBackground(FlatColors.ALIZARINRED);
 		btnEndcard.addActionListener(Priority.NORMAL, new ActionListener() {
 
@@ -267,7 +286,7 @@ public class GUIMain extends JFrame {
 			}
 		});
 		contentPane.add(btnEndcard);
-		
+
 		FlatButton btnTitelfolie = new FlatButton("Begincard", man);
 		btnTitelfolie.setBounds(btnEndcard.getX() + btnEndcard.getWidth() + 5, btnEndcard.getY(), 100, 70);
 		btnTitelfolie.setBackground(FlatColors.GREEN);
@@ -285,10 +304,6 @@ public class GUIMain extends JFrame {
 			}
 		});
 		contentPane.add(btnTitelfolie);
-		
-		
-		
-		
 
 		FlatButton btnLogo = new FlatButton("Logo", man);
 		btnLogo.setBounds(btnTitelfolie.getX() + btnTitelfolie.getWidth() + 5, btnTitelfolie.getY(), 100, 70);
@@ -326,6 +341,50 @@ public class GUIMain extends JFrame {
 		});
 		contentPane.add(btnWindowBar);
 
+		FlatButton btnMoveUp = new FlatButton("", FlatIconFont.ARROW_UP, man);
+		btnMoveUp.setBounds(list.getX(), list.getY() + list.getHeight() + 5, 60, 40);
+		btnMoveUp.setBackground(FlatColors.BLUE);
+		btnMoveUp.addActionListener(Priority.NORMAL, new ActionListener() {
+
+			@Override
+			public void onMouseRelease(MouseReleaseHandler handler) {
+				if (list.getSelectedIndex() > 0) {
+					String tmp = model.getElementAt(list.getSelectedIndex() - 1);
+					model.set(list.getSelectedIndex() - 1, model.getElementAt(list.getSelectedIndex()));
+					model.set(list.getSelectedIndex(), tmp);
+					list.setSelectedIndex(list.getSelectedIndex() - 1);
+				}
+			}
+
+			@Override
+			public void onAction(MouseClickedHandler arg0) {
+
+			}
+		});
+		contentPane.add(btnMoveUp);
+		
+		FlatButton btnMoveDown = new FlatButton("", FlatIconFont.ARROW_DOWN, man);
+		btnMoveDown.setBounds(btnMoveUp.getX() + btnMoveUp.getWidth() + 5, btnMoveUp.getY(), 60, 40);
+		btnMoveDown.setBackground(FlatColors.BLUE);
+		btnMoveDown.addActionListener(Priority.NORMAL, new ActionListener() {
+
+			@Override
+			public void onMouseRelease(MouseReleaseHandler handler) {
+				if (list.getSelectedIndex() < model.getSize() - 1) {
+					String tmp = model.getElementAt(list.getSelectedIndex() + 1);
+					model.set(list.getSelectedIndex() + 1, model.getElementAt(list.getSelectedIndex()));
+					model.set(list.getSelectedIndex(), tmp);
+					list.setSelectedIndex(list.getSelectedIndex() + 1);
+				}
+			}
+
+			@Override
+			public void onAction(MouseClickedHandler arg0) {
+
+			}
+		});
+		contentPane.add(btnMoveDown);
+
 		changeSong(0);
 		getAllComponents(this).forEach(this::registerKeyListener);
 
@@ -353,6 +412,11 @@ public class GUIMain extends JFrame {
 
 	private void jumpToEnd() {
 		un.getCurrentPlayer().jumpToEnd();
+		updateUI();
+	}
+
+	private void changeSong(String name) {
+		un.switchSong(un.getSongs().stream().filter(s -> s.getTitle().equals(name)).findFirst().get());
 		updateUI();
 	}
 

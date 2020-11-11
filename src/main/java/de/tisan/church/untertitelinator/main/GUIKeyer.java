@@ -44,6 +44,7 @@ public class GUIKeyer extends JFrame {
 	Color bg;
 	private GUIKeyerLogoPanel pnlLogo;
 	private GUIKeyerEndcardPanel pnlEndcardPage;
+	private GUIKeyerKollektePanel pnlKollekte;
 
 	public GUIKeyer() {
 		try {
@@ -99,7 +100,12 @@ public class GUIKeyer extends JFrame {
 			pnlEndcardPage.setBounds(0, 0, getWidth(), getHeight());
 			contentPane.add(pnlEndcardPage);
 			pnlEndcardPage.setVisible(false);
-			
+
+			pnlKollekte = new GUIKeyerKollektePanel(man, this, screenSize);
+			pnlKollekte.setBounds(0, 0, getWidth(), getHeight());
+			contentPane.add(pnlKollekte);
+			pnlKollekte.setVisible(false);
+
 			pnlUntertitel = new GUIKeyerUntertitelPanel(man, this, screenSize);
 			pnlUntertitel.setBounds(0, 0, getWidth(), getHeight());
 			contentPane.add(pnlUntertitel);
@@ -170,8 +176,11 @@ public class GUIKeyer extends JFrame {
 
 				}
 			}
-
-			pnlStartPage.showNextStream(event.get().getDescription(), "Thema: \"" + titleName + "\"",
+			int indexEnter = event.get().getDescription().indexOf("\n");
+			if(indexEnter == -1) {
+				indexEnter = event.get().getDescription().length() - 1;
+			}
+			pnlStartPage.showNextStream(event.get().getDescription().substring(0, indexEnter), "Thema: \"" + titleName + "\"",
 					event.get().getStartDate().plusHours(1).format(DateTimeFormatter.ofPattern("dd.MM.yyyy - hh:mm"))
 							+ " Uhr",
 					serviceListStr);
@@ -245,6 +254,16 @@ public class GUIKeyer extends JFrame {
 			bar.setVisible(true);
 		}
 		return bar.isVisible();
+
+	}
+
+	public boolean toggleKollekte() {
+		if (pnlKollekte.isVisible()) {
+			pnlKollekte.setVisible(false);
+		} else {
+			pnlKollekte.setVisible(true);
+		}
+		return pnlKollekte.isVisible();
 
 	}
 }
