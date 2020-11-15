@@ -180,7 +180,7 @@ public class GUIKeyer extends JFrame {
 			}
 			int indexEnter = event.get().getDescription().indexOf("\n");
 			if(indexEnter == -1) {
-				indexEnter = event.get().getDescription().length() - 1;
+				indexEnter = event.get().getDescription().length();
 			}
 			pnlStartPage.showNextStream(event.get().getDescription().substring(0, indexEnter), "Thema: \"" + titleName + "\"",
 					event.get().getStartDate().plusHours(1).format(DateTimeFormatter.ofPattern("dd.MM.yyyy - hh:mm"))
