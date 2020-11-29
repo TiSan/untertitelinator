@@ -183,7 +183,7 @@ public class GUIKeyer extends JFrame {
 				indexEnter = event.get().getDescription().length();
 			}
 			pnlStartPage.showNextStream(event.get().getDescription().substring(0, indexEnter), "Thema: \"" + titleName + "\"",
-					event.get().getStartDate().plusHours(1).format(DateTimeFormatter.ofPattern("dd.MM.yyyy - hh:mm"))
+					event.get().getStartDate().plusHours(1).format(DateTimeFormatter.ofPattern("dd.MM.yyyy - HH:mm"))
 							+ " Uhr",
 					serviceListStr);
 
