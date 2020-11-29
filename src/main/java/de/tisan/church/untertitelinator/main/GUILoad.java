@@ -33,6 +33,7 @@ public class GUILoad extends JFrame {
 		contentPane.setLayout(null);
 
 		FlatLayoutManager man = FlatLayoutManager.get(this);
+		man.setResizable(false);
 		final FlatProgressBar pro = new FlatProgressBar(true, man);
 		pro.setBounds(0, 156, 526, 24);
 
