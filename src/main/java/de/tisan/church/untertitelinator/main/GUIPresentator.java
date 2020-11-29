@@ -27,7 +27,7 @@ public class GUIPresentator extends JFrame {
 	public static GUIPresentator get() {
 		if (instance == null) {
 			instance = new GUIPresentator();
-			instance.setVisible(true);
+//			instance.setVisible(true);
 		}
 		return instance;
 	}
@@ -109,7 +109,7 @@ public class GUIPresentator extends JFrame {
 		font = FlatFont.getInstance(100, Font.BOLD);
 		Color fgColor = FlatColors.GRAY;
 
-		nextLine1 = new FlatButton("Nächste Zeile 1", man);
+		nextLine1 = new FlatButton("Nï¿½chste Zeile 1", man);
 		nextLine1.setBounds(spaceX, currentLine2.getY() + currentLine2.getHeight() + spaceY, width, height);
 		nextLine1.setFont(font);
 		nextLine1.setBackground(FlatColors.BLACK);
@@ -117,7 +117,7 @@ public class GUIPresentator extends JFrame {
 		nextLine1.setForeground(fgColor);
 		contentPane.add(nextLine1);
 
-		nextLine2 = new FlatButton("Nächste Zeile 2", man);
+		nextLine2 = new FlatButton("Nï¿½chste Zeile 2", man);
 		nextLine2.setBounds(spaceX, nextLine1.getY() + nextLine1.getHeight() + spaceY, width, height);
 		nextLine2.setFont(font);
 		nextLine2.setBackground(FlatColors.BLACK);
@@ -136,7 +136,7 @@ public class GUIPresentator extends JFrame {
 					Thread.sleep(delay);
 				} catch (InterruptedException e) {
 				}
-				titleLine.setText((!paused ? (String)JSONPersistence.get().getSetting(PersistenceConstants.GUIPRESENTATORCURRENTTITLETEXT, "Aktueller Titel") : "") + title);
+				titleLine.setText(paused ? (String)JSONPersistence.get().getSetting(PersistenceConstants.BLACKOUTLINEFILLER, "") : title);
 				currentLine1.setText(line1);
 				currentLine2.setText(line2);
 				nextLine1.setText(line3);

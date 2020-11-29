@@ -30,7 +30,6 @@ import de.tisan.flatui.components.fcommons.FlatColors;
 import de.tisan.flatui.components.fcommons.FlatLayoutManager;
 import de.tisan.flatui.components.ffont.FlatFont;
 import de.tisan.flatui.components.ficon.FlatIconFont;
-import de.tisan.flatui.components.flatoptionpanes.FlatOptionPane;
 import de.tisan.flatui.components.flisteners.ActionListener;
 import de.tisan.flatui.components.flisteners.MouseClickedHandler;
 import de.tisan.flatui.components.flisteners.MouseReleaseHandler;
@@ -42,7 +41,6 @@ import de.tisan.flatui.components.ftitlebar.FlatTitleBarWin10;
 public class GUIMain extends JFrame {
 
 	private static final long serialVersionUID = 6255477384834005517L;
-	private Untertitelinator un;
 	private FlatTextBox boxCurrentLine1;
 	private FlatTextBox boxCurrentLine2;
 
@@ -50,9 +48,9 @@ public class GUIMain extends JFrame {
 	private JTable table;
 	private JList<String> list;
 	private FlatButton btnPause;
+	private DefaultListModel<String> songListModel;
 
-	public GUIMain(Untertitelinator un) {
-		this.un = un;
+	public GUIMain() {
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
@@ -87,9 +85,9 @@ public class GUIMain extends JFrame {
 
 		contentPane.add(bar);
 
-		DefaultListModel<String> model = new DefaultListModel<String>();
+		songListModel = new DefaultListModel<String>();
 
-		list = new JList<String>(model);
+		list = new JList<String>(songListModel);
 
 		list.setBounds(10, 50, 200, getHeight() - 110);
 
@@ -97,13 +95,11 @@ public class GUIMain extends JFrame {
 
 			@Override
 			public void valueChanged(ListSelectionEvent e) {
-				changeSong(model.getElementAt(list.getSelectedIndex()));
+				changeSong(songListModel.getElementAt(list.getSelectedIndex()));
 
 			}
 		});
 		contentPane.add(list);
-
-		un.getSongs().stream().map(song -> song.getTitle()).forEach(model::addElement);
 
 		FlatButton btnStart = new FlatButton(null, FlatIconFont.FAST_BACKWARD, man);
 		btnStart.setBounds(230, 50, 121, 50);
@@ -217,13 +213,6 @@ public class GUIMain extends JFrame {
 
 		scrollPane.setBounds(230, 200, 625, 300);
 		contentPane.add(scrollPane);
-		if (un.getSongs().isEmpty()) {
-			FlatOptionPane errorPane = FlatOptionPane.getMessageDialog("Fehler",
-					"Es sind aktuell noch keine Songs angelegt. Ohne einen Song kann Untertitelinator nicht gestartet werden. Bitte legen Sie die passenden Song-Dateien ins Song-Verzeichnis ab (befindet sich im gleichen Ordner wie die JAR).");
-			errorPane.setAlwaysOnTop(true);
-			errorPane.showDialog();
-			errorPane.setDefaultCloseOperation(EXIT_ON_CLOSE);
-		}
 
 		JLabel lblViewHideElements = new JLabel("Ebenen im Keyer ein-/ausblenden [Unterste --> Oberste]");
 		lblViewHideElements.setFont(FlatFont.getInstance(18, Font.PLAIN));
@@ -349,9 +338,9 @@ public class GUIMain extends JFrame {
 			@Override
 			public void onMouseRelease(MouseReleaseHandler handler) {
 				if (list.getSelectedIndex() > 0) {
-					String tmp = model.getElementAt(list.getSelectedIndex() - 1);
-					model.set(list.getSelectedIndex() - 1, model.getElementAt(list.getSelectedIndex()));
-					model.set(list.getSelectedIndex(), tmp);
+					String tmp = songListModel.getElementAt(list.getSelectedIndex() - 1);
+					songListModel.set(list.getSelectedIndex() - 1, songListModel.getElementAt(list.getSelectedIndex()));
+					songListModel.set(list.getSelectedIndex(), tmp);
 					list.setSelectedIndex(list.getSelectedIndex() - 1);
 				}
 			}
@@ -362,7 +351,7 @@ public class GUIMain extends JFrame {
 			}
 		});
 		contentPane.add(btnMoveUp);
-		
+
 		FlatButton btnMoveDown = new FlatButton("", FlatIconFont.ARROW_DOWN, man);
 		btnMoveDown.setBounds(btnMoveUp.getX() + btnMoveUp.getWidth() + 5, btnMoveUp.getY(), 60, 40);
 		btnMoveDown.setBackground(FlatColors.BLUE);
@@ -370,10 +359,10 @@ public class GUIMain extends JFrame {
 
 			@Override
 			public void onMouseRelease(MouseReleaseHandler handler) {
-				if (list.getSelectedIndex() < model.getSize() - 1) {
-					String tmp = model.getElementAt(list.getSelectedIndex() + 1);
-					model.set(list.getSelectedIndex() + 1, model.getElementAt(list.getSelectedIndex()));
-					model.set(list.getSelectedIndex(), tmp);
+				if (list.getSelectedIndex() < songListModel.getSize() - 1) {
+					String tmp = songListModel.getElementAt(list.getSelectedIndex() + 1);
+					songListModel.set(list.getSelectedIndex() + 1, songListModel.getElementAt(list.getSelectedIndex()));
+					songListModel.set(list.getSelectedIndex(), tmp);
 					list.setSelectedIndex(list.getSelectedIndex() + 1);
 				}
 			}
@@ -385,9 +374,13 @@ public class GUIMain extends JFrame {
 		});
 		contentPane.add(btnMoveDown);
 
-		changeSong(0);
 		getAllComponents(this).forEach(this::registerKeyListener);
 
+	}
+
+	public void loadSongs() {
+		Untertitelinator.get().getSongs().stream().map(song -> song.getTitle()).forEach(songListModel::addElement);
+		changeSong(0);
 	}
 
 	public static List<Component> getAllComponents(final Container c) {
@@ -406,23 +399,24 @@ public class GUIMain extends JFrame {
 	}
 
 	private void jumpToStart() {
-		un.getCurrentPlayer().jumpToStart();
+		Untertitelinator.get().getCurrentPlayer().jumpToStart();
 		updateUI();
 	}
 
 	private void jumpToEnd() {
-		un.getCurrentPlayer().jumpToEnd();
+		Untertitelinator.get().getCurrentPlayer().jumpToEnd();
 		updateUI();
 	}
 
 	private void changeSong(String name) {
-		un.switchSong(un.getSongs().stream().filter(s -> s.getTitle().equals(name)).findFirst().get());
+		Untertitelinator.get().switchSong(
+				Untertitelinator.get().getSongs().stream().filter(s -> s.getTitle().equals(name)).findFirst().get());
 		updateUI();
 	}
 
 	private void changeSong(int index) {
-		if (un.getSongs().size() > index) {
-			un.switchSong(un.getSongs().get(index));
+		if (Untertitelinator.get().getSongs().size() > index) {
+			Untertitelinator.get().switchSong(Untertitelinator.get().getSongs().get(index));
 			list.setSelectedIndex(index);
 			updateUI();
 
@@ -430,19 +424,19 @@ public class GUIMain extends JFrame {
 	}
 
 	public void nextLine() {
-		un.getCurrentPlayer().nextLine();
+		Untertitelinator.get().getCurrentPlayer().nextLine();
 		updateUI();
 	}
 
 	public void previousLine() {
-		un.getCurrentPlayer().previousLine();
+		Untertitelinator.get().getCurrentPlayer().previousLine();
 		updateUI();
 	}
 
 	public void pause() {
-		un.getCurrentPlayer().pause();
+		Untertitelinator.get().getCurrentPlayer().pause();
 		updateUI();
-		if (un.getCurrentPlayer().isPaused()) {
+		if (Untertitelinator.get().getCurrentPlayer().isPaused()) {
 			btnPause.setBackground(FlatColors.GREEN);
 			try {
 				Field icon = btnPause.getClass().getDeclaredField("icon");
@@ -465,26 +459,26 @@ public class GUIMain extends JFrame {
 	}
 
 	private void updateUI() {
-		sentenceModel.changeSong(un.getCurrentPlayer().getSong(), un.getCurrentPlayer().getCurrentIndex());
-		String[] currentLines = un.getCurrentPlayer().getCurrentLine().split("\n", 2);
-		String[] nextLines = un.getCurrentPlayer().getNextLine().split("\n", 2);
+		sentenceModel.changeSong(Untertitelinator.get().getCurrentPlayer().getSong(), Untertitelinator.get().getCurrentPlayer().getCurrentIndex());
+		String[] currentLines = Untertitelinator.get().getCurrentPlayer().getCurrentLine().split("\n", 2);
+		String[] nextLines = Untertitelinator.get().getCurrentPlayer().getNextLine().split("\n", 2);
 
 		boxCurrentLine1.setText(currentLines.length > 0 ? currentLines[0] : "");
 		boxCurrentLine2.setText(currentLines.length > 1 ? currentLines[1] : "");
 
-		sentenceModel.scrollToVisible(table, un.getCurrentPlayer().getCurrentIndex(), 0);
+		sentenceModel.scrollToVisible(table, Untertitelinator.get().getCurrentPlayer().getCurrentIndex(), 0);
 
-		GUIPresentator.get().showNewTextLines(un.getCurrentPlayer().getTitle(), currentLines[0],
+		GUIPresentator.get().showNewTextLines(Untertitelinator.get().getCurrentPlayer().getTitle(), currentLines[0],
 				(currentLines.length > 1 ? currentLines[1] : ""), nextLines[0],
 				(nextLines.length > 1 ? nextLines[1] : ""),
 				(Integer) JSONPersistence.get().getSetting(PersistenceConstants.GUIPRESENTATORDELAY, 1200),
-				un.getCurrentPlayer().isPaused());
+				Untertitelinator.get().getCurrentPlayer().isPaused());
 
-		GUIKeyer.get().showNewTextLines(un.getCurrentPlayer().getTitle(), currentLines[0],
+		GUIKeyer.get().showNewTextLines(Untertitelinator.get().getCurrentPlayer().getTitle(), currentLines[0],
 				(currentLines.length > 1 ? currentLines[1] : ""), nextLines[0],
 				(nextLines.length > 1 ? nextLines[1] : ""),
 				(Integer) JSONPersistence.get().getSetting(PersistenceConstants.GUIPRESENTATORDELAY, 1200),
-				un.getCurrentPlayer().isPaused());
+				Untertitelinator.get().getCurrentPlayer().isPaused());
 
 	}
 

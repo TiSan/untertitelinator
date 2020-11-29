@@ -6,18 +6,12 @@ import java.awt.Toolkit;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.TreeMap;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import de.tisan.church.untertitelinator.churchtools.api.ChurchToolsApi;
 import de.tisan.church.untertitelinator.churchtools.api.objects.Event;
-import de.tisan.church.untertitelinator.churchtools.api.objects.EventService;
-import de.tisan.church.untertitelinator.churchtools.api.objects.Service;
+import de.tisan.church.untertitelinator.data.Untertitelinator;
 import de.tisan.church.untertitelinator.settings.JSONPersistence;
 import de.tisan.church.untertitelinator.settings.PersistenceConstants;
 import de.tisan.flatui.components.fcommons.Anchor;
@@ -33,7 +27,7 @@ public class GUIKeyer extends JFrame {
 	public static GUIKeyer get() {
 		if (instance == null) {
 			instance = new GUIKeyer();
-			instance.setVisible(true);
+//			instance.setVisible(true);
 		}
 		return instance;
 	}
@@ -111,8 +105,6 @@ public class GUIKeyer extends JFrame {
 			contentPane.add(pnlUntertitel);
 			pnlUntertitel.setVisible(false);
 
-			prepare();
-
 			addComponentListener(new ComponentAdapter() {
 				public void componentResized(ComponentEvent componentEvent) {
 					pnlUntertitel.setBounds(0, 0, getWidth(), getHeight());
@@ -157,57 +149,22 @@ public class GUIKeyer extends JFrame {
 		}).start();
 	}
 
-	public void prepare() {
-		Optional<Event> event = ChurchToolsApi.get().getNextEvent();
-		if (event.isPresent()) {
-			String titleName = event.get().getName();
-			System.out.println(titleName);
-			List<Service> services = ChurchToolsApi.get().getServices().get();
+	public void loadUí() {
+		Event currentEvent = Untertitelinator.get().getCurrentEvent();
+		String titleName = currentEvent.getName();
+		System.out.println(titleName);
 
-			Map<String, String> serviceListStr = new TreeMap<String, String>();
-			for (EventService es : event.get().getEventServices()) {
-				Service s = services.parallelStream().filter(ss -> ss.getId() == es.getServiceId()).findFirst().get();
-				if (s.getComment().equals("<NOT_VISIBLE>")) {
-					continue;
-				}
-				String key = s.getComment().isEmpty() == false ? s.getComment() : s.getName();
-				if (serviceListStr.containsKey(key)) {
-					serviceListStr.put(key, serviceListStr.get(key) + ", " + es.getName());
-				} else {
-					serviceListStr.put(key, es.getName());
-
-				}
-			}
-			int indexEnter = event.get().getDescription().indexOf("\n");
-			if(indexEnter == -1) {
-				indexEnter = event.get().getDescription().length();
-			}
-			pnlStartPage.showNextStream(event.get().getDescription().substring(0, indexEnter), "Thema: \"" + titleName + "\"",
-					event.get().getStartDate().plusHours(1).format(DateTimeFormatter.ofPattern("dd.MM.yyyy - HH:mm"))
-							+ " Uhr",
-					serviceListStr);
-
+		int indexEnter = currentEvent.getDescription().indexOf("\n");
+		if (indexEnter == -1) {
+			indexEnter = currentEvent.getDescription().length();
 		}
-	}
+		pnlStartPage
+				.showNextStream(currentEvent.getDescription().substring(0, indexEnter), "Thema: \"" + titleName + "\"",
+						currentEvent.getStartDate().plusHours(1)
+								.format(DateTimeFormatter.ofPattern("dd.MM.yyyy - HH:mm")) + " Uhr",
+						Untertitelinator.get().getServiceList());
 
-//	public boolean toggleBeginLayer() {
-//		if (pnlStartPage.isVisible()) {
-//			pnlStartPage.setVisible(false);
-//
-//			bar.setBackground(bg);
-//
-//			pnlUntertitel.setVisible(true);
-//		} else {
-//			pnlUntertitel.setVisible(false);
-//			pnlStartPage.setVisible(true);
-//			pnlStartPage.fitImage(getWidth(), getHeight());
-//			
-//			bar.setBackground(new Color(0, 0, 0, 0));
-//
-//			repaint();
-//		}
-//		return pnlStartPage.isVisible();
-//	}
+	}
 
 	public boolean toggleBeginLayer() {
 		if (pnlStartPage.isVisible()) {

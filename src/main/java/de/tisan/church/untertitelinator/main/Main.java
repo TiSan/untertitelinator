@@ -13,10 +13,7 @@ public class Main {
 				"|______/|___|  /__|  \\___  >__|   |__| |__||__|  \\___  >____/__|___|  (____  /__|  \\____/|__|   \r\n" + 
 				"             \\/          \\/                          \\/             \\/     \\/                   ");
 		System.out.println("Loading Untertitelinator v" + Untertitelinator.VERSION);
-		Untertitelinator un = new Untertitelinator();
-		
-		GUIMain main = new GUIMain(un);
-		main.setVisible(true);
-		
+		GUILoad load = new GUILoad();
+		load.setVisible(true);
 	}
 }
