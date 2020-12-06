@@ -57,6 +57,7 @@ public class GUISelectGodi extends JFrame {
 		contentPane.add(lblTitle);
 
 		comboBoxModel = new DefaultComboBoxModel<String>();
+		comboBoxModel.addElement("Event wählen...");
 		JComboBox<String> comboBox = new JComboBox<String>(comboBoxModel);
 		comboBox.setBounds(20, 100, getWidth() - 40, 30);
 		contentPane.add(comboBox);
