@@ -66,7 +66,7 @@ public class GUISelectGodi extends JFrame {
 			@Override
 			public void itemStateChanged(ItemEvent e) {
 				if (isVisible()) {
-					Untertitelinator.get().selectEvent(comboBox.getSelectedIndex());
+					Untertitelinator.get().selectEvent(comboBox.getSelectedIndex() - 1);
 					Loader.selectionTaken();
 					setVisible(false);
 					dispose();
