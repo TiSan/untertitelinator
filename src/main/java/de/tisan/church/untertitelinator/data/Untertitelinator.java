@@ -12,8 +12,8 @@ import de.tisan.church.untertitelinator.churchtools.api.ChurchToolsApi;
 import de.tisan.church.untertitelinator.churchtools.api.objects.Event;
 import de.tisan.church.untertitelinator.churchtools.api.objects.EventService;
 import de.tisan.church.untertitelinator.churchtools.api.objects.Service;
-import de.tisan.church.untertitelinator.settings.JSONPersistence;
-import de.tisan.church.untertitelinator.settings.PersistenceConstants;
+import de.tisan.church.untertitelinator.settings.UTPersistenceConstants;
+import de.tisan.tools.persistencemanager.JSONPersistence;
 
 public class Untertitelinator {
 	public static final String VERSION = Untertitelinator.class.getPackage().getImplementationVersion();
@@ -44,7 +44,7 @@ public class Untertitelinator {
 
 	public void loadSongs() {
 		File songDir = new File(
-				(String) JSONPersistence.get().getSetting(PersistenceConstants.SONGSFOLDERPATH, "songs/"));
+				(String) JSONPersistence.get().getSetting(UTPersistenceConstants.SONGSFOLDERPATH, "songs/"));
 		if (songDir.exists() == false) {
 			songDir.mkdirs();
 			return;
@@ -54,7 +54,7 @@ public class Untertitelinator {
 			@Override
 			public boolean accept(File dir, String name) {
 				return name.toLowerCase().endsWith(
-						(String) JSONPersistence.get().getSetting(PersistenceConstants.SONGFILESUFFIX, ".song"));
+						(String) JSONPersistence.get().getSetting(UTPersistenceConstants.SONGFILESUFFIX, ".song"));
 			}
 
 		};

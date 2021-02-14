@@ -1,6 +1,8 @@
 package de.tisan.church.untertitelinator.settings;
 
-public enum PersistenceConstants {
+import de.tisan.tools.persistencemanager.PersistenceConstants;
+
+public enum UTPersistenceConstants implements PersistenceConstants{
 	GUIPRESENTATORDELAY("guiPresentatorDelay"), GUIPRESENTATORWIDTH("guiPresentatorWidth"),
 	GUIPRESENTATORHEIGHT("guiPresentatorHeight"), GUIPRESENTATORX("guiPresentatorX"),
 	GUIPRESENTATORY("guiPresentatorY"), GUIKEYERWIDTH("guiKeyerWidth"), GUIKEYERHEIGHT("guiKeyerHeight"),
@@ -17,8 +19,8 @@ public enum PersistenceConstants {
 
 	private String key;
 
-	private PersistenceConstants(String key) {
-		this.key = key;
+	private UTPersistenceConstants(String settingsKey) {
+		this.key = settingsKey;
 	}
 
 	public String getSettingsKey() {

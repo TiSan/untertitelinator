@@ -9,8 +9,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import de.tisan.church.untertitelinator.data.Untertitelinator;
-import de.tisan.church.untertitelinator.settings.JSONPersistence;
-import de.tisan.church.untertitelinator.settings.PersistenceConstants;
+import de.tisan.church.untertitelinator.settings.UTPersistenceConstants;
 import de.tisan.flatui.components.fbutton.FlatButton;
 import de.tisan.flatui.components.fcommons.Anchor;
 import de.tisan.flatui.components.fcommons.FlatColors;
@@ -18,6 +17,7 @@ import de.tisan.flatui.components.fcommons.FlatLayoutManager;
 import de.tisan.flatui.components.ffont.FlatFont;
 import de.tisan.flatui.components.ftitlebar.DefaultFlatTitleBarListener;
 import de.tisan.flatui.components.ftitlebar.FlatTitleBarWin10;
+import de.tisan.tools.persistencemanager.JSONPersistence;
 
 public class GUIPresentator extends JFrame {
 
@@ -41,11 +41,11 @@ public class GUIPresentator extends JFrame {
 	public GUIPresentator() {
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		screenSize = new Dimension(
-				(Integer) JSONPersistence.get().getSetting(PersistenceConstants.GUIPRESENTATORWIDTH, 1024),
-				(Integer) JSONPersistence.get().getSetting(PersistenceConstants.GUIPRESENTATORHEIGHT, 768));
+				(Integer) JSONPersistence.get().getSetting(UTPersistenceConstants.GUIPRESENTATORWIDTH, 1024),
+				(Integer) JSONPersistence.get().getSetting(UTPersistenceConstants.GUIPRESENTATORHEIGHT, 768));
 		setUndecorated(true);
-		setLocation((Integer) JSONPersistence.get().getSetting(PersistenceConstants.GUIPRESENTATORX, 0),
-				(Integer) JSONPersistence.get().getSetting(PersistenceConstants.GUIPRESENTATORY, 0));
+		setLocation((Integer) JSONPersistence.get().getSetting(UTPersistenceConstants.GUIPRESENTATORX, 0),
+				(Integer) JSONPersistence.get().getSetting(UTPersistenceConstants.GUIPRESENTATORY, 0));
 		setSize(screenSize);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setBackground(FlatColors.BLACK);
@@ -57,7 +57,7 @@ public class GUIPresentator extends JFrame {
 		FlatLayoutManager man = FlatLayoutManager.get(this);
 
 		FlatTitleBarWin10 bar = new FlatTitleBarWin10(man,
-				(String) JSONPersistence.get().getSetting(PersistenceConstants.CHURCHNAME,
+				(String) JSONPersistence.get().getSetting(UTPersistenceConstants.CHURCHNAME,
 						"Evangelische Kirchengemeinde Oberstedten") + " - Untertitelinator v"
 						+ Untertitelinator.VERSION);
 		bar.setBounds(0, 0, getWidth(), 30);
@@ -65,12 +65,12 @@ public class GUIPresentator extends JFrame {
 		contentPane.add(bar);
 		bar.addFlatTitleBarListener(new DefaultFlatTitleBarListener(this));
 		bar.setCloseable(
-				(boolean) JSONPersistence.get().getSetting(PersistenceConstants.GUIPRESENTATORCLOSEABLE, false));
+				(boolean) JSONPersistence.get().getSetting(UTPersistenceConstants.GUIPRESENTATORCLOSEABLE, false));
 		bar.setMaximizable(
-				(boolean) JSONPersistence.get().getSetting(PersistenceConstants.GUIPRESENTATORMAXIMIZABLE, true));
+				(boolean) JSONPersistence.get().getSetting(UTPersistenceConstants.GUIPRESENTATORMAXIMIZABLE, true));
 		bar.setMinimizable(
-				(boolean) JSONPersistence.get().getSetting(PersistenceConstants.GUIPRESENTATORMINIMIZABLE, false));
-		bar.setMoveable((boolean) JSONPersistence.get().getSetting(PersistenceConstants.GUIPRESENTATORMOVEABLE, false));
+				(boolean) JSONPersistence.get().getSetting(UTPersistenceConstants.GUIPRESENTATORMINIMIZABLE, false));
+		bar.setMoveable((boolean) JSONPersistence.get().getSetting(UTPersistenceConstants.GUIPRESENTATORMOVEABLE, false));
 
 		bar.setMaximizable(false);
 		bar.setMinimizable(false);
@@ -83,7 +83,7 @@ public class GUIPresentator extends JFrame {
 		int width = getWidth() - (spaceX * 2);
 		int height = 250;
 
-		titleLine = new FlatButton((String)JSONPersistence.get().getSetting(PersistenceConstants.GUIPRESENTATORCURRENTTITLETEXT, "Aktueller Titel"), man);
+		titleLine = new FlatButton((String)JSONPersistence.get().getSetting(UTPersistenceConstants.GUIPRESENTATORCURRENTTITLETEXT, "Aktueller Titel"), man);
 		titleLine.setBounds(spaceX, 50, getWidth(), 150);
 		titleLine.setFont(FlatFont.getInstance(60, Font.BOLD));
 		titleLine.setBackground(FlatColors.BLACK);
@@ -136,7 +136,7 @@ public class GUIPresentator extends JFrame {
 					Thread.sleep(delay);
 				} catch (InterruptedException e) {
 				}
-				titleLine.setText(paused ? (String)JSONPersistence.get().getSetting(PersistenceConstants.BLACKOUTLINEFILLER, "") : title);
+				titleLine.setText(paused ? (String)JSONPersistence.get().getSetting(UTPersistenceConstants.BLACKOUTLINEFILLER, "") : title);
 				currentLine1.setText(line1);
 				currentLine2.setText(line2);
 				nextLine1.setText(line3);

@@ -1,7 +1,6 @@
 package de.tisan.church.untertitelinator.churchtools.api;
 
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -26,8 +25,8 @@ import de.tisan.church.untertitelinator.churchtools.api.objects.EventResponse;
 import de.tisan.church.untertitelinator.churchtools.api.objects.EventResponse2;
 import de.tisan.church.untertitelinator.churchtools.api.objects.Service;
 import de.tisan.church.untertitelinator.churchtools.api.objects.ServiceResponse;
-import de.tisan.church.untertitelinator.settings.JSONPersistence;
-import de.tisan.church.untertitelinator.settings.PersistenceConstants;
+import de.tisan.church.untertitelinator.settings.UTPersistenceConstants;
+import de.tisan.tools.persistencemanager.JSONPersistence;
 
 public class ChurchToolsApi {
 	private static ChurchToolsApi instance;
@@ -48,10 +47,10 @@ public class ChurchToolsApi {
 		this.mapper = new ObjectMapper();
 		mapper.registerModule(new JavaTimeModule());
 
-		this.user = (String) JSONPersistence.get().getSetting(PersistenceConstants.CHURCHTOOLSUSER, "ctuser");
-		this.password = (String) JSONPersistence.get().getSetting(PersistenceConstants.CHURCHTOOLSPASSWORD,
+		this.user = (String) JSONPersistence.get().getSetting(UTPersistenceConstants.CHURCHTOOLSUSER, "ctuser");
+		this.password = (String) JSONPersistence.get().getSetting(UTPersistenceConstants.CHURCHTOOLSPASSWORD,
 				"ctpassword");
-		this.baseUrl = (String) JSONPersistence.get().getSetting(PersistenceConstants.CHURCHTOOLSBASEURL,
+		this.baseUrl = (String) JSONPersistence.get().getSetting(UTPersistenceConstants.CHURCHTOOLSBASEURL,
 				"https://oberstedten.church.tools");
 
 	}

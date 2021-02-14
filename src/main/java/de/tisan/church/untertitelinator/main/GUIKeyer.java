@@ -12,12 +12,12 @@ import javax.swing.JPanel;
 
 import de.tisan.church.untertitelinator.churchtools.api.objects.Event;
 import de.tisan.church.untertitelinator.data.Untertitelinator;
-import de.tisan.church.untertitelinator.settings.JSONPersistence;
-import de.tisan.church.untertitelinator.settings.PersistenceConstants;
+import de.tisan.church.untertitelinator.settings.UTPersistenceConstants;
 import de.tisan.flatui.components.fcommons.Anchor;
 import de.tisan.flatui.components.fcommons.FlatLayoutManager;
 import de.tisan.flatui.components.ftitlebar.DefaultFlatTitleBarListener;
 import de.tisan.flatui.components.ftitlebar.FlatTitleBarWin10;
+import de.tisan.tools.persistencemanager.JSONPersistence;
 
 public class GUIKeyer extends JFrame {
 
@@ -44,16 +44,16 @@ public class GUIKeyer extends JFrame {
 		try {
 			Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 			screenSize = new Dimension(
-					(Integer) JSONPersistence.get().getSetting(PersistenceConstants.GUIKEYERWIDTH, 1024),
-					(Integer) JSONPersistence.get().getSetting(PersistenceConstants.GUIKEYERHEIGHT, 768));
+					(Integer) JSONPersistence.get().getSetting(UTPersistenceConstants.GUIKEYERWIDTH, 1024),
+					(Integer) JSONPersistence.get().getSetting(UTPersistenceConstants.GUIKEYERHEIGHT, 768));
 			setUndecorated(true);
-			setLocation((Integer) JSONPersistence.get().getSetting(PersistenceConstants.GUIKEYERX, 0),
-					(Integer) JSONPersistence.get().getSetting(PersistenceConstants.GUIKEYERY, 0));
+			setLocation((Integer) JSONPersistence.get().getSetting(UTPersistenceConstants.GUIKEYERX, 0),
+					(Integer) JSONPersistence.get().getSetting(UTPersistenceConstants.GUIKEYERY, 0));
 			setSize(screenSize);
 			setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 			bg = (Color) Color.class
 					.getField(
-							(String) JSONPersistence.get().getSetting(PersistenceConstants.GUIKEYERBACKGROUND, "GREEN"))
+							(String) JSONPersistence.get().getSetting(UTPersistenceConstants.GUIKEYERBACKGROUND, "GREEN"))
 					.get(new Color(0));
 
 			setBackground(bg);
@@ -74,12 +74,12 @@ public class GUIKeyer extends JFrame {
 			contentPane.add(bar);
 			bar.setOpaque(true);
 			bar.addFlatTitleBarListener(new DefaultFlatTitleBarListener(this));
-			bar.setCloseable((boolean) JSONPersistence.get().getSetting(PersistenceConstants.GUIKEYERCLOSEABLE, false));
+			bar.setCloseable((boolean) JSONPersistence.get().getSetting(UTPersistenceConstants.GUIKEYERCLOSEABLE, false));
 			bar.setMaximizable(
-					(boolean) JSONPersistence.get().getSetting(PersistenceConstants.GUIKEYERMAXIMIZABLE, true));
+					(boolean) JSONPersistence.get().getSetting(UTPersistenceConstants.GUIKEYERMAXIMIZABLE, true));
 			bar.setMinimizable(
-					(boolean) JSONPersistence.get().getSetting(PersistenceConstants.GUIKEYERMINIMIZABLE, false));
-			bar.setMoveable((boolean) JSONPersistence.get().getSetting(PersistenceConstants.GUIKEYERMOVEABLE, false));
+					(boolean) JSONPersistence.get().getSetting(UTPersistenceConstants.GUIKEYERMINIMIZABLE, false));
+			bar.setMoveable((boolean) JSONPersistence.get().getSetting(UTPersistenceConstants.GUIKEYERMOVEABLE, false));
 			bar.setAnchor(Anchor.LEFT, Anchor.RIGHT);
 
 			pnlLogo = new GUIKeyerLogoPanel(man, this, screenSize);

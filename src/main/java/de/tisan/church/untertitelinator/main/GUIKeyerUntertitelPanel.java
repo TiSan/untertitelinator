@@ -7,12 +7,12 @@ import java.awt.event.ComponentEvent;
 
 import javax.swing.JPanel;
 
-import de.tisan.church.untertitelinator.settings.JSONPersistence;
-import de.tisan.church.untertitelinator.settings.PersistenceConstants;
+import de.tisan.church.untertitelinator.settings.UTPersistenceConstants;
 import de.tisan.flatui.components.fbutton.FlatButton;
 import de.tisan.flatui.components.fcommons.Anchor;
 import de.tisan.flatui.components.fcommons.FlatLayoutManager;
 import de.tisan.flatui.components.ffont.FlatFont;
+import de.tisan.tools.persistencemanager.JSONPersistence;
 
 public class GUIKeyerUntertitelPanel extends JPanel {
 
@@ -45,7 +45,7 @@ public class GUIKeyerUntertitelPanel extends JPanel {
 		currentLine2.setAnchor(Anchor.LEFT, Anchor.RIGHT);
 		add(currentLine2);
 
-		if ((boolean) JSONPersistence.get().getSetting(PersistenceConstants.GUIKEYERSECONELINEENABLED, false)) {
+		if ((boolean) JSONPersistence.get().getSetting(UTPersistenceConstants.GUIKEYERSECONELINEENABLED, false)) {
 			int height2 = 40;
 			spaceY = 10;
 			font = FlatFont.getInstance(30, Font.BOLD);
@@ -78,7 +78,7 @@ public class GUIKeyerUntertitelPanel extends JPanel {
 	public void showNewTextLines(String line1, String line2, String line3, String line4) {
 		currentLine1.setText(line1);
 		currentLine2.setText(line2);
-		if ((boolean) JSONPersistence.get().getSetting(PersistenceConstants.GUIKEYERSECONELINEENABLED, false)) {
+		if ((boolean) JSONPersistence.get().getSetting(UTPersistenceConstants.GUIKEYERSECONELINEENABLED, false)) {
 			nextLine1.setText(line3);
 			nextLine2.setText(line4);
 		}

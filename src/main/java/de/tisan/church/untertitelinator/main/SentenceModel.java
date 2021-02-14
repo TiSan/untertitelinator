@@ -6,8 +6,8 @@ import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
 
 import de.tisan.church.untertitelinator.data.Song;
-import de.tisan.church.untertitelinator.settings.JSONPersistence;
-import de.tisan.church.untertitelinator.settings.PersistenceConstants;
+import de.tisan.church.untertitelinator.settings.UTPersistenceConstants;
+import de.tisan.tools.persistencemanager.JSONPersistence;
 
 public class SentenceModel extends AbstractTableModel {
 	private static final long serialVersionUID = -2951927435443254091L;
@@ -53,7 +53,7 @@ public class SentenceModel extends AbstractTableModel {
 				data[index][0] = "";
 			}
 			data[index][1] = line.replaceAll("\n",
-					(String) JSONPersistence.get().getSetting(PersistenceConstants.LINESEPARATOR, "<BR>"));
+					(String) JSONPersistence.get().getSetting(UTPersistenceConstants.LINESEPARATOR, "<BR>"));
 
 			index++;
 		}

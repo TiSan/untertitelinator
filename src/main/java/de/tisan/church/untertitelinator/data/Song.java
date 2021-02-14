@@ -10,8 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import de.tisan.church.untertitelinator.settings.JSONPersistence;
-import de.tisan.church.untertitelinator.settings.PersistenceConstants;
+import de.tisan.church.untertitelinator.settings.UTPersistenceConstants;
+import de.tisan.tools.persistencemanager.JSONPersistence;
 
 public class Song {
 	File dataFile;
@@ -37,7 +37,7 @@ public class Song {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(dataFile), "UTF-8"));
 			String line = null;
 			while ((line = reader.readLine()) != null) {
-				line = line.replaceAll((String) JSONPersistence.get().getSetting(PersistenceConstants.LINESEPARATOR, "<BR>"), "\n");
+				line = line.replaceAll((String) JSONPersistence.get().getSetting(UTPersistenceConstants.LINESEPARATOR, "<BR>"), "\n");
 				lines.add(line);
 			}
 			reader.close();

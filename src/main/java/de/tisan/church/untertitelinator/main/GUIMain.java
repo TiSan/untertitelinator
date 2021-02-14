@@ -22,8 +22,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import de.tisan.church.untertitelinator.data.Untertitelinator;
-import de.tisan.church.untertitelinator.settings.JSONPersistence;
-import de.tisan.church.untertitelinator.settings.PersistenceConstants;
+import de.tisan.church.untertitelinator.settings.UTPersistenceConstants;
 import de.tisan.flatui.components.fbutton.FlatButton;
 import de.tisan.flatui.components.fcommons.Anchor;
 import de.tisan.flatui.components.fcommons.FlatColors;
@@ -37,6 +36,7 @@ import de.tisan.flatui.components.flisteners.Priority;
 import de.tisan.flatui.components.ftextbox.FlatTextBox;
 import de.tisan.flatui.components.ftitlebar.DefaultFlatTitleBarListener;
 import de.tisan.flatui.components.ftitlebar.FlatTitleBarWin10;
+import de.tisan.tools.persistencemanager.JSONPersistence;
 
 public class GUIMain extends JFrame {
 
@@ -75,7 +75,7 @@ public class GUIMain extends JFrame {
 		FlatLayoutManager man = FlatLayoutManager.get(this);
 		man.setResizable(false);
 		FlatTitleBarWin10 bar = new FlatTitleBarWin10(man,
-				(String) JSONPersistence.get().getSetting(PersistenceConstants.CHURCHNAME,
+				(String) JSONPersistence.get().getSetting(UTPersistenceConstants.CHURCHNAME,
 						"Evangelische Kirchengemeinde Oberstedten") + " - Untertitelinator v"
 						+ Untertitelinator.VERSION);
 		bar.setBounds(0, 0, getWidth(), 30);
@@ -471,13 +471,13 @@ public class GUIMain extends JFrame {
 		GUIPresentator.get().showNewTextLines(Untertitelinator.get().getCurrentPlayer().getTitle(), currentLines[0],
 				(currentLines.length > 1 ? currentLines[1] : ""), nextLines[0],
 				(nextLines.length > 1 ? nextLines[1] : ""),
-				(Integer) JSONPersistence.get().getSetting(PersistenceConstants.GUIPRESENTATORDELAY, 1200),
+				(Integer) JSONPersistence.get().getSetting(UTPersistenceConstants.GUIPRESENTATORDELAY, 1200),
 				Untertitelinator.get().getCurrentPlayer().isPaused());
 
 		GUIKeyer.get().showNewTextLines(Untertitelinator.get().getCurrentPlayer().getTitle(), currentLines[0],
 				(currentLines.length > 1 ? currentLines[1] : ""), nextLines[0],
 				(nextLines.length > 1 ? nextLines[1] : ""),
-				(Integer) JSONPersistence.get().getSetting(PersistenceConstants.GUIPRESENTATORDELAY, 1200),
+				(Integer) JSONPersistence.get().getSetting(UTPersistenceConstants.GUIPRESENTATORDELAY, 1200),
 				Untertitelinator.get().getCurrentPlayer().isPaused());
 
 	}
