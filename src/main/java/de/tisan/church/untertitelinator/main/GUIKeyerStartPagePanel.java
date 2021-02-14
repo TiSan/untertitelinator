@@ -23,6 +23,7 @@ import de.tisan.flatui.components.ffont.FlatFont;
 
 public class GUIKeyerStartPagePanel extends JPanel {
 
+	private static final long serialVersionUID = 4284425054258046422L;
 	private FlatButton layerNextStream;
 	private FlatButton layerTitle;
 	private FlatButton layerSubTitle;

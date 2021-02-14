@@ -16,6 +16,7 @@ import de.tisan.flatui.components.ffont.FlatFont;
 
 public class GUIKeyerKollektePanel extends JPanel {
 
+	private static final long serialVersionUID = 8148577345643611052L;
 	private FlatButton currentLine1;
 	private FlatButton currentLine2;
 	private static SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");

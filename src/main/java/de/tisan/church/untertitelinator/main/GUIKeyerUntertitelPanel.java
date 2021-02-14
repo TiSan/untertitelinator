@@ -16,6 +16,7 @@ import de.tisan.tools.persistencemanager.JSONPersistence;
 
 public class GUIKeyerUntertitelPanel extends JPanel {
 
+	private static final long serialVersionUID = 4135343673389911574L;
 	private FlatButton currentLine1;
 	private FlatButton currentLine2;
 	private FlatButton nextLine1;

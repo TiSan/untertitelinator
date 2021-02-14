@@ -23,6 +23,7 @@ import de.tisan.flatui.components.ftitlebar.FlatTitleBarWin10;
 
 public class GUISelectGodi extends JFrame {
 
+	private static final long serialVersionUID = -6722718983818902404L;
 	private DefaultComboBoxModel<String> comboBoxModel;
 
 	public GUISelectGodi() {

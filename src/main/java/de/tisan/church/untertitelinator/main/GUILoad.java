@@ -17,6 +17,7 @@ import de.tisan.flatui.components.fprogressbar.FlatProgressBar;
 
 public class GUILoad extends JFrame {
 
+	private static final long serialVersionUID = 975819350295945678L;
 	private JPanel contentPane;
 	private JLabel lblLoading;
 

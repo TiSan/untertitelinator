@@ -15,6 +15,8 @@ import javax.swing.JPanel;
 import de.tisan.flatui.components.fcommons.FlatLayoutManager;
 
 public class GUIKeyerEndcardPanel extends JPanel {
+
+	private static final long serialVersionUID = 5623162033757903847L;
 	private JLabel layerImage;
 	private BufferedImage image;
 
