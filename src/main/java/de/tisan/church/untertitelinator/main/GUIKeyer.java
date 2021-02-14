@@ -149,17 +149,26 @@ public class GUIKeyer extends JFrame {
 		}).start();
 	}
 
-	public void loadUí() {
+	public void loadUi() {
 		Event currentEvent = Untertitelinator.get().getCurrentEvent();
-		String titleName = currentEvent.getName();
-		System.out.println(titleName);
-
-		int indexEnter = currentEvent.getDescription().indexOf("\n");
+		String themaString = currentEvent.getName();
+		
+		// Gottesdienst-Titel aus "Info-Feld" lesen
+		String titleString = currentEvent.getDescription();
+		int indexEnter = titleString.indexOf("\n");
 		if (indexEnter == -1) {
-			indexEnter = currentEvent.getDescription().length();
+			indexEnter = titleString.length();
 		}
+		
+		titleString = titleString.substring(0, indexEnter);
+		
+		// Fallback, wenn nicht gesetzt
+		if(titleString.startsWith("Weitere Infos...")) {
+			titleString = "Live-Gottesdienst";
+		}
+		
 		pnlStartPage
-				.showNextStream(currentEvent.getDescription().substring(0, indexEnter), "Thema: \"" + titleName + "\"",
+				.showNextStream(titleString.substring(0, indexEnter), "Thema: \"" + themaString + "\"",
 						currentEvent.getStartDate().plusHours(1)
 								.format(DateTimeFormatter.ofPattern("dd.MM.yyyy - HH:mm")) + " Uhr",
 						Untertitelinator.get().getServiceList());

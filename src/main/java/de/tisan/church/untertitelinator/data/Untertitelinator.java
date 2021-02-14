@@ -93,6 +93,10 @@ public class Untertitelinator {
 		Map<String, String> serviceListStr = new TreeMap<String, String>();
 
 		for (EventService es : currentEvent.getEventServices()) {
+			if (es.getName() == null || es.getName().trim().isEmpty()) {
+				continue;
+			}
+
 			Service s = services.parallelStream().filter(ss -> ss.getId() == es.getServiceId()).findFirst().get();
 			if (s.getComment().equals("<NOT_VISIBLE>")) {
 				continue;

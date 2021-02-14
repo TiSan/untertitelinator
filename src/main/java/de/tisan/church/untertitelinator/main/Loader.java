@@ -35,7 +35,7 @@ public class Loader {
 	}
 
 	public static void loadKeyerUi() {
-		keyerUi.loadUí();
+		keyerUi.loadUi();
 	}
 
 	public static void loadSelectionMenu() {
