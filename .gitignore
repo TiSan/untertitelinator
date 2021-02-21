@@ -5,3 +5,4 @@ currentLineForObs.utline
 nextLineForObs.utline
 settings.json
 /target/
+.project
