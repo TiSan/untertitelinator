@@ -168,7 +168,7 @@ public class GUIKeyer extends JFrame {
 		}
 		
 		pnlStartPage
-				.showNextStream(titleString.substring(0, indexEnter), "Thema: \"" + themaString + "\"",
+				.showNextStream(titleString, "Thema: \"" + themaString + "\"",
 						currentEvent.getStartDate().plusHours(1)
 								.format(DateTimeFormatter.ofPattern("dd.MM.yyyy - HH:mm")) + " Uhr",
 						Untertitelinator.get().getServiceList());
