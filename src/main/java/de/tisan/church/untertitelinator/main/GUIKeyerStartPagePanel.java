@@ -48,7 +48,7 @@ public class GUIKeyerStartPagePanel extends JPanel {
 		font = FlatFont.getInstance(50, Font.BOLD);
 		
 		layerNextStream = new FlatButton("Nächster Stream: ", man);
-		layerNextStream.setBounds(x1, y1, widthElements, height3);
+		layerNextStream.setBounds(x1, y1, widthElements - x1, height3);
 		layerNextStream.setFont(font);
 		layerNextStream.setBackground(new Color(0, 0, 0, 0));
 		layerNextStream.setCenterText(false);
@@ -61,7 +61,7 @@ public class GUIKeyerStartPagePanel extends JPanel {
 		height3 = 130;
 
 		layerTitle = new FlatButton("Titel der Veranstaltung", man);
-		layerTitle.setBounds(x1, y1, widthElements, height3);
+		layerTitle.setBounds(x1, y1, widthElements - x1, height3);
 		layerTitle.setFont(font);
 		layerTitle.setBackground(new Color(0, 0, 0, 0));
 		layerTitle.setCenterText(false);
@@ -74,7 +74,7 @@ public class GUIKeyerStartPagePanel extends JPanel {
 		height3 = 100;
 
 		layerSubTitle = new FlatButton("Untertitel der Veranstaltung", man);
-		layerSubTitle.setBounds(x1, y1, widthElements, height3);
+		layerSubTitle.setBounds(x1, y1, widthElements - x1, height3);
 		layerSubTitle.setFont(font);
 		layerSubTitle.setBackground(new Color(0, 0, 0, 0));
 		layerSubTitle.setCenterText(false);
@@ -87,7 +87,7 @@ public class GUIKeyerStartPagePanel extends JPanel {
 		height3 = 70;
 
 		layerDate = new FlatButton("Datum", man);
-		layerDate.setBounds(x1, y1, widthElements, height3);
+		layerDate.setBounds(x1, y1, widthElements - x1, height3);
 		layerDate.setFont(font);
 		layerDate.setBackground(new Color(0, 0, 0, 0));
 		layerDate.setCenterText(false);
