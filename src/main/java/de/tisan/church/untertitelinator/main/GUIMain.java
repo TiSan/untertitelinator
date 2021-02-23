@@ -58,7 +58,7 @@ public class GUIMain extends JFrame {
 			e1.printStackTrace();
 		}
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-
+		// Dies ist ein Test.
 		setUndecorated(true);
 		setSize(880, 650);
 		setResizable(false);
