@@ -28,6 +28,7 @@ import de.tisan.flatui.components.fcommons.Anchor;
 import de.tisan.flatui.components.fcommons.FlatColors;
 import de.tisan.flatui.components.fcommons.FlatLayoutManager;
 import de.tisan.flatui.components.ffont.FlatFont;
+import de.tisan.flatui.components.ficon.FlatIcon;
 import de.tisan.flatui.components.ficon.FlatIconFont;
 import de.tisan.flatui.components.flisteners.ActionListener;
 import de.tisan.flatui.components.flisteners.MouseClickedHandler;
@@ -101,7 +102,7 @@ public class GUIMain extends JFrame {
 		});
 		contentPane.add(list);
 
-		FlatButton btnStart = new FlatButton(null, FlatIconFont.FAST_BACKWARD, man);
+		FlatButton btnStart = new FlatButton(null, FlatIcon.FAST_BACKWARD, man);
 		btnStart.setBounds(230, 50, 121, 50);
 		btnStart.addActionListener(Priority.NORMAL, new ActionListener() {
 
@@ -118,7 +119,7 @@ public class GUIMain extends JFrame {
 
 		contentPane.add(btnStart);
 
-		FlatButton btnBack = new FlatButton(null, FlatIconFont.BACKWARD, man);
+		FlatButton btnBack = new FlatButton(null, FlatIcon.BACKWARD, man);
 		btnBack.setBounds(btnStart.getX() + btnStart.getWidth() + 5, 50, 121, 50);
 
 		btnBack.addActionListener(Priority.NORMAL, new ActionListener() {
@@ -136,7 +137,7 @@ public class GUIMain extends JFrame {
 
 		contentPane.add(btnBack);
 
-		btnPause = new FlatButton(null, FlatIconFont.PAUSE, man);
+		btnPause = new FlatButton(null, FlatIcon.PAUSE, man);
 		btnPause.setBackground(FlatColors.ALIZARINRED);
 		btnPause.setBounds(btnBack.getX() + btnBack.getWidth() + 5, 50, 121, 50);
 		btnPause.addActionListener(Priority.NORMAL, new ActionListener() {
@@ -154,7 +155,7 @@ public class GUIMain extends JFrame {
 
 		contentPane.add(btnPause);
 
-		FlatButton btnForward = new FlatButton(null, FlatIconFont.FORWARD, man);
+		FlatButton btnForward = new FlatButton(null, FlatIcon.FORWARD, man);
 		btnForward.setBounds(btnPause.getX() + btnPause.getWidth() + 5, 50, 121, 50);
 		btnForward.addActionListener(Priority.NORMAL, new ActionListener() {
 
@@ -170,7 +171,7 @@ public class GUIMain extends JFrame {
 		});
 		contentPane.add(btnForward);
 
-		FlatButton btnEnd = new FlatButton(null, FlatIconFont.FAST_FORWARD, man);
+		FlatButton btnEnd = new FlatButton(null, FlatIcon.FAST_FORWARD, man);
 		btnEnd.setBounds(btnForward.getX() + btnForward.getWidth() + 5, 50, 121, 50);
 		btnEnd.addActionListener(Priority.NORMAL, new ActionListener() {
 
@@ -330,7 +331,7 @@ public class GUIMain extends JFrame {
 		});
 		contentPane.add(btnWindowBar);
 
-		FlatButton btnMoveUp = new FlatButton("", FlatIconFont.ARROW_UP, man);
+		FlatButton btnMoveUp = new FlatButton("", FlatIcon.ARROW_UP, man);
 		btnMoveUp.setBounds(list.getX(), list.getY() + list.getHeight() + 5, 60, 40);
 		btnMoveUp.setBackground(FlatColors.BLUE);
 		btnMoveUp.addActionListener(Priority.NORMAL, new ActionListener() {
@@ -352,7 +353,7 @@ public class GUIMain extends JFrame {
 		});
 		contentPane.add(btnMoveUp);
 
-		FlatButton btnMoveDown = new FlatButton("", FlatIconFont.ARROW_DOWN, man);
+		FlatButton btnMoveDown = new FlatButton("", FlatIcon.ARROW_DOWN, man);
 		btnMoveDown.setBounds(btnMoveUp.getX() + btnMoveUp.getWidth() + 5, btnMoveUp.getY(), 60, 40);
 		btnMoveDown.setBackground(FlatColors.BLUE);
 		btnMoveDown.addActionListener(Priority.NORMAL, new ActionListener() {
@@ -441,7 +442,7 @@ public class GUIMain extends JFrame {
 			try {
 				Field icon = btnPause.getClass().getDeclaredField("icon");
 				icon.setAccessible(true);
-				icon.set(btnPause, FlatIconFont.PLAY);
+				icon.set(btnPause, FlatIcon.PLAY);
 			} catch (SecurityException | NoSuchFieldException | IllegalArgumentException | IllegalAccessException e) {
 				e.printStackTrace();
 			}
@@ -450,7 +451,7 @@ public class GUIMain extends JFrame {
 			try {
 				Field icon = btnPause.getClass().getDeclaredField("icon");
 				icon.setAccessible(true);
-				icon.set(btnPause, FlatIconFont.PAUSE);
+				icon.set(btnPause, FlatIcon.PAUSE);
 			} catch (SecurityException | NoSuchFieldException | IllegalArgumentException | IllegalAccessException e) {
 				e.printStackTrace();
 			}
