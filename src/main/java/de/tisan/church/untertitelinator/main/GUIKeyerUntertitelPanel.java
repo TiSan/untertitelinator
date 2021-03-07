@@ -23,7 +23,7 @@ public class GUIKeyerUntertitelPanel extends JPanel {
 
 	public GUIKeyerUntertitelPanel(FlatLayoutManager man, GUIKeyer instance, Dimension preferredSize) {
 		this.keyer = instance;
-		backgroundDarker = instance.bg.darker();
+		backgroundDarker = instance.bg.darker().darker().darker();
 		setLayout(null);
 		setBackground(instance.bg);
 
@@ -58,6 +58,10 @@ public class GUIKeyerUntertitelPanel extends JPanel {
 	}
 
 	private void showLines(String line1, String line2) {
+		if (line1.equals(currentLine1.getText()) && line2.equals(currentLine2.getText())) {
+			return;
+		}
+
 		if (line1.trim().isEmpty() == false || line2.trim().isEmpty() == false) {
 			currentLine1.setBackground(backgroundDarker, true);
 			currentLine2.setBackground(backgroundDarker, true);
