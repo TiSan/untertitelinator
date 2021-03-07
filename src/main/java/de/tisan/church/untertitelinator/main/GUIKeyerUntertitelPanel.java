@@ -1,5 +1,6 @@
 package de.tisan.church.untertitelinator.main;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ComponentAdapter;
@@ -7,22 +8,21 @@ import java.awt.event.ComponentEvent;
 
 import javax.swing.JPanel;
 
-import de.tisan.church.untertitelinator.settings.UTPersistenceConstants;
 import de.tisan.flatui.components.fbutton.FlatButton;
 import de.tisan.flatui.components.fcommons.Anchor;
 import de.tisan.flatui.components.fcommons.FlatLayoutManager;
 import de.tisan.flatui.components.ffont.FlatFont;
-import de.tisan.tools.persistencemanager.JSONPersistence;
 
 public class GUIKeyerUntertitelPanel extends JPanel {
 
 	private static final long serialVersionUID = 4135343673389911574L;
 	private FlatButton currentLine1;
 	private FlatButton currentLine2;
-	private FlatButton nextLine1;
-	private FlatButton nextLine2;
-
+	private GUIKeyer keyer;
+	private Color backgroundDarker;
 	public GUIKeyerUntertitelPanel(FlatLayoutManager man, GUIKeyer instance, Dimension preferredSize) {
+		this.keyer = instance;
+		backgroundDarker = instance.bg.darker();
 		setLayout(null);
 		setBackground(instance.bg);
 
@@ -46,27 +46,6 @@ public class GUIKeyerUntertitelPanel extends JPanel {
 		currentLine2.setAnchor(Anchor.LEFT, Anchor.RIGHT);
 		add(currentLine2);
 
-		if ((boolean) JSONPersistence.get().getSetting(UTPersistenceConstants.GUIKEYERSECONELINEENABLED, false)) {
-			int height2 = 40;
-			spaceY = 10;
-			font = FlatFont.getInstance(30, Font.BOLD);
-
-			nextLine1 = new FlatButton("N�chste Zeile 1", man);
-			nextLine1.setBounds(spaceX, currentLine2.getY() + currentLine2.getHeight() + spaceY, width, height2);
-			nextLine1.setFont(font);
-			nextLine1.setBackground(instance.bg);
-			nextLine1.setAnchor(Anchor.LEFT, Anchor.RIGHT);
-			add(nextLine1);
-
-			nextLine2 = new FlatButton("N�chste Zeile 2", man);
-			nextLine2.setBounds(spaceX, nextLine1.getY() + nextLine1.getHeight() + spaceY, width, height2);
-			nextLine2.setFont(font);
-			nextLine2.setBackground(instance.bg);
-			// nextLine2.setBackground(new Color(1, 1, 1, 1));
-			nextLine2.setAnchor(Anchor.LEFT, Anchor.RIGHT);
-			add(nextLine2);
-		}
-
 		addComponentListener(new ComponentAdapter() {
 			public void componentResized(ComponentEvent componentEvent) {
 				currentLine1.setBounds(spaceX, (getHeight() - (height * 3)), getWidth() - (spaceX * 2), height);
@@ -77,11 +56,33 @@ public class GUIKeyerUntertitelPanel extends JPanel {
 		});
 	}
 	public void showNewTextLines(String line1, String line2, String line3, String line4) {
-		currentLine1.setText(line1);
-		currentLine2.setText(line2);
-		if ((boolean) JSONPersistence.get().getSetting(UTPersistenceConstants.GUIKEYERSECONELINEENABLED, false)) {
-			nextLine1.setText(line3);
-			nextLine2.setText(line4);
-		}
+		new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				if(line1.trim().isEmpty() == false || line2.trim().isEmpty() == false) {
+					currentLine1.setBackground(backgroundDarker, true);
+					currentLine2.setBackground(backgroundDarker, true);
+				}
+				
+				currentLine1.setForeground(backgroundDarker, true);
+				currentLine2.setForeground(backgroundDarker, true);
+				try {
+					Thread.sleep(500);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				
+				currentLine1.setText(line1);
+				currentLine2.setText(line2);
+				
+				currentLine1.setForeground(keyer.fg, true);
+				currentLine2.setForeground(keyer.fg, true);
+				if(line1.trim().isEmpty() && line2.trim().isEmpty()) {
+					currentLine1.setBackground(keyer.bg, true);
+					currentLine2.setBackground(keyer.bg, true);
+				}
+			}
+		}).start();
 	}
 }

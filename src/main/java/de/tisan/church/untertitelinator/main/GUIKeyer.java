@@ -36,6 +36,7 @@ public class GUIKeyer extends JFrame {
 	private GUIKeyerStartPagePanel pnlStartPage;
 	private FlatTitleBarWin10 bar;
 	Color bg;
+	Color fg;
 	private GUIKeyerLogoPanel pnlLogo;
 	private GUIKeyerEndcardPanel pnlEndcardPage;
 	private GUIKeyerKollektePanel pnlKollekte;
@@ -55,7 +56,7 @@ public class GUIKeyer extends JFrame {
 					.getField(
 							(String) JSONPersistence.get().getSetting(UTPersistenceConstants.GUIKEYERBACKGROUND, "GREEN"))
 					.get(new Color(0));
-
+			fg = Color.white;
 			setBackground(bg);
 
 			JPanel contentPane = new JPanel();

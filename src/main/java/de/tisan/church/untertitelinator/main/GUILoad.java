@@ -2,7 +2,6 @@ package de.tisan.church.untertitelinator.main;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
-import java.io.IOException;
 import java.util.Random;
 
 import javax.imageio.ImageIO;
@@ -46,7 +45,7 @@ public class GUILoad extends JFrame {
 		try {
 			label.setIcon(new ImageIcon(ImageIO
 					.read(GUILoad.class.getResourceAsStream("/de/tisan/church/untertitelinator/resources/logo.png"))));
-		} catch (IOException e1) {
+		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
 		contentPane.add(label);
