@@ -20,6 +20,7 @@ public class GUIKeyerUntertitelPanel extends JPanel {
 	private FlatButton currentLine2;
 	private GUIKeyer keyer;
 	private Color backgroundDarker;
+
 	public GUIKeyerUntertitelPanel(FlatLayoutManager man, GUIKeyer instance, Dimension preferredSize) {
 		this.keyer = instance;
 		backgroundDarker = instance.bg.darker();
@@ -32,14 +33,14 @@ public class GUIKeyerUntertitelPanel extends JPanel {
 		int spaceX = 30;
 		int width = getWidth() - (spaceX * 2);
 
-		currentLine1 = new FlatButton("Aktuelle Zeile 1", man);
+		currentLine1 = new FlatButton("", man);
 		currentLine1.setBounds(spaceX, spaceY, width, height);
 		currentLine1.setFont(font);
 		currentLine1.setBackground(instance.bg);
 		currentLine1.setAnchor(Anchor.LEFT, Anchor.RIGHT);
 		add(currentLine1);
 
-		currentLine2 = new FlatButton("Aktuelle Zeile 2", man);
+		currentLine2 = new FlatButton("", man);
 		currentLine2.setBounds(spaceX, currentLine1.getY() + currentLine1.getHeight(), width, height);
 		currentLine2.setFont(font);
 		currentLine2.setBackground(instance.bg);
@@ -55,34 +56,53 @@ public class GUIKeyerUntertitelPanel extends JPanel {
 			}
 		});
 	}
-	public void showNewTextLines(String line1, String line2, String line3, String line4) {
-		new Thread(new Runnable() {
-			
-			@Override
-			public void run() {
-				if(line1.trim().isEmpty() == false || line2.trim().isEmpty() == false) {
-					currentLine1.setBackground(backgroundDarker, true);
-					currentLine2.setBackground(backgroundDarker, true);
+
+	private void showLines(String line1, String line2) {
+		if (line1.trim().isEmpty() == false || line2.trim().isEmpty() == false) {
+			currentLine1.setBackground(backgroundDarker, true);
+			currentLine2.setBackground(backgroundDarker, true);
+		}
+
+		currentLine1.setForeground(backgroundDarker, true);
+		currentLine2.setForeground(backgroundDarker, true);
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
+		currentLine1.setText(line1);
+		currentLine2.setText(line2);
+
+		currentLine1.setForeground(keyer.fg, true);
+		currentLine2.setForeground(keyer.fg, true);
+		if (line1.trim().isEmpty() && line2.trim().isEmpty()) {
+			currentLine1.setBackground(keyer.bg, true);
+			currentLine2.setBackground(keyer.bg, true);
+		}
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	public void showNewTextLines(String line1, String line2) {
+		showNewTextLines(line1, line2, false);
+	}
+
+	public void showNewTextLines(String line1, String line2, boolean waitUntilFinished) {
+		if (waitUntilFinished) {
+			showLines(line1, line2);
+		} else {
+			new Thread(new Runnable() {
+
+				@Override
+				public void run() {
+					showLines(line1, line2);
 				}
-				
-				currentLine1.setForeground(backgroundDarker, true);
-				currentLine2.setForeground(backgroundDarker, true);
-				try {
-					Thread.sleep(500);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-				
-				currentLine1.setText(line1);
-				currentLine2.setText(line2);
-				
-				currentLine1.setForeground(keyer.fg, true);
-				currentLine2.setForeground(keyer.fg, true);
-				if(line1.trim().isEmpty() && line2.trim().isEmpty()) {
-					currentLine1.setBackground(keyer.bg, true);
-					currentLine2.setBackground(keyer.bg, true);
-				}
-			}
-		}).start();
+			}).start();
+		}
 	}
 }

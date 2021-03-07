@@ -12,6 +12,9 @@ public class Event {
 
 	@JsonIgnore
 	private static DateTimeFormatter sdf = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+	
+	@JsonIgnore
+	private static DateTimeFormatter sdfDay = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
 	long id;
 	String guid;
@@ -62,6 +65,10 @@ public class Event {
 
 	public String getStartDateString() {
 		return sdf.format(startDate);
+	}
+	
+	public String getStartDayString() {
+		return sdfDay.format(startDate);
 	}
 
 	public void setStartDate(LocalDateTime startDate) {

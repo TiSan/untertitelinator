@@ -475,8 +475,7 @@ public class GUIMain extends JFrame {
 				Untertitelinator.get().getCurrentPlayer().isPaused());
 
 		GUIKeyer.get().showNewTextLines(Untertitelinator.get().getCurrentPlayer().getTitle(), currentLines[0],
-				(currentLines.length > 1 ? currentLines[1] : ""), nextLines[0],
-				(nextLines.length > 1 ? nextLines[1] : ""),
+				(currentLines.length > 1 ? currentLines[1] : ""), 
 				(Integer) JSONPersistence.get().getSetting(UTPersistenceConstants.GUIPRESENTATORDELAY, 1200),
 				Untertitelinator.get().getCurrentPlayer().isPaused());
 
