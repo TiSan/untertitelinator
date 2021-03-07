@@ -1,11 +1,5 @@
 package de.tisan.church.untertitelinator.data;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-
 import de.tisan.church.untertitelinator.settings.UTPersistenceConstants;
 import de.tisan.tools.persistencemanager.JSONPersistence;
 
@@ -13,42 +7,14 @@ public class SongPlayer {
 	Song song;
 	int index;
 	boolean pause;
-	File fileCurrent;
-	private File fileNext;
 
 	public SongPlayer(Song song) {
 		this.song = song;
-		this.fileCurrent = new File((String) JSONPersistence.get().getSetting(UTPersistenceConstants.CURRENTLINEFILEPATH, "currentLineForObs.utline"));
-		this.fileNext = new File((String) JSONPersistence.get().getSetting(UTPersistenceConstants.NEXTLINEFILEPATH, "nextLineForObs.utline"));
-		
-		if (fileCurrent.exists() == false) {
-			try {
-				fileCurrent.createNewFile();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		
-		if (fileNext.exists() == false) {
-			try {
-				fileNext.createNewFile();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-
 		setIndex(0);
 	}
 
 	private void setIndex(int index) {
 		this.index = index;
-		if (isValidIndex()) {
-			writeCurrentLineToFile();
-		}
-	}
-
-	private boolean isValidIndex() {
-		return isValidIndex(index);
 	}
 
 	public void nextLine() {
@@ -99,26 +65,6 @@ public class SongPlayer {
 
 	public void pause() {
 		pause = !pause;
-		writeCurrentLineToFile();
-	}
-
-	private void writeCurrentLineToFile() {
-		try {
-			BufferedWriter w = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileCurrent), "UTF-8"));
-			w.write(getCurrentLine());
-			w.flush();
-			w.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		try {
-			BufferedWriter w = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileNext), "UTF-8"));
-			w.write(getNextLine());
-			w.flush();
-			w.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
 
 	public Song getSong() {
