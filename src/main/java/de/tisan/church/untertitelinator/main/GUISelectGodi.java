@@ -41,7 +41,7 @@ public class GUISelectGodi extends JFrame {
 		setSize(500, 300);
 		Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
 		setLocation((d.width / 2) - (getWidth() / 2), (d.height / 2) - (getHeight() / 2));
-		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		FlatLayoutManager man = FlatLayoutManager.get(this);
 		contentPane.setBackground(FlatColors.BACKGROUND);
 		setUndecorated(true);
@@ -79,7 +79,7 @@ public class GUISelectGodi extends JFrame {
 	public void loadUi() {
 		Untertitelinator.get().getAllEvents().forEach(event -> {
 			comboBoxModel.addElement(
-					event.getName() + "(" + event.getDescription() + ", " + event.getStartDate().toString() + ")");
+					event.getStartDateString() + " - " + event.getName());
 
 		});
 	}
