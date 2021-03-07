@@ -235,7 +235,8 @@ public class GUIKeyer extends JFrame {
 			}).start();
 		} else {
 			pnlKollekte.setVisible(true);
-			pnlKollekte.showNewTextLines("Kollektenkonto: DE76 5006 1741 0000 0096 87", "Verwendungszweck: 'Kollekte "
+			String kollekteLine1 = JSONPersistence.get().getSetting(UTPersistenceConstants.GUIKEYERKOLLEKTELINE1, "Kollektenkonto: DE76 5006 1741 0000 0096 87", String.class);
+			pnlKollekte.showNewTextLines(kollekteLine1, "Verwendungszweck: 'Kollekte "
 					+ Untertitelinator.get().getCurrentEvent().getStartDayString() + "'");
 		}
 		return pnlKollekte.isVisible();
