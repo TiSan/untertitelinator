@@ -8,6 +8,7 @@ import de.tisan.flatui.components.fcommons.FlatLayoutManager;
 
 public abstract class AGUIMainPanel extends JPanel
 {
+	private static final long serialVersionUID = 8431571096324528972L;
 	FlatLayoutManager man;
 	GUIMain instance;
 	Dimension size;
@@ -19,6 +20,7 @@ public abstract class AGUIMainPanel extends JPanel
 		this.size = preferredSize;
 		setSize(preferredSize);
 		setLayout(null);
+		setOpaque(false);
 	}
 
 	public abstract void updateThisComponent();
