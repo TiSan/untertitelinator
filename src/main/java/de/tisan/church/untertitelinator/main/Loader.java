@@ -29,7 +29,6 @@ public class Loader
 
 	public static void loadSongsIntoMainGui()
 	{
-		mainUi.loadSongs();
 	}
 
 	public static void showUi()

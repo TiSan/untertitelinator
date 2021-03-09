@@ -7,11 +7,6 @@ import de.tisan.church.untertitelinator.data.Untertitelinator;
 import de.tisan.church.untertitelinator.main.Loader;
 
 public class LukasWillsSoKeyListener implements KeyListener {
-	private GUIMain instance;
-
-	public LukasWillsSoKeyListener(GUIMain instance) {
-		this.instance = instance;
-	}
 
 	@Override
 	public void keyTyped(KeyEvent e) {

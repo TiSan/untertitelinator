@@ -1,7 +1,6 @@
 package de.tisan.church.untertitelinator.gui.main;
 
 import java.awt.Dimension;
-import java.lang.reflect.Field;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
@@ -14,8 +13,6 @@ import de.tisan.flatui.components.fbutton.FlatButton;
 import de.tisan.flatui.components.fcommons.FlatColors;
 import de.tisan.flatui.components.fcommons.FlatLayoutManager;
 import de.tisan.flatui.components.ficon.FlatIcon;
-import de.tisan.flatui.components.flisteners.ActionListener;
-import de.tisan.flatui.components.flisteners.MouseClickedHandler;
 import de.tisan.flatui.components.flisteners.MouseListenerImpl;
 import de.tisan.flatui.components.flisteners.MouseReleaseHandler;
 import de.tisan.flatui.components.flisteners.Priority;
@@ -23,6 +20,7 @@ import de.tisan.flatui.components.flisteners.Priority;
 public class GUIMainSongListPanel extends AGUIMainPanel
 {
 
+	private static final long serialVersionUID = 8890430331107288284L;
 	private DefaultListModel<String> songListModel;
 	private JList<String> list;
 
