@@ -13,6 +13,8 @@ import de.tisan.church.untertitelinator.main.Loader;
 import de.tisan.flatui.components.fbutton.FlatButton;
 import de.tisan.flatui.components.fcommons.FlatColors;
 import de.tisan.flatui.components.fcommons.FlatLayoutManager;
+import de.tisan.flatui.components.fhintbox.FlatHintBoxEntry;
+import de.tisan.flatui.components.fhintbox.FlatHintBoxManager;
 import de.tisan.flatui.components.ficon.FlatIcon;
 import de.tisan.flatui.components.flisteners.MouseListenerImpl;
 import de.tisan.flatui.components.flisteners.MouseReleaseHandler;
@@ -84,6 +86,7 @@ public class GUIMainSongListPanel extends AGUIMainPanel {
 		add(btnMoveDown);
 
 		x += widthBtn + 5;
+		FlatHintBoxManager hManager = new FlatHintBoxManager();
 
 		FlatButton btnUpdate = new FlatButton("", FlatIcon.SYNC, man);
 		btnUpdate.setBounds(x, y, widthBtn, heightBtn);
@@ -99,6 +102,7 @@ public class GUIMainSongListPanel extends AGUIMainPanel {
 					songListModel.clear();
 					Untertitelinator.get().loadSongs();
 					updateSongList();
+					hManager.showHintBox(new FlatHintBoxEntry("Songs neu geladen", "Alle Songs im Song-Verzeichnis wurden erneut eingelesen!", 5));
 				}
 			}
 		});
