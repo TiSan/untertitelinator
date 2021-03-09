@@ -60,12 +60,12 @@ public class GUILoad extends JFrame {
 				while (i <= 100) {
 					switch (i) {
 					case 0:
-						say("Lade ProgrammGUI...");
-						Loader.loadUi();
-						break;
-					case 10:
 						say("Lade Untertitelinator-Songs...");
 						Loader.loadUntertitelinatorSongs();
+						break;
+					case 10:
+						say("Lade ProgrammGUI...");
+						Loader.loadUi();
 						break;
 					case 20:
 						say("Lade Songs in Hauptoberfläche...");

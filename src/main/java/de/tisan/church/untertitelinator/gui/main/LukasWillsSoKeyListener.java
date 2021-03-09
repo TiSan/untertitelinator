@@ -3,6 +3,9 @@ package de.tisan.church.untertitelinator.gui.main;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+import de.tisan.church.untertitelinator.data.Untertitelinator;
+import de.tisan.church.untertitelinator.main.Loader;
+
 public class LukasWillsSoKeyListener implements KeyListener {
 	private GUIMain instance;
 
@@ -18,13 +21,16 @@ public class LukasWillsSoKeyListener implements KeyListener {
 	@Override
 	public void keyPressed(KeyEvent e) {
 		if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-			instance.previousLine();
+			Untertitelinator.get().getCurrentPlayer().previousLine();
+			Loader.getMainUi().updateUIComponents();
 			e.consume();
 		} else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-			instance.nextLine();
+			Untertitelinator.get().getCurrentPlayer().nextLine();
+			Loader.getMainUi().updateUIComponents();
 			e.consume();
 		} else if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-			instance.pause();
+			Untertitelinator.get().getCurrentPlayer().pause();
+			Loader.getMainUi().updateUIComponents();
 			e.consume();
 		}
 		
