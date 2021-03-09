@@ -39,7 +39,7 @@ public class GUIMainSongListPanel extends AGUIMainPanel {
 			@Override
 			public void valueChanged(ListSelectionEvent e) {
 				int index = list.getSelectedIndex();
-				if (index > 0 && index < songListModel.getSize()) {
+				if (index >= 0 && index < songListModel.getSize()) {
 					changeSong(songListModel.getElementAt(list.getSelectedIndex()));
 				}
 			}
