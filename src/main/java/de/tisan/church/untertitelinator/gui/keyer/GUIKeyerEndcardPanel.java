@@ -1,6 +1,7 @@
-package de.tisan.church.untertitelinator.main;
+package de.tisan.church.untertitelinator.gui.keyer;
 
 import java.awt.Dimension;
+import java.awt.Image;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.image.BufferedImage;
@@ -13,31 +14,25 @@ import javax.swing.JPanel;
 
 import de.tisan.flatui.components.fcommons.FlatLayoutManager;
 
-public class GUIKeyerLogoPanel extends JPanel {
+public class GUIKeyerEndcardPanel extends JPanel {
 
-	private static final long serialVersionUID = 8624323979144171302L;
+	private static final long serialVersionUID = 5623162033757903847L;
 	private JLabel layerImage;
 	private BufferedImage image;
 
-	public GUIKeyerLogoPanel(FlatLayoutManager man, GUIKeyer instance, Dimension preferredSize) {
+	public GUIKeyerEndcardPanel(FlatLayoutManager man, GUIKeyer instance, Dimension preferredSize) {
 		setLayout(null);
 		setOpaque(false);
-		
 		layerImage = new JLabel();
-		
 		try {
 			image = ImageIO.read(
-					GUIKeyerLogoPanel.class.getResourceAsStream("/de/tisan/church/untertitelinator/resources/evko_broadcast_watermark_v1_small.png"));
-			layerImage.setIcon(new ImageIcon(image));
-			setBounds(0, 0, image.getWidth(), image.getHeight());
+					GUIKeyer.class.getResourceAsStream("/de/tisan/church/untertitelinator/resources/bg_endcard.png"));
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
-
-		add(layerImage);
-		
 		fitImage(preferredSize.width, preferredSize.height);
-				
+		add(layerImage);
+
 		addComponentListener(new ComponentAdapter() {
 
 			@Override
@@ -45,17 +40,14 @@ public class GUIKeyerLogoPanel extends JPanel {
 				fitImage(getWidth(), getHeight());
 			}
 		});
-		
 		repaint();
 	}
 
 	public void fitImage(int width, int height) {
-		int safeBounds = 80;
 		if (isVisible()) {
-			int x = width - image.getWidth() - safeBounds;
-			int y = safeBounds;
-			layerImage.setBounds(x, y, image.getWidth(), image.getHeight());
-			System.out.println("x: " + x + "; y: " + y);
+			layerImage.setIcon(new ImageIcon(image.getScaledInstance(width, height, Image.SCALE_SMOOTH)));
 		}
+		layerImage.setBounds(0, 0, width, height);
 	}
+
 }

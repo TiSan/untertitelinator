@@ -1,6 +1,10 @@
 package de.tisan.church.untertitelinator.main;
 
 import de.tisan.church.untertitelinator.data.Untertitelinator;
+import de.tisan.church.untertitelinator.gui.keyer.GUIKeyer;
+import de.tisan.church.untertitelinator.gui.main.GUIMain;
+import de.tisan.church.untertitelinator.gui.main.GUISelectGodi;
+import de.tisan.church.untertitelinator.gui.presentator.GUIPresentator;
 
 public class Loader {
 	private static GUIMain main;

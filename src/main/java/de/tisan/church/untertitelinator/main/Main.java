@@ -1,6 +1,7 @@
 package de.tisan.church.untertitelinator.main;
 
 import de.tisan.church.untertitelinator.data.Untertitelinator;
+import de.tisan.church.untertitelinator.gui.main.GUILoad;
 
 public class Main {
 	

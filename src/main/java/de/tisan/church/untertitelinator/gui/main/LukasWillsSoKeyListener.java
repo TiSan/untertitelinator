@@ -1,4 +1,4 @@
-package de.tisan.church.untertitelinator.main;
+package de.tisan.church.untertitelinator.gui.main;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
