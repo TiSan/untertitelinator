@@ -4,6 +4,7 @@ import java.awt.Dimension;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -17,15 +18,13 @@ import de.tisan.flatui.components.flisteners.MouseListenerImpl;
 import de.tisan.flatui.components.flisteners.MouseReleaseHandler;
 import de.tisan.flatui.components.flisteners.Priority;
 
-public class GUIMainSongListPanel extends AGUIMainPanel
-{
+public class GUIMainSongListPanel extends AGUIMainPanel {
 
 	private static final long serialVersionUID = 8890430331107288284L;
 	private DefaultListModel<String> songListModel;
 	private JList<String> list;
 
-	public GUIMainSongListPanel(FlatLayoutManager man, GUIMain instance, Dimension preferredSize)
-	{
+	public GUIMainSongListPanel(FlatLayoutManager man, GUIMain instance, Dimension preferredSize) {
 		super(man, instance, preferredSize);
 		songListModel = new DefaultListModel<String>();
 
@@ -33,13 +32,14 @@ public class GUIMainSongListPanel extends AGUIMainPanel
 
 		list.setBounds(0, 0, preferredSize.width, preferredSize.height - 50);
 
-		list.addListSelectionListener(new ListSelectionListener()
-		{
+		list.addListSelectionListener(new ListSelectionListener() {
 
 			@Override
-			public void valueChanged(ListSelectionEvent e)
-			{
-				changeSong(songListModel.getElementAt(list.getSelectedIndex()));
+			public void valueChanged(ListSelectionEvent e) {
+				int index = list.getSelectedIndex();
+				if (index > 0 && index < songListModel.getSize()) {
+					changeSong(songListModel.getElementAt(list.getSelectedIndex()));
+				}
 			}
 		});
 		add(list);
@@ -52,13 +52,10 @@ public class GUIMainSongListPanel extends AGUIMainPanel
 		FlatButton btnMoveUp = new FlatButton("", FlatIcon.ARROW_UP, man);
 		btnMoveUp.setBounds(x, y, widthBtn, heightBtn);
 		btnMoveUp.setBackground(FlatColors.BLUE);
-		btnMoveUp.addMouseListener(Priority.NORMAL, new MouseListenerImpl()
-		{
+		btnMoveUp.addMouseListener(Priority.NORMAL, new MouseListenerImpl() {
 			@Override
-			public void onMouseRelease(MouseReleaseHandler handler)
-			{
-				if (list.getSelectedIndex() > 0)
-				{
+			public void onMouseRelease(MouseReleaseHandler handler) {
+				if (list.getSelectedIndex() > 0) {
 					String tmp = songListModel.getElementAt(list.getSelectedIndex() - 1);
 					songListModel.set(list.getSelectedIndex() - 1, songListModel.getElementAt(list.getSelectedIndex()));
 					songListModel.set(list.getSelectedIndex(), tmp);
@@ -73,13 +70,10 @@ public class GUIMainSongListPanel extends AGUIMainPanel
 		FlatButton btnMoveDown = new FlatButton("", FlatIcon.ARROW_DOWN, man);
 		btnMoveDown.setBounds(x, y, widthBtn, heightBtn);
 		btnMoveDown.setBackground(FlatColors.BLUE);
-		btnMoveDown.addMouseListener(Priority.NORMAL, new MouseListenerImpl()
-		{
+		btnMoveDown.addMouseListener(Priority.NORMAL, new MouseListenerImpl() {
 			@Override
-			public void onMouseRelease(MouseReleaseHandler handler)
-			{
-				if (list.getSelectedIndex() < songListModel.getSize() - 1)
-				{
+			public void onMouseRelease(MouseReleaseHandler handler) {
+				if (list.getSelectedIndex() < songListModel.getSize() - 1) {
 					String tmp = songListModel.getElementAt(list.getSelectedIndex() + 1);
 					songListModel.set(list.getSelectedIndex() + 1, songListModel.getElementAt(list.getSelectedIndex()));
 					songListModel.set(list.getSelectedIndex(), tmp);
@@ -89,29 +83,48 @@ public class GUIMainSongListPanel extends AGUIMainPanel
 		});
 		add(btnMoveDown);
 
+		x += widthBtn + 5;
+
+		FlatButton btnUpdate = new FlatButton("", FlatIcon.SYNC, man);
+		btnUpdate.setBounds(x, y, widthBtn, heightBtn);
+		btnUpdate.setBackground(FlatColors.BLUE);
+		btnUpdate.addMouseListener(Priority.NORMAL, new MouseListenerImpl() {
+			@Override
+			public void onMouseRelease(MouseReleaseHandler handler) {
+				int result = JOptionPane.showConfirmDialog(Loader.getMainUi(),
+						"Möchtest du wirklich alle Songs neu laden? Deine Reihenfolge geht dadurch verloren!",
+						"Songs neu laden", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+
+				if (result == JOptionPane.YES_OPTION) {
+					songListModel.clear();
+					Untertitelinator.get().loadSongs();
+					updateSongList();
+				}
+			}
+		});
+		add(btnUpdate);
+
 		updateSongList();
 		list.setSelectedIndex(0);
 	}
 
-	private void changeSong(String name)
-	{
-		if(Loader.getMainUi() != null) {
-			Untertitelinator.get().switchSong(
-					Untertitelinator.get().getSongs().stream().filter(s -> s.getTitle().equals(name)).findFirst().get());
+	private void changeSong(String name) {
+		if (Loader.getMainUi() != null) {
+			Untertitelinator.get().switchSong(Untertitelinator.get().getSongs().stream()
+					.filter(s -> s.getTitle().equals(name)).findFirst().get());
 			Loader.getMainUi().updateUIComponents();
-			
+
 		}
 	}
 
-	private void updateSongList()
-	{
+	private void updateSongList() {
+		list.setSelectedIndex(0);
 		Untertitelinator.get().getSongs().stream().map(song -> song.getTitle()).forEach(songListModel::addElement);
 		Untertitelinator.get().switchSong(Untertitelinator.get().getSongs().get(0));
 	}
 
 	@Override
-	public void updateThisComponent()
-	{
-		//updateSongList();
+	public void updateThisComponent() {
+		// updateSongList();
 	}
 }
