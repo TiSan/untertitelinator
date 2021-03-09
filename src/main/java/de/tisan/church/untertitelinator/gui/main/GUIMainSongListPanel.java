@@ -45,7 +45,7 @@ public class GUIMainSongListPanel extends AGUIMainPanel
 		add(list);
 
 		int widthBtn = 60;
-		int heightBtn = 60;
+		int heightBtn = 50;
 		int x = 0;
 		int y = list.getY() + list.getHeight() + 5;
 
