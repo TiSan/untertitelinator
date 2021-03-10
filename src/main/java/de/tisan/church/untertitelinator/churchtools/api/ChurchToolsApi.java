@@ -2,7 +2,10 @@ package de.tisan.church.untertitelinator.churchtools.api;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Base64;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.swing.JOptionPane;
@@ -20,7 +23,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import de.tisan.church.untertitelinator.churchtools.api.objects.Agenda;
-import de.tisan.church.untertitelinator.churchtools.api.objects.AgendaItem;
 import de.tisan.church.untertitelinator.churchtools.api.objects.AgendaResponse;
 import de.tisan.church.untertitelinator.churchtools.api.objects.Event;
 import de.tisan.church.untertitelinator.churchtools.api.objects.EventResponse;
@@ -29,9 +31,14 @@ import de.tisan.church.untertitelinator.churchtools.api.objects.Service;
 import de.tisan.church.untertitelinator.churchtools.api.objects.ServiceResponse;
 import de.tisan.church.untertitelinator.settings.UTPersistenceConstants;
 import de.tisan.tools.persistencemanager.JSONPersistence;
+import de.tisan.tools.persistencemanager.SubTypeReference;
 
 public class ChurchToolsApi {
 	private static ChurchToolsApi instance;
+	private static final String CACHE_EVENTS = "EVENTS";
+	private static final String CACHE_EVENTDETAIL = "EVENTDETAIL";
+	private static final String CACHE_SERVICES = "SERVICES";
+	private static final String CACHE_AGENDAS = "AGENDAS";
 
 	private String accessToken;
 	private Client client;
@@ -39,6 +46,8 @@ public class ChurchToolsApi {
 	private ObjectMapper mapper;
 	private String user;
 	private String password;
+
+	private Map<String, CacheEntry> cache;
 
 	public static ChurchToolsApi get() {
 		return (instance == null ? (instance = new ChurchToolsApi()) : instance);
@@ -55,18 +64,22 @@ public class ChurchToolsApi {
 		this.baseUrl = (String) JSONPersistence.get().getSetting(UTPersistenceConstants.CHURCHTOOLSBASEURL,
 				"https://oberstedten.church.tools");
 
-	}
-
-	public static void main(String[] args) {
-		ChurchToolsApi.get().login();
-		List<Event> events = ChurchToolsApi.get().getEvents().get();
-		System.out.println(events);
-		for (Event e : events) {
-			System.out.println(e.getName() + ": " + e.getDescription() + "(time: " + e.getStartDate().toString() + ")");
-			for (AgendaItem i : ChurchToolsApi.get().getAgendaForEvent(e.getId()).orElse(new Agenda()).getItems()) {
-				System.out.println(i.getTitle());
-			}
+		String accessToken = JSONPersistence.get().getSetting(UTPersistenceConstants.CTLASTACCESSTOKEN, "<ACCESSTOKEN>",
+				String.class);
+		long accessTokenUpdate = JSONPersistence.get().getSetting(UTPersistenceConstants.CTLASTACCESSTOKENUPDATED,
+				System.currentTimeMillis(), Long.class);
+		if (accessToken.equals("<ACCESSTOKEN>") == false && (System.currentTimeMillis() - accessTokenUpdate <= 60000)) {
+			this.accessToken = new String(Base64.getDecoder().decode(accessToken));
+			System.out.println("ChurchTools Access Token found. Use this.");
 		}
+		this.cache = new HashMap<String, CacheEntry>();
+		Map<String, Map<String, String>> cacheTmp = JSONPersistence.get().getSetting(UTPersistenceConstants.CTCACHE,
+				new HashMap<String, Map<String, String>>(), new SubTypeReference<Map<String, Map<String, String>>>() {
+				});
+		for (String key : cacheTmp.keySet()) {
+			this.cache.put(key, mapper.convertValue(cacheTmp.get(key), CacheEntry.class));
+		}
+
 	}
 
 	public void login() {
@@ -96,6 +109,11 @@ public class ChurchToolsApi {
 
 			System.out.println("Token: " + token);
 			this.accessToken = token;
+			JSONPersistence.get().setSetting(UTPersistenceConstants.CTLASTACCESSTOKEN,
+					Base64.getEncoder().encodeToString(token.getBytes()));
+			JSONPersistence.get().setSetting(UTPersistenceConstants.CTLASTACCESSTOKENUPDATED,
+					System.currentTimeMillis());
+
 		} catch (Exception e) {
 			System.out
 					.println("FEHLER! Der AccessToken konnte nicht erfolgreich vom ChurchTools Server geholt werden.");
@@ -110,21 +128,34 @@ public class ChurchToolsApi {
 			// return Optional.empty();
 		}
 		try {
-			Response response = client.target(baseUrl).path("api").path("events").queryParam("login_token", accessToken)
-					.request(MediaType.APPLICATION_JSON).get();
-			EventResponse r = mapper.readValue((String) response.readEntity(String.class),
-					new TypeReference<EventResponse>() {
-					});
+			String response = null;
+			CacheEntry entry = cache.get(CACHE_EVENTS);
+			if (entry != null && isValid(entry)) {
+				response = entry.getDataDecoded();
+			} else {
+				response = client.target(baseUrl).path("api").path("events").queryParam("login_token", accessToken)
+						.request(MediaType.APPLICATION_JSON).get().readEntity(String.class);
+				saveIntoCache(CACHE_EVENTS, response);
+			}
+
+			EventResponse r = mapper.readValue(response, new TypeReference<EventResponse>() {
+			});
 			List<Event> rawEvents = r.getData();
 			List<Event> enrichedEvents = new ArrayList<Event>();
 
 			for (Event rawEvent : rawEvents) {
-				Response responseEnriched = client.target(baseUrl).path("api").path("events")
-						.path("" + rawEvent.getId()).queryParam("login_token", accessToken)
-						.request(MediaType.APPLICATION_JSON).get();
-				EventResponse2 r2 = mapper.readValue((String) responseEnriched.readEntity(String.class),
-						new TypeReference<EventResponse2>() {
-						});
+				String response2 = null;
+				CacheEntry entry2 = cache.get(CACHE_EVENTDETAIL + "_" + rawEvent.getId());
+				if (entry2 != null && isValid(entry2)) {
+					response2 = entry2.getDataDecoded();
+				} else {
+					response2 = client.target(baseUrl).path("api").path("events").path("" + rawEvent.getId())
+							.queryParam("login_token", accessToken).request(MediaType.APPLICATION_JSON).get()
+							.readEntity(String.class);
+					saveIntoCache(CACHE_EVENTDETAIL + "_" + rawEvent.getId(), response2);
+				}
+				EventResponse2 r2 = mapper.readValue(response2, new TypeReference<EventResponse2>() {
+				});
 				enrichedEvents.add(r2.getData());
 
 			}
@@ -143,11 +174,17 @@ public class ChurchToolsApi {
 			// return Optional.empty();
 		}
 		try {
-			Response response = client.target(baseUrl).path("api").path("services")
-					.queryParam("login_token", accessToken).request(MediaType.APPLICATION_JSON).get();
-			ServiceResponse r = mapper.readValue((String) response.readEntity(String.class),
-					new TypeReference<ServiceResponse>() {
-					});
+			String response = null;
+			CacheEntry entry = cache.get(CACHE_SERVICES);
+			if (entry != null && isValid(entry)) {
+				response = entry.getDataDecoded();
+			} else {
+				response = client.target(baseUrl).path("api").path("services").queryParam("login_token", accessToken)
+						.request(MediaType.APPLICATION_JSON).get().readEntity(String.class);
+				saveIntoCache(CACHE_SERVICES, response);
+			}
+			ServiceResponse r = mapper.readValue(response, new TypeReference<ServiceResponse>() {
+			});
 			return Optional.ofNullable(r.getData());
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -174,15 +211,32 @@ public class ChurchToolsApi {
 			return Optional.empty();
 		}
 		try {
-			Response response = client.target(baseUrl).path("api").path("events").path("" + id).path("agenda")
-					.queryParam("login_token", accessToken).request(MediaType.APPLICATION_JSON).get();
-			AgendaResponse r = mapper.readValue((String) response.readEntity(String.class),
-					new TypeReference<AgendaResponse>() {
-					});
+			String response = null;
+			CacheEntry entry = cache.get(CACHE_AGENDAS);
+			if (entry != null && isValid(entry)) {
+				response = entry.getDataDecoded();
+			} else {
+				response = client.target(baseUrl).path("api").path("events").path("" + id).path("agenda")
+						.queryParam("login_token", accessToken).request(MediaType.APPLICATION_JSON).get()
+						.readEntity(String.class);
+				saveIntoCache(CACHE_AGENDAS, response);
+			}
+			AgendaResponse r = mapper.readValue(response, new TypeReference<AgendaResponse>() {
+			});
 			return Optional.ofNullable(r.getData());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		return Optional.empty();
 	}
+
+	private boolean isValid(CacheEntry entry) {
+		return (System.currentTimeMillis() - entry.created) <= 600000;
+	}
+
+	private void saveIntoCache(String key, String value) {
+		cache.put(key, new CacheEntry(Base64.getEncoder().encodeToString(value.getBytes())));
+		JSONPersistence.get().setSetting(UTPersistenceConstants.CTCACHE, cache);
+	}
+
 }

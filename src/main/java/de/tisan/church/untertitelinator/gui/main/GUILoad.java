@@ -101,7 +101,7 @@ public class GUILoad extends JFrame {
 						break;
 					}
 					try {
-						Thread.sleep(rnd.nextInt(100) + 1);
+						Thread.sleep(rnd.nextInt(10) + 1);
 					} catch (InterruptedException e) {
 					}
 					pro.setValue(i);
