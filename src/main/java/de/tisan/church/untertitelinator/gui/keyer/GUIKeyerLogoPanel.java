@@ -1,7 +1,6 @@
-package de.tisan.church.untertitelinator.main;
+package de.tisan.church.untertitelinator.gui.keyer;
 
 import java.awt.Dimension;
-import java.awt.Image;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.image.BufferedImage;
@@ -23,16 +22,22 @@ public class GUIKeyerLogoPanel extends JPanel {
 	public GUIKeyerLogoPanel(FlatLayoutManager man, GUIKeyer instance, Dimension preferredSize) {
 		setLayout(null);
 		setOpaque(false);
+		
 		layerImage = new JLabel();
+		
 		try {
 			image = ImageIO.read(
-					GUIKeyerLogoPanel.class.getResourceAsStream("/de/tisan/church/untertitelinator/resources/bg_logo.png"));
+					GUIKeyerLogoPanel.class.getResourceAsStream("/de/tisan/church/untertitelinator/resources/evko_broadcast_watermark_v1_small.png"));
+			layerImage.setIcon(new ImageIcon(image));
+			setBounds(0, 0, image.getWidth(), image.getHeight());
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
-		fitImage(preferredSize.width, preferredSize.height);
-		add(layerImage);
 
+		add(layerImage);
+		
+		fitImage(preferredSize.width, preferredSize.height);
+				
 		addComponentListener(new ComponentAdapter() {
 
 			@Override
@@ -40,14 +45,17 @@ public class GUIKeyerLogoPanel extends JPanel {
 				fitImage(getWidth(), getHeight());
 			}
 		});
+		
 		repaint();
 	}
 
 	public void fitImage(int width, int height) {
+		int safeBounds = 80;
 		if (isVisible()) {
-			layerImage.setIcon(new ImageIcon(image.getScaledInstance(width, height, Image.SCALE_SMOOTH)));
+			int x = width - image.getWidth() - safeBounds;
+			int y = safeBounds;
+			layerImage.setBounds(x, y, image.getWidth(), image.getHeight());
+			System.out.println("x: " + x + "; y: " + y);
 		}
-		layerImage.setBounds(0, 0, width, height);
 	}
-
 }

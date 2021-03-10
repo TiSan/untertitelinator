@@ -1,4 +1,4 @@
-package de.tisan.church.untertitelinator.main;
+package de.tisan.church.untertitelinator.gui.keyer;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -27,7 +27,6 @@ public class GUIKeyer extends JFrame {
 	public static GUIKeyer get() {
 		if (instance == null) {
 			instance = new GUIKeyer();
-//			instance.setVisible(true);
 		}
 		return instance;
 	}
@@ -36,9 +35,10 @@ public class GUIKeyer extends JFrame {
 	private GUIKeyerStartPagePanel pnlStartPage;
 	private FlatTitleBarWin10 bar;
 	Color bg;
+	Color fg;
 	private GUIKeyerLogoPanel pnlLogo;
 	private GUIKeyerEndcardPanel pnlEndcardPage;
-	private GUIKeyerKollektePanel pnlKollekte;
+	private GUIKeyerUntertitelPanel pnlKollekte;
 
 	public GUIKeyer() {
 		try {
@@ -51,11 +51,10 @@ public class GUIKeyer extends JFrame {
 					(Integer) JSONPersistence.get().getSetting(UTPersistenceConstants.GUIKEYERY, 0));
 			setSize(screenSize);
 			setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-			bg = (Color) Color.class
-					.getField(
-							(String) JSONPersistence.get().getSetting(UTPersistenceConstants.GUIKEYERBACKGROUND, "GREEN"))
+			bg = (Color) Color.class.getField(
+					(String) JSONPersistence.get().getSetting(UTPersistenceConstants.GUIKEYERBACKGROUND, "GREEN"))
 					.get(new Color(0));
-
+			fg = Color.white;
 			setBackground(bg);
 
 			JPanel contentPane = new JPanel();
@@ -74,7 +73,8 @@ public class GUIKeyer extends JFrame {
 			contentPane.add(bar);
 			bar.setOpaque(true);
 			bar.addFlatTitleBarListener(new DefaultFlatTitleBarListener(this));
-			bar.setCloseable((boolean) JSONPersistence.get().getSetting(UTPersistenceConstants.GUIKEYERCLOSEABLE, false));
+			bar.setCloseable(
+					(boolean) JSONPersistence.get().getSetting(UTPersistenceConstants.GUIKEYERCLOSEABLE, false));
 			bar.setMaximizable(
 					(boolean) JSONPersistence.get().getSetting(UTPersistenceConstants.GUIKEYERMAXIMIZABLE, true));
 			bar.setMinimizable(
@@ -95,7 +95,7 @@ public class GUIKeyer extends JFrame {
 			contentPane.add(pnlEndcardPage);
 			pnlEndcardPage.setVisible(false);
 
-			pnlKollekte = new GUIKeyerKollektePanel(man, this, screenSize);
+			pnlKollekte = new GUIKeyerUntertitelPanel(man, this, screenSize);
 			pnlKollekte.setBounds(0, 0, getWidth(), getHeight());
 			contentPane.add(pnlKollekte);
 			pnlKollekte.setVisible(false);
@@ -134,8 +134,7 @@ public class GUIKeyer extends JFrame {
 		}).start();
 	}
 
-	public void showNewTextLines(String title, String line1, String line2, String line3, String line4, int delay,
-			boolean paused) {
+	public void showNewTextLines(String title, String line1, String line2, int delay, boolean paused) {
 		new Thread(new Runnable() {
 
 			@Override
@@ -144,7 +143,7 @@ public class GUIKeyer extends JFrame {
 					Thread.sleep(delay);
 				} catch (InterruptedException e) {
 				}
-				pnlUntertitel.showNewTextLines(line1, line2, line3, line4);
+				pnlUntertitel.showNewTextLines(line1, line2);
 			}
 		}).start();
 	}
@@ -152,26 +151,25 @@ public class GUIKeyer extends JFrame {
 	public void loadUi() {
 		Event currentEvent = Untertitelinator.get().getCurrentEvent();
 		String themaString = currentEvent.getName();
-		
+
 		// Gottesdienst-Titel aus "Info-Feld" lesen
 		String titleString = currentEvent.getDescription();
 		int indexEnter = titleString.indexOf("\n");
 		if (indexEnter == -1) {
 			indexEnter = titleString.length();
 		}
-		
+
 		titleString = titleString.substring(0, indexEnter);
-		
+
 		// Fallback, wenn nicht gesetzt
-		if(titleString.startsWith("Weitere Infos...")) {
+		if (titleString.startsWith("Weitere Infos...")) {
 			titleString = "Live-Gottesdienst";
 		}
-		
-		pnlStartPage
-				.showNextStream(titleString, "Thema: \"" + themaString + "\"",
-						currentEvent.getStartDate().plusHours(1)
-								.format(DateTimeFormatter.ofPattern("dd.MM.yyyy - HH:mm")) + " Uhr",
-						Untertitelinator.get().getServiceList());
+
+		pnlStartPage.showNextStream(titleString, "Thema: \"" + themaString + "\"",
+				currentEvent.getStartDate().plusHours(1).format(DateTimeFormatter.ofPattern("dd.MM.yyyy - HH:mm"))
+						+ " Uhr",
+				Untertitelinator.get().getServiceList());
 
 	}
 
@@ -227,9 +225,19 @@ public class GUIKeyer extends JFrame {
 
 	public boolean toggleKollekte() {
 		if (pnlKollekte.isVisible()) {
-			pnlKollekte.setVisible(false);
+			new Thread(new Runnable() {
+
+				@Override
+				public void run() {
+					pnlKollekte.showNewTextLines("", "", true);
+					pnlKollekte.setVisible(false);
+				}
+			}).start();
 		} else {
 			pnlKollekte.setVisible(true);
+			String kollekteLine1 = JSONPersistence.get().getSetting(UTPersistenceConstants.GUIKEYERKOLLEKTELINE1, "Kollektenkonto: DE76 5006 1741 0000 0096 87", String.class);
+			pnlKollekte.showNewTextLines(kollekteLine1, "Verwendungszweck: 'Kollekte "
+					+ Untertitelinator.get().getCurrentEvent().getStartDayString() + "'");
 		}
 		return pnlKollekte.isVisible();
 

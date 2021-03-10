@@ -1,4 +1,4 @@
-package de.tisan.church.untertitelinator.main;
+package de.tisan.church.untertitelinator.gui.presentator;
 
 import java.awt.Color;
 import java.awt.Dimension;

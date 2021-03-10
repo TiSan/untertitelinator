@@ -43,6 +43,7 @@ public class Untertitelinator {
 	}
 
 	public void loadSongs() {
+		songs.clear();
 		File songDir = new File(
 				(String) JSONPersistence.get().getSetting(UTPersistenceConstants.SONGSFOLDERPATH, "songs/"));
 		if (songDir.exists() == false) {

@@ -1,12 +1,21 @@
 package de.tisan.church.untertitelinator.churchtools.api.objects;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Event {
+
+	@JsonIgnore
+	private static DateTimeFormatter sdf = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+	
+	@JsonIgnore
+	private static DateTimeFormatter sdfDay = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+
 	long id;
 	String guid;
 	String name;
@@ -17,7 +26,7 @@ public class Event {
 	EventPermission permissions;
 	Domain calendar;
 	List<EventService> eventServices;
-	
+
 	public long getId() {
 		return id;
 	}
@@ -54,12 +63,24 @@ public class Event {
 		return startDate;
 	}
 
+	public String getStartDateString() {
+		return sdf.format(startDate);
+	}
+	
+	public String getStartDayString() {
+		return sdfDay.format(startDate);
+	}
+
 	public void setStartDate(LocalDateTime startDate) {
 		this.startDate = startDate;
 	}
 
 	public LocalDateTime getEndDate() {
 		return endDate;
+	}
+
+	public String getEndDateString() {
+		return sdf.format(endDate);
 	}
 
 	public void setEndDate(LocalDateTime endDate) {
@@ -97,6 +118,5 @@ public class Event {
 	public void setEventServices(List<EventService> eventServices) {
 		this.eventServices = eventServices;
 	}
-	
 
 }

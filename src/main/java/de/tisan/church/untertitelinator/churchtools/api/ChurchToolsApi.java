@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.swing.JOptionPane;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Form;
@@ -14,6 +15,7 @@ import javax.ws.rs.core.Response;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
@@ -82,11 +84,19 @@ public class ChurchToolsApi {
 			String token;
 			String rString = (String) response.readEntity(String.class);
 			System.out.println(rString);
-			token = mapper.readTree(rString).get("data").get("token").asText();
+			JsonNode rStatus = mapper.readTree(rString);
+			if (rStatus.get("status").asText().equalsIgnoreCase("fail")) {
+				JOptionPane.showMessageDialog(null,
+						"Es konnten keine Events bei Churchtools geladen werden. Fehler: "
+								+ rStatus.get("data").asText(),
+						"Fehler beim ChurchTools Login", JOptionPane.ERROR_MESSAGE);
+				System.exit(1);
+			}
+			token = rStatus.get("data").get("token").asText();
 
 			System.out.println("Token: " + token);
 			this.accessToken = token;
-		} catch (IOException e) {
+		} catch (Exception e) {
 			System.out
 					.println("FEHLER! Der AccessToken konnte nicht erfolgreich vom ChurchTools Server geholt werden.");
 		}

@@ -1,8 +1,7 @@
-package de.tisan.church.untertitelinator.main;
+package de.tisan.church.untertitelinator.gui.main;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
-import java.io.IOException;
 import java.util.Random;
 
 import javax.imageio.ImageIO;
@@ -12,6 +11,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import de.tisan.church.untertitelinator.main.Loader;
 import de.tisan.flatui.components.fcommons.FlatLayoutManager;
 import de.tisan.flatui.components.fprogressbar.FlatProgressBar;
 
@@ -46,7 +46,7 @@ public class GUILoad extends JFrame {
 		try {
 			label.setIcon(new ImageIcon(ImageIO
 					.read(GUILoad.class.getResourceAsStream("/de/tisan/church/untertitelinator/resources/logo.png"))));
-		} catch (IOException e1) {
+		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
 		contentPane.add(label);
@@ -60,12 +60,12 @@ public class GUILoad extends JFrame {
 				while (i <= 100) {
 					switch (i) {
 					case 0:
-						say("Lade ProgrammGUI...");
-						Loader.loadUi();
-						break;
-					case 10:
 						say("Lade Untertitelinator-Songs...");
 						Loader.loadUntertitelinatorSongs();
+						break;
+					case 10:
+						say("Lade ProgrammGUI...");
+						Loader.loadUi();
 						break;
 					case 20:
 						say("Lade Songs in Hauptoberfläche...");

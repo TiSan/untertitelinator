@@ -1,4 +1,4 @@
-package de.tisan.church.untertitelinator.main;
+package de.tisan.church.untertitelinator.gui.main;
 
 import java.awt.Dimension;
 import java.awt.Font;
@@ -15,6 +15,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import de.tisan.church.untertitelinator.data.Untertitelinator;
+import de.tisan.church.untertitelinator.main.Loader;
 import de.tisan.flatui.components.fcommons.FlatColors;
 import de.tisan.flatui.components.fcommons.FlatLayoutManager;
 import de.tisan.flatui.components.ffont.FlatFont;
@@ -41,7 +42,7 @@ public class GUISelectGodi extends JFrame {
 		setSize(500, 300);
 		Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
 		setLocation((d.width / 2) - (getWidth() / 2), (d.height / 2) - (getHeight() / 2));
-		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		FlatLayoutManager man = FlatLayoutManager.get(this);
 		contentPane.setBackground(FlatColors.BACKGROUND);
 		setUndecorated(true);
@@ -79,7 +80,7 @@ public class GUISelectGodi extends JFrame {
 	public void loadUi() {
 		Untertitelinator.get().getAllEvents().forEach(event -> {
 			comboBoxModel.addElement(
-					event.getName() + "(" + event.getDescription() + ", " + event.getStartDate().toString() + ")");
+					event.getStartDateString() + " - " + event.getName());
 
 		});
 	}
