@@ -37,7 +37,7 @@ public class GUIMain extends JFrame
 		
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 		setUndecorated(true);
-		setSize(880, 650);
+		setSize(930, 650);
 		setResizable(false);
 
 		setLocation((int) (dim.getWidth() / 2 - (getWidth() / 2)), (int) (dim.getHeight() / 2 - (getHeight() / 2)));
@@ -63,21 +63,27 @@ public class GUIMain extends JFrame
 
 		contentPane.add(bar);
 		
+		
+		
 		GUIMainControllerPanel pnlController = new GUIMainControllerPanel(man, this, new Dimension(625, 50));
-		pnlController.setLocation(230, 50);
+		pnlController.setLocation(290, 50);
 		contentPane.add(pnlController);
 
 		GUIMainSongTextPanel pnlSongtext = new GUIMainSongTextPanel(man, this, new Dimension(625, 400));
-		pnlSongtext.setLocation(230, 110);
+		pnlSongtext.setLocation(290, 110);
 		contentPane.add(pnlSongtext);
 
-		GUIMainSongListPanel pnlSongList = new GUIMainSongListPanel(man, this, new Dimension(200, 590));
-		pnlSongList.setLocation(10, 50);
+		GUIMainSongListPanel pnlSongList = new GUIMainSongListPanel(man, this, new Dimension(265, 500));
+		pnlSongList.setLocation(10, 110);
 		contentPane.add(pnlSongList);
 
 		GUIMainKeyerPanel pnlKeyer = new GUIMainKeyerPanel(man, this, new Dimension(625, 110));
-		pnlKeyer.setLocation(pnlSongList.getX() + pnlSongList.getWidth() + 20, pnlSongtext.getY() + pnlSongtext.getHeight() + 20);
+		pnlKeyer.setLocation(pnlSongList.getX() + pnlSongList.getWidth() + 10, pnlSongtext.getY() + pnlSongtext.getHeight() + 15);
 		contentPane.add(pnlKeyer);
+		
+		GUIStartEndCardsPanel pnlStartEnd = new GUIStartEndCardsPanel(man, this, new Dimension(200, 585));
+		pnlStartEnd.setLocation(10, 50);
+		contentPane.add(pnlStartEnd);
 		
 		getAllComponents(this).forEach(c -> c.addKeyListener(new LukasWillsSoKeyListener()));
 	}

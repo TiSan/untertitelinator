@@ -2,6 +2,7 @@ package de.tisan.church.untertitelinator.gui.keyer;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Frame;
 import java.awt.Toolkit;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
@@ -9,13 +10,18 @@ import java.time.format.DateTimeFormatter;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 import de.tisan.church.untertitelinator.churchtools.api.objects.Event;
 import de.tisan.church.untertitelinator.data.Untertitelinator;
+import de.tisan.church.untertitelinator.main.Loader;
 import de.tisan.church.untertitelinator.settings.UTPersistenceConstants;
+import de.tisan.flatui.components.fbutton.FlatButton;
 import de.tisan.flatui.components.fcommons.Anchor;
+import de.tisan.flatui.components.fcommons.FlatColors;
 import de.tisan.flatui.components.fcommons.FlatLayoutManager;
 import de.tisan.flatui.components.ftitlebar.DefaultFlatTitleBarListener;
+import de.tisan.flatui.components.ftitlebar.FlatTitleBarListener;
 import de.tisan.flatui.components.ftitlebar.FlatTitleBarWin10;
 import de.tisan.tools.persistencemanager.JSONPersistence;
 
@@ -23,6 +29,11 @@ public class GUIKeyer extends JFrame {
 
 	private static final long serialVersionUID = 7666681011188876592L;
 	private static GUIKeyer instance;
+
+	Color btnActiveColor = FlatColors.ALIZARINRED;
+	Color btnInactiveColor = FlatColors.HIGHLIGHTBACKGROUND;
+
+	private FlatButton btnMaxButton;
 
 	public static GUIKeyer get() {
 		if (instance == null) {
@@ -66,6 +77,76 @@ public class GUIKeyer extends JFrame {
 			man.disableAllEffects();
 
 			bar = new FlatTitleBarWin10(man, "");
+			bar.addFlatTitleBarListener(new FlatTitleBarListener() {
+
+				@Override
+				public void onWindowDragged() {
+					// TODO Auto-generated method stub
+
+				}
+
+				@Override
+				public void onMinimizeButtonReleased() {
+					// TODO Auto-generated method stub
+
+				}
+
+				@Override
+				public void onMinimizeButtonPressed() {
+					// TODO Auto-generated method stub
+
+				}
+
+				@Override
+				public void onMinimizeButtonMouseMove() {
+					// TODO Auto-generated method stub
+
+				}
+
+				@Override
+				public void onMaximizeButtonReleased() {
+					if ((GUIKeyer.this.getExtendedState() == Frame.MAXIMIZED_BOTH) == false) {
+					bar.setVisible(false);
+					}
+					Loader.getMainUi().updateUIComponents();
+				}
+
+				@Override
+				public void onMaximizeButtonPressed() {
+					// TODO Auto-generated method stub
+
+				}
+
+				@Override
+				public void onMaximizeButtonMouseMove() {
+					// TODO Auto-generated method stub
+
+				}
+
+				@Override
+				public void onImageClicked() {
+					// TODO Auto-generated method stub
+
+				}
+
+				@Override
+				public void onCloseButtonReleased() {
+					// TODO Auto-generated method stub
+
+				}
+
+				@Override
+				public void onCloseButtonPressed() {
+					// TODO Auto-generated method stub
+
+				}
+
+				@Override
+				public void onCloseButtonMouseMove() {
+					// TODO Auto-generated method stub
+
+				}
+			});
 			bar.setOptionMenuToggleEnabled(false);
 			bar.setBounds(0, 0, getWidth(), 30);
 			bar.setBackground(new Color(0, 0, 0, 0));
@@ -182,6 +263,10 @@ public class GUIKeyer extends JFrame {
 		return pnlStartPage.isVisible();
 	}
 
+	public boolean isBeginLayerVisible() {
+		return pnlStartPage.isVisible();
+	}
+
 	public boolean toggleUntertitel() {
 		if (pnlUntertitel.isVisible()) {
 			pnlUntertitel.setVisible(false);
@@ -193,6 +278,10 @@ public class GUIKeyer extends JFrame {
 		return pnlUntertitel.isVisible();
 	}
 
+	public boolean isUntertitelVisible() {
+		return pnlUntertitel.isVisible();
+	}
+
 	public boolean toggleLogo() {
 		if (pnlLogo.isVisible()) {
 			pnlLogo.setVisible(false);
@@ -200,7 +289,10 @@ public class GUIKeyer extends JFrame {
 			pnlLogo.setVisible(true);
 		}
 		return pnlLogo.isVisible();
+	}
 
+	public boolean isLogoVisible() {
+		return pnlLogo.isVisible();
 	}
 
 	public boolean toggleEndcard() {
@@ -210,9 +302,13 @@ public class GUIKeyer extends JFrame {
 			pnlEndcardPage.setVisible(true);
 		}
 		return pnlEndcardPage.isVisible();
-
 	}
 
+	public boolean isEndcardVisible() {
+		return pnlEndcardPage.isVisible();
+	}
+
+	// Max-Button on Main GUI set active or inactive
 	public boolean toggleWindowBar() {
 		if (bar.isVisible()) {
 			bar.setVisible(false);
@@ -223,6 +319,10 @@ public class GUIKeyer extends JFrame {
 
 	}
 
+	public boolean isWindowBarVisible() {
+		return bar.isVisible();
+	}
+
 	public boolean toggleKollekte() {
 		if (pnlKollekte.isVisible()) {
 			new Thread(new Runnable() {
@@ -231,15 +331,24 @@ public class GUIKeyer extends JFrame {
 				public void run() {
 					pnlKollekte.showNewTextLines("", "", true);
 					pnlKollekte.setVisible(false);
+					Loader.getMainUi().updateUIComponents();
 				}
 			}).start();
 		} else {
 			pnlKollekte.setVisible(true);
-			String kollekteLine1 = JSONPersistence.get().getSetting(UTPersistenceConstants.GUIKEYERKOLLEKTELINE1, "Kollektenkonto: DE76 5006 1741 0000 0096 87", String.class);
+			String kollekteLine1 = JSONPersistence.get().getSetting(UTPersistenceConstants.GUIKEYERKOLLEKTELINE1,
+					"Kollektenkonto: DE76 5006 1741 0000 0096 87", String.class);
 			pnlKollekte.showNewTextLines(kollekteLine1, "Verwendungszweck: 'Kollekte "
 					+ Untertitelinator.get().getCurrentEvent().getStartDayString() + "'");
 		}
 		return pnlKollekte.isVisible();
 
 	}
+
+	public boolean isKollekteVisible() {
+		return pnlKollekte.isVisible();
+	}
+	
+	
+
 }
