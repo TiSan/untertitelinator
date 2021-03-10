@@ -47,7 +47,6 @@ public class GUIMainKeyerPanel extends AGUIMainPanel {
 
 		btnUntertitel = new FlatButton("Untertitel", man);
 		btnUntertitel.setBounds(x, y, widthBtn, heightBtn);
-		btnUntertitel.setBackground(FlatColors.HIGHLIGHTBACKGROUND);
 		btnUntertitel.disableEffects();
 		btnUntertitel.addMouseListener(Priority.NORMAL, new MouseListenerImpl() {
 			@Override
@@ -62,7 +61,6 @@ public class GUIMainKeyerPanel extends AGUIMainPanel {
 
 		btnKollekte = new FlatButton("Kollekte", man);
 		btnKollekte.setBounds(x, y, widthBtn, heightBtn);
-		btnKollekte.setBackground(FlatColors.HIGHLIGHTBACKGROUND);
 		btnKollekte.disableEffects();
 		btnKollekte.addMouseListener(Priority.NORMAL, new MouseListenerImpl() {
 			@Override
@@ -79,7 +77,6 @@ public class GUIMainKeyerPanel extends AGUIMainPanel {
 
 		btnLogo = new FlatButton("Logo", man);
 		btnLogo.setBounds(x, y, widthBtn, heightBtn);
-		btnLogo.setBackground(FlatColors.GREEN);
 		btnLogo.disableEffects();
 		btnLogo.addMouseListener(Priority.NORMAL, new MouseListenerImpl() {
 			@Override
@@ -94,7 +91,6 @@ public class GUIMainKeyerPanel extends AGUIMainPanel {
 
 		btnMaxButton = new FlatButton("Max-Button", man);
 		btnMaxButton.setBounds(x, y, widthBtn, heightBtn);
-		btnMaxButton.setBackground(FlatColors.GREEN);
 		btnMaxButton.disableEffects();
 		btnMaxButton.addMouseListener(Priority.NORMAL, new MouseListenerImpl() {
 			@Override
@@ -104,6 +100,8 @@ public class GUIMainKeyerPanel extends AGUIMainPanel {
 			}
 		});
 		add(btnMaxButton);
+		
+		updateThisComponent();
 	}
 
 	@Override
