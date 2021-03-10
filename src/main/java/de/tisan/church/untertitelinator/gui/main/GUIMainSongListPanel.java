@@ -1,6 +1,7 @@
 package de.tisan.church.untertitelinator.gui.main;
 
 import java.awt.Dimension;
+import java.awt.Font;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
@@ -16,6 +17,7 @@ import de.tisan.flatui.components.fcommons.FlatLayoutManager;
 import de.tisan.flatui.components.fhintbox.FlatHintBoxEntry;
 import de.tisan.flatui.components.fhintbox.FlatHintBoxManager;
 import de.tisan.flatui.components.ficon.FlatIcon;
+import de.tisan.flatui.components.ficon.FlatIconFont;
 import de.tisan.flatui.components.flisteners.MouseListenerImpl;
 import de.tisan.flatui.components.flisteners.MouseReleaseHandler;
 import de.tisan.flatui.components.flisteners.Priority;
@@ -32,7 +34,7 @@ public class GUIMainSongListPanel extends AGUIMainPanel {
 
 		list = new JList<String>(songListModel);
 
-		list.setBounds(0, 0, preferredSize.width, preferredSize.height - 50);
+		list.setBounds(0, 0, preferredSize.width -65, preferredSize.height - 50);
 
 		list.addListSelectionListener(new ListSelectionListener() {
 
@@ -46,10 +48,10 @@ public class GUIMainSongListPanel extends AGUIMainPanel {
 		});
 		add(list);
 
-		int widthBtn = 60;
+		int widthBtn = 55;
 		int heightBtn = 50;
-		int x = 0;
-		int y = list.getY() + list.getHeight() + 5;
+		int x = preferredSize.width -widthBtn ;
+		int y = 0;
 
 		FlatButton btnMoveUp = new FlatButton("", FlatIcon.ARROW_UP, man);
 		btnMoveUp.setBounds(x, y, widthBtn, heightBtn);
@@ -67,11 +69,12 @@ public class GUIMainSongListPanel extends AGUIMainPanel {
 		});
 		add(btnMoveUp);
 
-		x += widthBtn + 5;
+		y += heightBtn + 5;
 
 		FlatButton btnMoveDown = new FlatButton("", FlatIcon.ARROW_DOWN, man);
 		btnMoveDown.setBounds(x, y, widthBtn, heightBtn);
 		btnMoveDown.setBackground(FlatColors.BLUE);
+		//btnMoveDown.setIconFont(FlatIconFont.getInstance(18, Font.PLAIN));
 		btnMoveDown.addMouseListener(Priority.NORMAL, new MouseListenerImpl() {
 			@Override
 			public void onMouseRelease(MouseReleaseHandler handler) {
@@ -85,7 +88,7 @@ public class GUIMainSongListPanel extends AGUIMainPanel {
 		});
 		add(btnMoveDown);
 
-		x += widthBtn + 5;
+		y += heightBtn + 5;
 		FlatHintBoxManager hManager = new FlatHintBoxManager();
 
 		FlatButton btnUpdate = new FlatButton("", FlatIcon.SYNC, man);
