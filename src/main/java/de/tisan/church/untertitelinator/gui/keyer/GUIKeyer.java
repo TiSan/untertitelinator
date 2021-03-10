@@ -12,6 +12,7 @@ import javax.swing.JPanel;
 
 import de.tisan.church.untertitelinator.churchtools.api.objects.Event;
 import de.tisan.church.untertitelinator.data.Untertitelinator;
+import de.tisan.church.untertitelinator.main.Loader;
 import de.tisan.church.untertitelinator.settings.UTPersistenceConstants;
 import de.tisan.flatui.components.fcommons.Anchor;
 import de.tisan.flatui.components.fcommons.FlatLayoutManager;
@@ -181,6 +182,10 @@ public class GUIKeyer extends JFrame {
 		}
 		return pnlStartPage.isVisible();
 	}
+	
+	public boolean isBeginLayerVisible() {
+		return pnlStartPage.isVisible();
+	}
 
 	public boolean toggleUntertitel() {
 		if (pnlUntertitel.isVisible()) {
@@ -192,6 +197,10 @@ public class GUIKeyer extends JFrame {
 		}
 		return pnlUntertitel.isVisible();
 	}
+	
+	public boolean isUntertitelVisible() {
+		return pnlUntertitel.isVisible();
+	}
 
 	public boolean toggleLogo() {
 		if (pnlLogo.isVisible()) {
@@ -200,9 +209,12 @@ public class GUIKeyer extends JFrame {
 			pnlLogo.setVisible(true);
 		}
 		return pnlLogo.isVisible();
-
 	}
 
+	public boolean isLogoVisible() {
+		return pnlLogo.isVisible();
+	}
+	
 	public boolean toggleEndcard() {
 		if (pnlEndcardPage.isVisible()) {
 			pnlEndcardPage.setVisible(false);
@@ -210,7 +222,10 @@ public class GUIKeyer extends JFrame {
 			pnlEndcardPage.setVisible(true);
 		}
 		return pnlEndcardPage.isVisible();
-
+	}
+	
+	public boolean isEndcardVisible() {
+		return pnlEndcardPage.isVisible();
 	}
 
 	public boolean toggleWindowBar() {
@@ -222,6 +237,10 @@ public class GUIKeyer extends JFrame {
 		return bar.isVisible();
 
 	}
+	
+	public boolean isWindowBarVisible() {
+		return bar.isVisible();
+	}
 
 	public boolean toggleKollekte() {
 		if (pnlKollekte.isVisible()) {
@@ -231,6 +250,7 @@ public class GUIKeyer extends JFrame {
 				public void run() {
 					pnlKollekte.showNewTextLines("", "", true);
 					pnlKollekte.setVisible(false);
+					Loader.getMainUi().updateUIComponents();
 				}
 			}).start();
 		} else {
@@ -241,5 +261,9 @@ public class GUIKeyer extends JFrame {
 		}
 		return pnlKollekte.isVisible();
 
+	}
+	
+	public boolean isKollekteVisible() {
+		return pnlKollekte.isVisible();
 	}
 }

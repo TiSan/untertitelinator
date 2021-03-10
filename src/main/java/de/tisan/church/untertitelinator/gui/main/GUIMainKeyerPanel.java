@@ -1,5 +1,6 @@
 package de.tisan.church.untertitelinator.gui.main;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 
@@ -15,12 +16,25 @@ import de.tisan.flatui.components.flisteners.MouseListenerImpl;
 import de.tisan.flatui.components.flisteners.MouseReleaseHandler;
 import de.tisan.flatui.components.flisteners.Priority;
 
-public class GUIMainKeyerPanel extends AGUIMainPanel
-{
+public class GUIMainKeyerPanel extends AGUIMainPanel {
 	private static final long serialVersionUID = 5033708428105225125L;
 
-	public GUIMainKeyerPanel(FlatLayoutManager man, GUIMain instance, Dimension preferredSize)
-	{
+	Color btnActiveColor = FlatColors.ALIZARINRED;
+	Color btnInactiveColor = FlatColors.HIGHLIGHTBACKGROUND;
+
+	private FlatButton btnUntertitel;
+
+	private FlatButton btnKollekte;
+
+	private FlatButton btnEndcard;
+
+	private FlatButton btnBeginLayer;
+
+	private FlatButton btnLogo;
+
+	private FlatButton btnMaxButton;
+
+	public GUIMainKeyerPanel(FlatLayoutManager man, GUIMain instance, Dimension preferredSize) {
 		super(man, instance, preferredSize);
 		int x = 0;
 		int y = 0;
@@ -35,17 +49,14 @@ public class GUIMainKeyerPanel extends AGUIMainPanel
 
 		y = lblViewHideElements.getY() + lblViewHideElements.getHeight() + 10;
 
-		FlatButton btnUntertitel = new FlatButton("Untertitel", man);
+		btnUntertitel = new FlatButton("Untertitel", man);
 		btnUntertitel.setBounds(x, y, widthBtn, heightBtn);
 		btnUntertitel.setBackground(FlatColors.HIGHLIGHTBACKGROUND);
 		btnUntertitel.disableEffects();
-		btnUntertitel.addMouseListener(Priority.NORMAL, new MouseListenerImpl()
-		{
+		btnUntertitel.addMouseListener(Priority.NORMAL, new MouseListenerImpl() {
 			@Override
-			public void onMouseRelease(MouseReleaseHandler handler)
-			{
-				boolean state = GUIKeyer.get().toggleUntertitel();
-				btnUntertitel.setBackground(state ? FlatColors.GREEN : FlatColors.HIGHLIGHTBACKGROUND, true);
+			public void onMouseRelease(MouseReleaseHandler handler) {
+				GUIKeyer.get().toggleUntertitel();
 				Loader.getMainUi().updateUIComponents();
 			}
 		});
@@ -53,17 +64,14 @@ public class GUIMainKeyerPanel extends AGUIMainPanel
 
 		x += widthBtn + 5;
 
-		FlatButton btnKollekte = new FlatButton("Kollekte", man);
+		btnKollekte = new FlatButton("Kollekte", man);
 		btnKollekte.setBounds(x, y, widthBtn, heightBtn);
 		btnKollekte.setBackground(FlatColors.HIGHLIGHTBACKGROUND);
 		btnKollekte.disableEffects();
-		btnKollekte.addMouseListener(Priority.NORMAL, new MouseListenerImpl()
-		{
+		btnKollekte.addMouseListener(Priority.NORMAL, new MouseListenerImpl() {
 			@Override
-			public void onMouseRelease(MouseReleaseHandler handler)
-			{
-				boolean state = GUIKeyer.get().toggleKollekte();
-				btnKollekte.setBackground(state ? FlatColors.GREEN : FlatColors.HIGHLIGHTBACKGROUND, true);
+			public void onMouseRelease(MouseReleaseHandler handler) {
+				GUIKeyer.get().toggleKollekte();
 				Loader.getMainUi().updateUIComponents();
 			}
 		});
@@ -71,17 +79,14 @@ public class GUIMainKeyerPanel extends AGUIMainPanel
 
 		x += widthBtn + 5;
 
-		FlatButton btnEndcard = new FlatButton("Endcard", man);
+		btnEndcard = new FlatButton("Endcard", man);
 		btnEndcard.setBounds(x, y, widthBtn, heightBtn);
 		btnEndcard.setBackground(FlatColors.HIGHLIGHTBACKGROUND);
 		btnEndcard.disableEffects();
-		btnEndcard.addMouseListener(Priority.NORMAL, new MouseListenerImpl()
-		{
+		btnEndcard.addMouseListener(Priority.NORMAL, new MouseListenerImpl() {
 			@Override
-			public void onMouseRelease(MouseReleaseHandler handler)
-			{
-				boolean state = GUIKeyer.get().toggleEndcard();
-				btnEndcard.setBackground(state ? FlatColors.GREEN : FlatColors.HIGHLIGHTBACKGROUND, true);
+			public void onMouseRelease(MouseReleaseHandler handler) {
+				GUIKeyer.get().toggleEndcard();
 				Loader.getMainUi().updateUIComponents();
 			}
 		});
@@ -89,35 +94,29 @@ public class GUIMainKeyerPanel extends AGUIMainPanel
 
 		x += widthBtn + 5;
 
-		FlatButton btnTitelfolie = new FlatButton("Begincard", man);
-		btnTitelfolie.setBounds(x, y, widthBtn, heightBtn);
-		btnTitelfolie.setBackground(FlatColors.GREEN);
-		btnTitelfolie.disableEffects();
-		btnTitelfolie.addMouseListener(Priority.NORMAL, new MouseListenerImpl()
-		{
+		btnBeginLayer = new FlatButton("Begincard", man);
+		btnBeginLayer.setBounds(x, y, widthBtn, heightBtn);
+		btnBeginLayer.setBackground(FlatColors.GREEN);
+		btnBeginLayer.disableEffects();
+		btnBeginLayer.addMouseListener(Priority.NORMAL, new MouseListenerImpl() {
 			@Override
-			public void onMouseRelease(MouseReleaseHandler handler)
-			{
-				boolean state = GUIKeyer.get().toggleBeginLayer();
-				btnTitelfolie.setBackground(state ? FlatColors.GREEN : FlatColors.HIGHLIGHTBACKGROUND, true);
+			public void onMouseRelease(MouseReleaseHandler handler) {
+				GUIKeyer.get().toggleBeginLayer();
 				Loader.getMainUi().updateUIComponents();
 			}
 		});
-		add(btnTitelfolie);
+		add(btnBeginLayer);
 
 		x += widthBtn + 5;
 
-		FlatButton btnLogo = new FlatButton("Logo", man);
+		btnLogo = new FlatButton("Logo", man);
 		btnLogo.setBounds(x, y, widthBtn, heightBtn);
 		btnLogo.setBackground(FlatColors.GREEN);
 		btnLogo.disableEffects();
-		btnLogo.addMouseListener(Priority.NORMAL, new MouseListenerImpl()
-		{
+		btnLogo.addMouseListener(Priority.NORMAL, new MouseListenerImpl() {
 			@Override
-			public void onMouseRelease(MouseReleaseHandler handler)
-			{
-				boolean state = GUIKeyer.get().toggleLogo();
-				btnLogo.setBackground(state ? FlatColors.GREEN : FlatColors.HIGHLIGHTBACKGROUND, true);
+			public void onMouseRelease(MouseReleaseHandler handler) {
+				GUIKeyer.get().toggleLogo();
 				Loader.getMainUi().updateUIComponents();
 			}
 		});
@@ -125,26 +124,56 @@ public class GUIMainKeyerPanel extends AGUIMainPanel
 
 		x += widthBtn + 5;
 
-		FlatButton btnWindowBar = new FlatButton("Max-Button", man);
-		btnWindowBar.setBounds(x, y, widthBtn, heightBtn);
-		btnWindowBar.setBackground(FlatColors.GREEN);
-		btnWindowBar.disableEffects();
-		btnWindowBar.addMouseListener(Priority.NORMAL, new MouseListenerImpl()
-		{
+		btnMaxButton = new FlatButton("Max-Button", man);
+		btnMaxButton.setBounds(x, y, widthBtn, heightBtn);
+		btnMaxButton.setBackground(FlatColors.GREEN);
+		btnMaxButton.disableEffects();
+		btnMaxButton.addMouseListener(Priority.NORMAL, new MouseListenerImpl() {
 			@Override
-			public void onMouseRelease(MouseReleaseHandler handler)
-			{
-				boolean state = GUIKeyer.get().toggleWindowBar();
-				btnWindowBar.setBackground(state ? FlatColors.GREEN : FlatColors.HIGHLIGHTBACKGROUND, true);
+			public void onMouseRelease(MouseReleaseHandler handler) {
+				GUIKeyer.get().toggleWindowBar();
 				Loader.getMainUi().updateUIComponents();
 			}
 		});
-		add(btnWindowBar);
+		add(btnMaxButton);
 	}
 
 	@Override
-	public void updateThisComponent()
-	{
-		
+	public void updateThisComponent() {
+		if (GUIKeyer.get().isKollekteVisible()) {
+			btnKollekte.setBackground(btnActiveColor, true);
+		} else {
+			btnKollekte.setBackground(btnInactiveColor, true);
+		}
+
+		if (GUIKeyer.get().isUntertitelVisible()) {
+			btnUntertitel.setBackground(btnActiveColor, true);
+		} else {
+			btnUntertitel.setBackground(btnInactiveColor, true);
+		}
+
+		if (GUIKeyer.get().isEndcardVisible()) {
+			btnEndcard.setBackground(btnActiveColor, true);
+		} else {
+			btnEndcard.setBackground(btnInactiveColor, true);
+		}
+
+		if (GUIKeyer.get().isBeginLayerVisible()) {
+			btnBeginLayer.setBackground(btnActiveColor, true);
+		} else {
+			btnBeginLayer.setBackground(btnInactiveColor, true);
+		}
+
+		if (GUIKeyer.get().isLogoVisible()) {
+			btnLogo.setBackground(btnActiveColor, true);
+		} else {
+			btnLogo.setBackground(btnInactiveColor, true);
+		}
+
+		if (GUIKeyer.get().isWindowBarVisible()) {
+			btnMaxButton.setBackground(btnActiveColor, true);
+		} else {
+			btnMaxButton.setBackground(btnInactiveColor, true);
+		}
 	}
 }

@@ -102,7 +102,7 @@ public class GUIMainSongListPanel extends AGUIMainPanel {
 					songListModel.clear();
 					Untertitelinator.get().loadSongs();
 					updateSongList();
-					hManager.showHintBox(new FlatHintBoxEntry("Songs neu geladen", "Alle Songs im Song-Verzeichnis wurden erneut eingelesen!", 5));
+					hManager.showHintBox(new FlatHintBoxEntry("Songs neu geladen", "Alle Songs im Song-Verzeichnis wurden erneut eingelesen!", 2));
 				}
 			}
 		});
