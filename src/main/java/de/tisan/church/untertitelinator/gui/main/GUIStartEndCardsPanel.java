@@ -31,7 +31,6 @@ public class GUIStartEndCardsPanel extends AGUIMainPanel {
 
 		btnBeginLayer = new FlatButton("Begincard", man);
 		btnBeginLayer.setBounds(x, y, widthBtn, heightBtn);
-		btnBeginLayer.setBackground(FlatColors.GREEN);
 		btnBeginLayer.disableEffects();
 		btnBeginLayer.addMouseListener(Priority.NORMAL, new MouseListenerImpl() {
 			@Override
@@ -46,7 +45,6 @@ public class GUIStartEndCardsPanel extends AGUIMainPanel {
 
 		btnEndcard = new FlatButton("Endcard", man);
 		btnEndcard.setBounds(x, y, widthBtn, heightBtn +20);
-		btnEndcard.setBackground(FlatColors.HIGHLIGHTBACKGROUND);
 		btnEndcard.disableEffects();
 		btnEndcard.addMouseListener(Priority.NORMAL, new MouseListenerImpl() {
 			@Override
@@ -59,6 +57,8 @@ public class GUIStartEndCardsPanel extends AGUIMainPanel {
 
 		x += widthBtn + 5;
 
+		updateThisComponent();
+		
 	}
 
 	@Override
