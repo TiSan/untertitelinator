@@ -3,8 +3,10 @@ package de.tisan.church.untertitelinator.gui.main;
 import java.awt.Dimension;
 import java.lang.reflect.Field;
 
+import de.tisan.church.untertitelinator.churchtools.instancer.CTEventHub;
+import de.tisan.church.untertitelinator.churchtools.instancer.packets.Command;
+import de.tisan.church.untertitelinator.churchtools.instancer.packets.CommandPacket;
 import de.tisan.church.untertitelinator.data.Untertitelinator;
-import de.tisan.church.untertitelinator.main.Loader;
 import de.tisan.flatui.components.fbutton.FlatButton;
 import de.tisan.flatui.components.fcommons.FlatColors;
 import de.tisan.flatui.components.fcommons.FlatLayoutManager;
@@ -37,7 +39,7 @@ public class GUIMainControllerPanel extends AGUIMainPanel
 			@Override
 			public void onMouseRelease(MouseReleaseHandler handler)
 			{
-				jumpToStart();
+				CTEventHub.get().publish(new CommandPacket(Command.JUMP_START));
 			}
 		});
 
@@ -53,7 +55,7 @@ public class GUIMainControllerPanel extends AGUIMainPanel
 			@Override
 			public void onMouseRelease(MouseReleaseHandler handler)
 			{
-				previousLine();
+				CTEventHub.get().publish(new CommandPacket(Command.PREVIOUS_LINE));
 			}
 		});
 
@@ -69,7 +71,7 @@ public class GUIMainControllerPanel extends AGUIMainPanel
 			@Override
 			public void onMouseRelease(MouseReleaseHandler handler)
 			{
-				pause();
+				CTEventHub.get().publish(new CommandPacket(Command.PAUSE));
 			}
 		});
 
@@ -84,7 +86,7 @@ public class GUIMainControllerPanel extends AGUIMainPanel
 			@Override
 			public void onMouseRelease(MouseReleaseHandler handler)
 			{
-				nextLine();
+				CTEventHub.get().publish(new CommandPacket(Command.NEXT_LINE));
 
 			}
 		});
@@ -100,42 +102,12 @@ public class GUIMainControllerPanel extends AGUIMainPanel
 			@Override
 			public void onMouseRelease(MouseReleaseHandler handler)
 			{
-				jumpToEnd();
+				CTEventHub.get().publish(new CommandPacket(Command.JUMP_END));
 			}
 		});
 
 		add(btnEnd);
 
-	}
-
-	void jumpToStart()
-	{
-		Untertitelinator.get().getCurrentPlayer().jumpToStart();
-		Loader.getMainUi().updateUIComponents();
-	}
-
-	void jumpToEnd()
-	{
-		Untertitelinator.get().getCurrentPlayer().jumpToEnd();
-		Loader.getMainUi().updateUIComponents();
-	}
-
-	public void nextLine()
-	{
-		Untertitelinator.get().getCurrentPlayer().nextLine();
-		Loader.getMainUi().updateUIComponents();
-	}
-
-	public void previousLine()
-	{
-		Untertitelinator.get().getCurrentPlayer().previousLine();
-		Loader.getMainUi().updateUIComponents();
-	}
-
-	public void pause()
-	{
-		Untertitelinator.get().getCurrentPlayer().pause();
-		Loader.getMainUi().updateUIComponents();
 	}
 
 	@Override

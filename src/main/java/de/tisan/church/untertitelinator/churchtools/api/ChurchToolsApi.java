@@ -30,6 +30,7 @@ import de.tisan.church.untertitelinator.churchtools.api.objects.EventResponse2;
 import de.tisan.church.untertitelinator.churchtools.api.objects.Service;
 import de.tisan.church.untertitelinator.churchtools.api.objects.ServiceResponse;
 import de.tisan.church.untertitelinator.settings.UTPersistenceConstants;
+import de.tisan.tisanapi.logger.Logger;
 import de.tisan.tools.persistencemanager.JSONPersistence;
 import de.tisan.tools.persistencemanager.SubTypeReference;
 
@@ -93,7 +94,7 @@ public class ChurchToolsApi {
 			Response response = client.target(baseUrl).queryParam("q", "login/ajax").request(MediaType.APPLICATION_JSON)
 					.post(entity);
 
-			System.out.println("Status: " + response.getStatus());
+			Logger.getInstance().log("Status: " + response.getStatus(), ChurchToolsApi.class);
 			String token;
 			String rString = (String) response.readEntity(String.class);
 			System.out.println(rString);

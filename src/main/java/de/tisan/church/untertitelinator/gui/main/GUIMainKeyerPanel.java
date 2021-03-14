@@ -6,8 +6,10 @@ import java.awt.Font;
 
 import javax.swing.JLabel;
 
+import de.tisan.church.untertitelinator.churchtools.instancer.CTEventHub;
+import de.tisan.church.untertitelinator.churchtools.instancer.packets.Command;
+import de.tisan.church.untertitelinator.churchtools.instancer.packets.CommandPacket;
 import de.tisan.church.untertitelinator.gui.keyer.GUIKeyer;
-import de.tisan.church.untertitelinator.main.Loader;
 import de.tisan.flatui.components.fbutton.FlatButton;
 import de.tisan.flatui.components.fcommons.FlatColors;
 import de.tisan.flatui.components.fcommons.FlatLayoutManager;
@@ -51,8 +53,7 @@ public class GUIMainKeyerPanel extends AGUIMainPanel {
 		btnUntertitel.addMouseListener(Priority.NORMAL, new MouseListenerImpl() {
 			@Override
 			public void onMouseRelease(MouseReleaseHandler handler) {
-				GUIKeyer.get().toggleUntertitel();
-				Loader.getMainUi().updateUIComponents();
+				CTEventHub.get().publish(new CommandPacket(Command.TOGGLE_UNTERTITEL));
 			}
 		});
 		add(btnUntertitel);
@@ -65,8 +66,7 @@ public class GUIMainKeyerPanel extends AGUIMainPanel {
 		btnKollekte.addMouseListener(Priority.NORMAL, new MouseListenerImpl() {
 			@Override
 			public void onMouseRelease(MouseReleaseHandler handler) {
-				GUIKeyer.get().toggleKollekte();
-				Loader.getMainUi().updateUIComponents();
+				CTEventHub.get().publish(new CommandPacket(Command.TOGGLE_KOLLEKTE));
 			}
 		});
 		add(btnKollekte);
@@ -81,8 +81,7 @@ public class GUIMainKeyerPanel extends AGUIMainPanel {
 		btnLogo.addMouseListener(Priority.NORMAL, new MouseListenerImpl() {
 			@Override
 			public void onMouseRelease(MouseReleaseHandler handler) {
-				GUIKeyer.get().toggleLogo();
-				Loader.getMainUi().updateUIComponents();
+				CTEventHub.get().publish(new CommandPacket(Command.TOGGLE_LOGO));
 			}
 		});
 		add(btnLogo);
@@ -95,8 +94,7 @@ public class GUIMainKeyerPanel extends AGUIMainPanel {
 		btnMaxButton.addMouseListener(Priority.NORMAL, new MouseListenerImpl() {
 			@Override
 			public void onMouseRelease(MouseReleaseHandler handler) {
-				GUIKeyer.get().toggleWindowBar();
-				Loader.getMainUi().updateUIComponents();
+				CTEventHub.get().publish(new CommandPacket(Command.TOGGLE_WINDOW_BAR));
 			}
 		});
 		add(btnMaxButton);

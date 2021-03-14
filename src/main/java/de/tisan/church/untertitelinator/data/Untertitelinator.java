@@ -75,8 +75,12 @@ public class Untertitelinator {
 
 	public void switchSong(Song song) {
 		SongPlayer newSongPlayer = createSongPlayerForSong(song);
+		newSongPlayer.enable();
 		if (this.currentPlayer != null && this.currentPlayer.isPaused()) {
 			newSongPlayer.pause();
+		}
+		if (this.currentPlayer != null) {
+			this.currentPlayer.disable();
 		}
 		this.currentPlayer = newSongPlayer;
 	}

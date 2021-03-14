@@ -3,8 +3,10 @@ package de.tisan.church.untertitelinator.gui.main;
 import java.awt.Color;
 import java.awt.Dimension;
 
+import de.tisan.church.untertitelinator.churchtools.instancer.CTEventHub;
+import de.tisan.church.untertitelinator.churchtools.instancer.packets.Command;
+import de.tisan.church.untertitelinator.churchtools.instancer.packets.CommandPacket;
 import de.tisan.church.untertitelinator.gui.keyer.GUIKeyer;
-import de.tisan.church.untertitelinator.main.Loader;
 import de.tisan.flatui.components.fbutton.FlatButton;
 import de.tisan.flatui.components.fcommons.FlatColors;
 import de.tisan.flatui.components.fcommons.FlatLayoutManager;
@@ -35,8 +37,7 @@ public class GUIStartEndCardsPanel extends AGUIMainPanel {
 		btnBeginLayer.addMouseListener(Priority.NORMAL, new MouseListenerImpl() {
 			@Override
 			public void onMouseRelease(MouseReleaseHandler handler) {
-				GUIKeyer.get().toggleBeginLayer();
-				Loader.getMainUi().updateUIComponents();
+				CTEventHub.get().publish(new CommandPacket(Command.TOGGLE_BEGIN_LAYER));
 			}
 		});
 		add(btnBeginLayer);
@@ -49,8 +50,7 @@ public class GUIStartEndCardsPanel extends AGUIMainPanel {
 		btnEndcard.addMouseListener(Priority.NORMAL, new MouseListenerImpl() {
 			@Override
 			public void onMouseRelease(MouseReleaseHandler handler) {
-				GUIKeyer.get().toggleEndcard();
-				Loader.getMainUi().updateUIComponents();
+				CTEventHub.get().publish(new CommandPacket(Command.TOGGLE_ENDCARD));
 			}
 		});
 		add(btnEndcard);
@@ -58,7 +58,6 @@ public class GUIStartEndCardsPanel extends AGUIMainPanel {
 		x += widthBtn + 5;
 
 		updateThisComponent();
-		
 	}
 
 	@Override

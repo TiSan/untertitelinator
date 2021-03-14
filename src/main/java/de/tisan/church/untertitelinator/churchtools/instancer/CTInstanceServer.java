@@ -19,14 +19,18 @@ public class CTInstanceServer {
 	public void startServer() {
 		socketServer = new ObjectServerSocket<Packet>(8080);
 		socketServer.addConnectListener(new CTInstanceServerListener<Packet>());
+		socketServer.start();
 	}
 
-	public void sendNewSongLines(String... lines) {
-		SongLinePacket packet = new SongLinePacket(Arrays.asList(lines));
+	public void sendNewSongLines(String[] currentLines, String[] nextLines) {
+		SongLinePacket packet = new SongLinePacket(Arrays.asList(currentLines), Arrays.asList(nextLines));
 		sendPacket(packet);
 	}
 
 	private void sendPacket(Packet packet) {
+		if (socketServer == null) {
+			return;
+		}
 		socketServer.getSockets().parallelStream().forEach(s -> {
 			try {
 				s.writeObject(packet);
@@ -35,6 +39,10 @@ public class CTInstanceServer {
 				e.printStackTrace();
 			}
 		});
+	}
+
+	public void publish(Packet packet) {
+		sendPacket(packet);
 	}
 
 }

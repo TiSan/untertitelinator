@@ -10,11 +10,14 @@ import java.time.format.DateTimeFormatter;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 
 import de.tisan.church.untertitelinator.churchtools.api.objects.Event;
+import de.tisan.church.untertitelinator.churchtools.instancer.CTEventHub;
+import de.tisan.church.untertitelinator.churchtools.instancer.CTEventListener;
+import de.tisan.church.untertitelinator.churchtools.instancer.packets.CommandPacket;
+import de.tisan.church.untertitelinator.churchtools.instancer.packets.Packet;
+import de.tisan.church.untertitelinator.churchtools.instancer.packets.UIRefreshPacket;
 import de.tisan.church.untertitelinator.data.Untertitelinator;
-import de.tisan.church.untertitelinator.main.Loader;
 import de.tisan.church.untertitelinator.settings.UTPersistenceConstants;
 import de.tisan.flatui.components.fbutton.FlatButton;
 import de.tisan.flatui.components.fcommons.Anchor;
@@ -81,70 +84,50 @@ public class GUIKeyer extends JFrame {
 
 				@Override
 				public void onWindowDragged() {
-					// TODO Auto-generated method stub
-
 				}
 
 				@Override
 				public void onMinimizeButtonReleased() {
-					// TODO Auto-generated method stub
-
 				}
 
 				@Override
 				public void onMinimizeButtonPressed() {
-					// TODO Auto-generated method stub
-
 				}
 
 				@Override
 				public void onMinimizeButtonMouseMove() {
-					// TODO Auto-generated method stub
-
 				}
 
 				@Override
 				public void onMaximizeButtonReleased() {
 					if ((GUIKeyer.this.getExtendedState() == Frame.MAXIMIZED_BOTH) == false) {
-					bar.setVisible(false);
+						bar.setVisible(false);
 					}
-					Loader.getMainUi().updateUIComponents();
+					CTEventHub.get().publish(new UIRefreshPacket());
 				}
 
 				@Override
 				public void onMaximizeButtonPressed() {
-					// TODO Auto-generated method stub
-
 				}
 
 				@Override
 				public void onMaximizeButtonMouseMove() {
-					// TODO Auto-generated method stub
-
 				}
 
 				@Override
 				public void onImageClicked() {
-					// TODO Auto-generated method stub
-
 				}
 
 				@Override
 				public void onCloseButtonReleased() {
-					// TODO Auto-generated method stub
-
 				}
 
 				@Override
 				public void onCloseButtonPressed() {
-					// TODO Auto-generated method stub
-
 				}
 
 				@Override
 				public void onCloseButtonMouseMove() {
-					// TODO Auto-generated method stub
-
 				}
 			});
 			bar.setOptionMenuToggleEnabled(false);
@@ -193,6 +176,43 @@ public class GUIKeyer extends JFrame {
 					pnlEndcardPage.setBounds(0, 0, getWidth(), getHeight());
 					pnlKollekte.setBounds(0, 0, getWidth(), getHeight());
 					pnlLogo.setBounds(0, 0, getWidth(), getHeight());
+				}
+			});
+
+			CTEventHub.get().registerListener(new CTEventListener() {
+
+				@Override
+				public void onEventReceived(Packet packet) {
+					if (packet instanceof CommandPacket) {
+						switch (((CommandPacket) packet).getCommand()) {
+						case TOGGLE_KOLLEKTE:
+							toggleKollekte();
+							CTEventHub.get().publish(new UIRefreshPacket());
+							break;
+						case TOGGLE_LOGO:
+							toggleLogo();
+							CTEventHub.get().publish(new UIRefreshPacket());
+							break;
+						case TOGGLE_UNTERTITEL:
+							toggleUntertitel();
+							CTEventHub.get().publish(new UIRefreshPacket());
+							break;
+						case TOGGLE_WINDOW_BAR:
+							toggleWindowBar();
+							CTEventHub.get().publish(new UIRefreshPacket());
+							break;
+						case TOGGLE_BEGIN_LAYER:
+							toggleBeginLayer();
+							CTEventHub.get().publish(new UIRefreshPacket());
+							break;
+						case TOGGLE_ENDCARD:
+							toggleEndcard();
+							CTEventHub.get().publish(new UIRefreshPacket());
+							break;
+						default:
+							break;
+						}
+					}
 				}
 			});
 
@@ -254,7 +274,7 @@ public class GUIKeyer extends JFrame {
 
 	}
 
-	public boolean toggleBeginLayer() {
+	private boolean toggleBeginLayer() {
 		if (pnlStartPage.isVisible()) {
 			pnlStartPage.setVisible(false);
 		} else {
@@ -267,7 +287,7 @@ public class GUIKeyer extends JFrame {
 		return pnlStartPage.isVisible();
 	}
 
-	public boolean toggleUntertitel() {
+	private boolean toggleUntertitel() {
 		if (pnlUntertitel.isVisible()) {
 			pnlUntertitel.setVisible(false);
 			// bar.setBackground(new Color(0, 0, 0, 0));
@@ -282,7 +302,7 @@ public class GUIKeyer extends JFrame {
 		return pnlUntertitel.isVisible();
 	}
 
-	public boolean toggleLogo() {
+	private boolean toggleLogo() {
 		if (pnlLogo.isVisible()) {
 			pnlLogo.setVisible(false);
 		} else {
@@ -295,7 +315,7 @@ public class GUIKeyer extends JFrame {
 		return pnlLogo.isVisible();
 	}
 
-	public boolean toggleEndcard() {
+	private boolean toggleEndcard() {
 		if (pnlEndcardPage.isVisible()) {
 			pnlEndcardPage.setVisible(false);
 		} else {
@@ -309,7 +329,7 @@ public class GUIKeyer extends JFrame {
 	}
 
 	// Max-Button on Main GUI set active or inactive
-	public boolean toggleWindowBar() {
+	private boolean toggleWindowBar() {
 		if (bar.isVisible()) {
 			bar.setVisible(false);
 		} else {
@@ -323,7 +343,7 @@ public class GUIKeyer extends JFrame {
 		return bar.isVisible();
 	}
 
-	public boolean toggleKollekte() {
+	private boolean toggleKollekte() {
 		if (pnlKollekte.isVisible()) {
 			new Thread(new Runnable() {
 
@@ -331,7 +351,7 @@ public class GUIKeyer extends JFrame {
 				public void run() {
 					pnlKollekte.showNewTextLines("", "", true);
 					pnlKollekte.setVisible(false);
-					Loader.getMainUi().updateUIComponents();
+					CTEventHub.get().publish(new UIRefreshPacket());
 				}
 			}).start();
 		} else {
@@ -348,7 +368,5 @@ public class GUIKeyer extends JFrame {
 	public boolean isKollekteVisible() {
 		return pnlKollekte.isVisible();
 	}
-	
-	
 
 }

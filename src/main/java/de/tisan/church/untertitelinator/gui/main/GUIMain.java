@@ -11,6 +11,10 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 
+import de.tisan.church.untertitelinator.churchtools.instancer.CTEventHub;
+import de.tisan.church.untertitelinator.churchtools.instancer.CTEventListener;
+import de.tisan.church.untertitelinator.churchtools.instancer.packets.Packet;
+import de.tisan.church.untertitelinator.churchtools.instancer.packets.UIRefreshPacket;
 import de.tisan.church.untertitelinator.data.Untertitelinator;
 import de.tisan.church.untertitelinator.settings.UTPersistenceConstants;
 import de.tisan.flatui.components.fcommons.Anchor;
@@ -86,9 +90,19 @@ public class GUIMain extends JFrame
 		contentPane.add(pnlStartEnd);
 		
 		getAllComponents(this).forEach(c -> c.addKeyListener(new LukasWillsSoKeyListener()));
+		
+		CTEventHub.get().registerListener(new CTEventListener() {
+			
+			@Override
+			public void onEventReceived(Packet packet) {
+				if(packet instanceof UIRefreshPacket) {
+					updateUIComponents();
+				}
+			}
+		});
 	}
 
-	public static List<Component> getAllComponents(final Container c)
+	private static List<Component> getAllComponents(final Container c)
 	{
 		Component[] comps = c.getComponents();
 		List<Component> compList = new ArrayList<Component>();
@@ -101,7 +115,7 @@ public class GUIMain extends JFrame
 		return compList;
 	}
 
-	public void updateUIComponents()
+	private void updateUIComponents()
 	{
 		getAllComponents(this).parallelStream().filter(c -> c instanceof AGUIMainPanel).map(AGUIMainPanel.class::cast)
 		        .forEach(AGUIMainPanel::updateThisComponent);

@@ -6,3 +6,4 @@ nextLineForObs.utline
 settings.json
 /target/
 .project
+logs/

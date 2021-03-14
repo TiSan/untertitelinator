@@ -60,8 +60,8 @@ public class GUIMainSongTextPanel extends AGUIMainPanel {
 	public void updateThisComponent() {
 		sentenceModel.changeSong(Untertitelinator.get().getCurrentPlayer().getSong(),
 				Untertitelinator.get().getCurrentPlayer().getCurrentIndex());
-		String[] currentLines = Untertitelinator.get().getCurrentPlayer().getCurrentLine().split("\n", 2);
-		String[] nextLines = Untertitelinator.get().getCurrentPlayer().getNextLine().split("\n", 2);
+		String[] currentLines = Untertitelinator.get().getCurrentPlayer().getCurrentLines();
+		String[] nextLines = Untertitelinator.get().getCurrentPlayer().getNextLines();
 
 		boxCurrentLine1.setText(currentLines.length > 0 ? currentLines[0] : "");
 		boxCurrentLine2.setText(currentLines.length > 1 ? currentLines[1] : "");

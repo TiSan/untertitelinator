@@ -1,5 +1,6 @@
 package de.tisan.church.untertitelinator.main;
 
+import de.tisan.church.untertitelinator.churchtools.instancer.CTInstanceServer;
 import de.tisan.church.untertitelinator.data.Untertitelinator;
 import de.tisan.church.untertitelinator.gui.keyer.GUIKeyer;
 import de.tisan.church.untertitelinator.gui.main.GUIMain;
@@ -27,8 +28,9 @@ public class Loader
 		Untertitelinator.get().loadSongs();
 	}
 
-	public static void loadSongsIntoMainGui()
+	public static void startInstanceServer()
 	{
+		CTInstanceServer.get().startServer();
 	}
 
 	public static void showUi()

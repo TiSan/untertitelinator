@@ -6,21 +6,31 @@ public class SongLinePacket extends Packet {
 
 	private static final long serialVersionUID = -19463254103119350L;
 
-	List<String> lines;
+	List<String> currentLines;
+	List<String> nextLines;
 
 	public SongLinePacket() {
 	}
 
-	public SongLinePacket(List<String> lines) {
-		this.lines = lines;
+	public SongLinePacket(List<String> currentLines, List<String> nextLines) {
+		this.currentLines = currentLines;
+		this.nextLines = nextLines;
 	}
 
-	public List<String> getLines() {
-		return lines;
+	public List<String> getCurrentLines() {
+		return currentLines;
 	}
 
-	public void setLines(List<String> lines) {
-		this.lines = lines;
+	public void setCurrentLines(List<String> currentLines) {
+		this.currentLines = currentLines;
+	}
+
+	public List<String> getNextLines() {
+		return nextLines;
+	}
+
+	public void setNextLines(List<String> nextLines) {
+		this.nextLines = nextLines;
 	}
 
 }
