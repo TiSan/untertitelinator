@@ -8,6 +8,7 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -16,6 +17,12 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import de.tisan.church.untertitelinator.churchtools.api.objects.Event;
+import de.tisan.church.untertitelinator.churchtools.instancer.CTEventHub;
+import de.tisan.church.untertitelinator.churchtools.instancer.CTEventListener;
+import de.tisan.church.untertitelinator.churchtools.instancer.packets.EventSelectionChangedPacket;
+import de.tisan.church.untertitelinator.churchtools.instancer.packets.Packet;
+import de.tisan.church.untertitelinator.data.Untertitelinator;
 import de.tisan.flatui.components.fbutton.FlatButton;
 import de.tisan.flatui.components.fcommons.Anchor;
 import de.tisan.flatui.components.fcommons.FlatLayoutManager;
@@ -37,7 +44,7 @@ public class GUIKeyerStartPagePanel extends JPanel {
 
 	public GUIKeyerStartPagePanel(FlatLayoutManager man, GUIKeyer instance, Dimension preferredSize) {
 		setLayout(null);
-		
+
 		this.man = man;
 		Font font = FlatFont.getInstance(70, Font.BOLD);
 		int spaceX = 30;
@@ -46,7 +53,7 @@ public class GUIKeyerStartPagePanel extends JPanel {
 		int x1 = 150;
 		int y1 = 100;
 		font = FlatFont.getInstance(50, Font.BOLD);
-		
+
 		layerNextStream = new FlatButton("Nächster Stream: ", man);
 		layerNextStream.setBounds(x1, y1, widthElements - x1, height3);
 		layerNextStream.setFont(font);
@@ -55,7 +62,7 @@ public class GUIKeyerStartPagePanel extends JPanel {
 		layerNextStream.setAnchor(Anchor.LEFT, Anchor.RIGHT);
 		layerNextStream.disableEffects();
 		add(layerNextStream);
-		
+
 		y1 += layerNextStream.getHeight() + 5;
 		font = FlatFont.getInstance(90, Font.BOLD);
 		height3 = 130;
@@ -101,13 +108,14 @@ public class GUIKeyerStartPagePanel extends JPanel {
 		/* Bild */
 		layerImage = new JLabel();
 		try {
-			image = ImageIO.read(GUIKeyerStartPagePanel.class.getResourceAsStream("/de/tisan/church/untertitelinator/resources/bg.jpg"));
+			image = ImageIO.read(GUIKeyerStartPagePanel.class
+					.getResourceAsStream("/de/tisan/church/untertitelinator/resources/bg.jpg"));
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
 		fitImage(preferredSize.width, preferredSize.height);
 		add(layerImage);
-		
+
 		addComponentListener(new ComponentAdapter() {
 
 			@Override
@@ -115,21 +123,56 @@ public class GUIKeyerStartPagePanel extends JPanel {
 				fitImage(getWidth(), getHeight());
 			}
 		});
+
+		CTEventHub.get().registerListener(new CTEventListener() {
+
+			@Override
+			public void onEventReceived(Packet packet) {
+				if (packet instanceof EventSelectionChangedPacket) {
+					EventSelectionChangedPacket sPacket = (EventSelectionChangedPacket) packet;
+					Event currentEvent = sPacket.getEvent();
+					String themaString = currentEvent.getName();
+
+					// Gottesdienst-Titel aus "Info-Feld" lesen
+					String titleString = currentEvent.getDescription();
+					int indexEnter = titleString.indexOf("\n");
+					if (indexEnter == -1) {
+						indexEnter = titleString.length();
+					}
+
+					titleString = titleString.substring(0, indexEnter);
+
+					// Fallback, wenn nicht gesetzt
+					if (titleString.startsWith("Weitere Infos...")) {
+						titleString = "Live-Gottesdienst";
+					}
+
+					showNextStream(titleString, "Thema: \"" + themaString + "\"",
+							currentEvent.getStartDate().plusHours(1)
+									.format(DateTimeFormatter.ofPattern("dd.MM.yyyy - HH:mm")) + " Uhr",
+							Untertitelinator.get().getServiceList());
+				}
+			}
+
+		});
+
 		repaint();
+
 	}
 
-	public void fitImage(int width, int height) {
+	private void fitImage(int width, int height) {
 		if (isVisible()) {
 			layerImage.setIcon(new ImageIcon(image.getScaledInstance(width, height, Image.SCALE_SMOOTH)));
 		}
 		layerImage.setBounds(0, 0, width, height);
 	}
 
-	public void showNextStream(String streamTitle, String streamSubtitle, String streamDate, Map<String, String> cast) {
+	private void showNextStream(String streamTitle, String streamSubtitle, String streamDate,
+			Map<String, String> cast) {
 		layerTitle.setText(streamTitle);
 		layerSubTitle.setText(streamSubtitle);
 		layerDate.setText(streamDate);
-		
+
 		listCastLayers.forEach(e -> remove(e));
 		listCastLayers.clear();
 
@@ -137,23 +180,21 @@ public class GUIKeyerStartPagePanel extends JPanel {
 		int heightElements = 50;
 		int x1 = 150;
 		int y1 = heightCastBegin;
-		
+
 		for (String castItem : cast.keySet()) {
-			if(cast.get(castItem) == null) {
+			if (cast.get(castItem) == null) {
 				continue;
 			}
-			System.out.println(castItem);
 			FlatButton layerCast = new FlatButton(castItem + ": " + cast.get(castItem), man);
-			System.out.println("x1=" + x1 + ";y1=" + y1 + ";width=" + widthElements + ";height=" + heightElements);
 			layerCast.setBounds(x1, y1, widthElements, heightElements);
 			layerCast.setFont(font);
 			layerCast.setBackground(new Color(0, 0, 0, 0));
 			layerCast.setAnchor(Anchor.LEFT, Anchor.RIGHT);
 			layerCast.setCenterText(false);
 			layerCast.disableEffects();
-			
+
 			y1 += layerCast.getHeight() + 5;
-			
+
 			add(layerCast, 0);
 			listCastLayers.add(layerCast);
 		}

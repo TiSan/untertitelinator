@@ -74,7 +74,6 @@ public class GUIMainSongListPanel extends AGUIMainPanel {
 		FlatButton btnMoveDown = new FlatButton("", FlatIcon.ARROW_DOWN, man);
 		btnMoveDown.setBounds(x, y, widthBtn, heightBtn);
 		btnMoveDown.setBackground(FlatColors.BLUE);
-		//btnMoveDown.setIconFont(FlatIconFont.getInstance(18, Font.PLAIN));
 		btnMoveDown.addMouseListener(Priority.NORMAL, new MouseListenerImpl() {
 			@Override
 			public void onMouseRelease(MouseReleaseHandler handler) {
@@ -119,7 +118,7 @@ public class GUIMainSongListPanel extends AGUIMainPanel {
 		if (Loader.getMainUi() != null) {
 			Untertitelinator.get().switchSong(Untertitelinator.get().getSongs().stream()
 					.filter(s -> s.getTitle().equals(name)).findFirst().get());
-			CTEventHub.get().publish(new UIRefreshPacket());
+			
 
 		}
 	}
@@ -133,6 +132,5 @@ public class GUIMainSongListPanel extends AGUIMainPanel {
 
 	@Override
 	public void updateThisComponent() {
-		// updateSongList();
 	}
 }

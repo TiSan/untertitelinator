@@ -24,21 +24,16 @@ import de.tisan.flatui.components.ftitlebar.DefaultFlatTitleBarListener;
 import de.tisan.flatui.components.ftitlebar.FlatTitleBarWin10;
 import de.tisan.tools.persistencemanager.JSONPersistence;
 
-public class GUIMain extends JFrame
-{
+public class GUIMain extends JFrame {
 
 	private static final long serialVersionUID = 6255477384834005517L;
 
-	public GUIMain()
-	{
-		try
-		{
+	public GUIMain() {
+		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (Exception e1) {
 		}
-		catch (Exception e1)
-		{
-		}
-		
+
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 		setUndecorated(true);
 		setSize(930, 650);
@@ -54,21 +49,19 @@ public class GUIMain extends JFrame
 		contentPane.setBackground(FlatColors.BACKGROUND);
 
 		FlatLayoutManager man = FlatLayoutManager.get(this);
-		
+
 		man.setResizable(false);
 		FlatTitleBarWin10 bar = new FlatTitleBarWin10(man,
-		        (String) JSONPersistence.get().getSetting(UTPersistenceConstants.CHURCHNAME,
-		                "Evangelische Kirchengemeinde Oberstedten") + " - Untertitelinator v"
-		                + Untertitelinator.VERSION);
+				(String) JSONPersistence.get().getSetting(UTPersistenceConstants.CHURCHNAME,
+						"Evangelische Kirchengemeinde Oberstedten") + " - Untertitelinator v"
+						+ Untertitelinator.VERSION);
 		bar.setBounds(0, 0, getWidth(), 30);
 		bar.setAnchor(Anchor.LEFT, Anchor.RIGHT);
 		bar.setMaximizable(false);
 		bar.addFlatTitleBarListener(new DefaultFlatTitleBarListener(this));
 
 		contentPane.add(bar);
-		
-		
-		
+
 		GUIMainControllerPanel pnlController = new GUIMainControllerPanel(man, this, new Dimension(625, 50));
 		pnlController.setLocation(290, 50);
 		contentPane.add(pnlController);
@@ -82,32 +75,31 @@ public class GUIMain extends JFrame
 		contentPane.add(pnlSongList);
 
 		GUIMainKeyerPanel pnlKeyer = new GUIMainKeyerPanel(man, this, new Dimension(625, 110));
-		pnlKeyer.setLocation(pnlSongList.getX() + pnlSongList.getWidth() + 10, pnlSongtext.getY() + pnlSongtext.getHeight() + 15);
+		pnlKeyer.setLocation(pnlSongList.getX() + pnlSongList.getWidth() + 10,
+				pnlSongtext.getY() + pnlSongtext.getHeight() + 15);
 		contentPane.add(pnlKeyer);
-		
+
 		GUIStartEndCardsPanel pnlStartEnd = new GUIStartEndCardsPanel(man, this, new Dimension(200, 585));
 		pnlStartEnd.setLocation(10, 50);
 		contentPane.add(pnlStartEnd);
-		
+
 		getAllComponents(this).forEach(c -> c.addKeyListener(new LukasWillsSoKeyListener()));
-		
+
 		CTEventHub.get().registerListener(new CTEventListener() {
-			
+
 			@Override
 			public void onEventReceived(Packet packet) {
-				if(packet instanceof UIRefreshPacket) {
+				if (packet instanceof UIRefreshPacket) {
 					updateUIComponents();
 				}
 			}
 		});
 	}
 
-	private static List<Component> getAllComponents(final Container c)
-	{
+	private static List<Component> getAllComponents(final Container c) {
 		Component[] comps = c.getComponents();
 		List<Component> compList = new ArrayList<Component>();
-		for (Component comp : comps)
-		{
+		for (Component comp : comps) {
 			compList.add(comp);
 			if (comp instanceof Container)
 				compList.addAll(getAllComponents((Container) comp));
@@ -115,10 +107,9 @@ public class GUIMain extends JFrame
 		return compList;
 	}
 
-	private void updateUIComponents()
-	{
+	private void updateUIComponents() {
 		getAllComponents(this).parallelStream().filter(c -> c instanceof AGUIMainPanel).map(AGUIMainPanel.class::cast)
-		        .forEach(AGUIMainPanel::updateThisComponent);
+				.forEach(AGUIMainPanel::updateThisComponent);
 	}
 
 }

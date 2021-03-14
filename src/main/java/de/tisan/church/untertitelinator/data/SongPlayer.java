@@ -1,10 +1,12 @@
 package de.tisan.church.untertitelinator.data;
 
+import java.util.Arrays;
+
 import de.tisan.church.untertitelinator.churchtools.instancer.CTEventHub;
 import de.tisan.church.untertitelinator.churchtools.instancer.CTEventListener;
-import de.tisan.church.untertitelinator.churchtools.instancer.CTInstanceServer;
 import de.tisan.church.untertitelinator.churchtools.instancer.packets.CommandPacket;
 import de.tisan.church.untertitelinator.churchtools.instancer.packets.Packet;
+import de.tisan.church.untertitelinator.churchtools.instancer.packets.SongLinePacket;
 import de.tisan.church.untertitelinator.churchtools.instancer.packets.UIRefreshPacket;
 import de.tisan.church.untertitelinator.settings.UTPersistenceConstants;
 import de.tisan.tools.persistencemanager.JSONPersistence;
@@ -17,7 +19,7 @@ public class SongPlayer {
 
 	public SongPlayer(Song song) {
 		this.song = song;
-		setIndex(0);
+		this.index = 0;
 		CTEventHub.get().registerListener(new CTEventListener() {
 
 			@Override
@@ -92,11 +94,28 @@ public class SongPlayer {
 	}
 
 	public String[] getCurrentLines() {
-		return pause ? new String[] { "", "" } : getCurrentLine().split("\n", 2);
+		if (pause == false) {
+			String[] spl = getCurrentLine().split("\n", 2);
+			if (spl.length > 1) {
+				return spl;
+			} else if (spl.length == 1) {
+				return new String[] { spl[0], "" };
+			}
+		}
+		return new String[] { "", "" };
+
 	}
 
 	public String[] getNextLines() {
-		return pause ? new String[] { "", "" } : getNextLine().split("\n", 2);
+		if (pause == false) {
+			String[] spl = getNextLine().split("\n", 2);
+			if (spl.length > 1) {
+				return spl;
+			} else if (spl.length == 1) {
+				return new String[] { spl[0], "" };
+			}
+		}
+		return new String[] { "", "" };
 	}
 
 	private boolean isValidIndex(int i) {
@@ -113,6 +132,7 @@ public class SongPlayer {
 
 	public void pause() {
 		pause = !pause;
+		updateEvent();
 	}
 
 	public Song getSong() {
@@ -129,15 +149,19 @@ public class SongPlayer {
 
 	private void setIndex(int index) {
 		this.index = index;
-		CTInstanceServer.get().sendNewSongLines(getCurrentLines(), getNextLines());
+		updateEvent();
 	}
 	
+	public void updateEvent() {
+		CTEventHub.get()
+		.publish(new SongLinePacket(Arrays.asList(getCurrentLines()), Arrays.asList(getNextLines()), song));
+	}
+
 	public void enable() {
 		this.enabled = true;
 	}
-	
+
 	public void disable() {
 		this.enabled = false;
 	}
 }
-

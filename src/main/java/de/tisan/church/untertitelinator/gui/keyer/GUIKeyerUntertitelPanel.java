@@ -8,6 +8,10 @@ import java.awt.event.ComponentEvent;
 
 import javax.swing.JPanel;
 
+import de.tisan.church.untertitelinator.churchtools.instancer.CTEventHub;
+import de.tisan.church.untertitelinator.churchtools.instancer.CTEventListener;
+import de.tisan.church.untertitelinator.churchtools.instancer.packets.Packet;
+import de.tisan.church.untertitelinator.churchtools.instancer.packets.SongLinePacket;
 import de.tisan.flatui.components.fbutton.FlatButton;
 import de.tisan.flatui.components.fcommons.Anchor;
 import de.tisan.flatui.components.fcommons.FlatLayoutManager;
@@ -55,6 +59,23 @@ public class GUIKeyerUntertitelPanel extends JPanel {
 
 			}
 		});
+		CTEventHub.get().registerListener(new CTEventListener() {
+
+			@Override
+			public void onEventReceived(Packet packet) {
+				if (packet instanceof SongLinePacket) {
+					SongLinePacket sPacket = (SongLinePacket) packet;
+					new Thread(new Runnable() {
+
+						@Override
+						public void run() {
+							showLines(sPacket.getCurrentLines().get(0), sPacket.getCurrentLines().get(1));
+						}
+					}).start();
+				}
+			}
+		});
+
 	}
 
 	private void showLines(String line1, String line2) {
@@ -92,21 +113,4 @@ public class GUIKeyerUntertitelPanel extends JPanel {
 
 	}
 
-	public void showNewTextLines(String line1, String line2) {
-		showNewTextLines(line1, line2, false);
-	}
-
-	public void showNewTextLines(String line1, String line2, boolean waitUntilFinished) {
-		if (waitUntilFinished) {
-			showLines(line1, line2);
-		} else {
-			new Thread(new Runnable() {
-
-				@Override
-				public void run() {
-					showLines(line1, line2);
-				}
-			}).start();
-		}
-	}
 }

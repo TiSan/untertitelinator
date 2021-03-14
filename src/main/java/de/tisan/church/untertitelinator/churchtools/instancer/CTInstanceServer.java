@@ -5,6 +5,7 @@ import java.util.Arrays;
 
 import de.tisan.church.untertitelinator.churchtools.instancer.packets.Packet;
 import de.tisan.church.untertitelinator.churchtools.instancer.packets.SongLinePacket;
+import de.tisan.church.untertitelinator.data.Song;
 import de.tisan.tisanapi.sockets.ObjectServerSocket;
 
 public class CTInstanceServer {
@@ -22,8 +23,8 @@ public class CTInstanceServer {
 		socketServer.start();
 	}
 
-	public void sendNewSongLines(String[] currentLines, String[] nextLines) {
-		SongLinePacket packet = new SongLinePacket(Arrays.asList(currentLines), Arrays.asList(nextLines));
+	public void sendNewSongLines(String[] currentLines, String[] nextLines, Song song) {
+		SongLinePacket packet = new SongLinePacket(Arrays.asList(currentLines), Arrays.asList(nextLines), song);
 		sendPacket(packet);
 	}
 

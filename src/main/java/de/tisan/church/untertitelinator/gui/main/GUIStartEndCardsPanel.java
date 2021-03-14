@@ -4,9 +4,11 @@ import java.awt.Color;
 import java.awt.Dimension;
 
 import de.tisan.church.untertitelinator.churchtools.instancer.CTEventHub;
+import de.tisan.church.untertitelinator.churchtools.instancer.CTEventListener;
 import de.tisan.church.untertitelinator.churchtools.instancer.packets.Command;
 import de.tisan.church.untertitelinator.churchtools.instancer.packets.CommandPacket;
-import de.tisan.church.untertitelinator.gui.keyer.GUIKeyer;
+import de.tisan.church.untertitelinator.churchtools.instancer.packets.GUIKeyerLayerChangePacket;
+import de.tisan.church.untertitelinator.churchtools.instancer.packets.Packet;
 import de.tisan.flatui.components.fbutton.FlatButton;
 import de.tisan.flatui.components.fcommons.FlatColors;
 import de.tisan.flatui.components.fcommons.FlatLayoutManager;
@@ -58,23 +60,29 @@ public class GUIStartEndCardsPanel extends AGUIMainPanel {
 		x += widthBtn + 5;
 
 		updateThisComponent();
+		
+		CTEventHub.get().registerListener(new CTEventListener() {
+
+			@Override
+			public void onEventReceived(Packet packet) {
+				if (packet instanceof GUIKeyerLayerChangePacket) {
+					GUIKeyerLayerChangePacket bPacket = (GUIKeyerLayerChangePacket) packet;
+					switch (bPacket.getLayerName()) {
+					case ENDCARD:
+						btnEndcard.setBackground(bPacket.isVisible() ? btnActiveColor : btnInactiveColor, true);
+						break;
+					case BEGINLAYER:
+						btnBeginLayer.setBackground(bPacket.isVisible() ? btnActiveColor : btnInactiveColor, true);
+						break;
+					default:
+						break;
+					} 
+				} 
+			}
+		});
 	}
 
 	@Override
 	public void updateThisComponent() {
-		// TODO Auto-generated method stub
-
-		if (GUIKeyer.get().isEndcardVisible()) {
-			btnEndcard.setBackground(btnActiveColor, true);
-		} else {
-			btnEndcard.setBackground(btnInactiveColor, true);
-		}
-
-		if (GUIKeyer.get().isBeginLayerVisible()) {
-			btnBeginLayer.setBackground(btnActiveColor, true);
-		} else {
-			btnBeginLayer.setBackground(btnInactiveColor, true);
-		}
-		
 	}
 }

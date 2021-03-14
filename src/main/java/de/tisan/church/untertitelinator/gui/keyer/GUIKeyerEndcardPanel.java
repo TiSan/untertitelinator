@@ -43,7 +43,7 @@ public class GUIKeyerEndcardPanel extends JPanel {
 		repaint();
 	}
 
-	public void fitImage(int width, int height) {
+	private void fitImage(int width, int height) {
 		if (isVisible()) {
 			layerImage.setIcon(new ImageIcon(image.getScaledInstance(width, height, Image.SCALE_SMOOTH)));
 		}

@@ -8,6 +8,10 @@ import java.awt.Toolkit;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import de.tisan.church.untertitelinator.churchtools.instancer.CTEventHub;
+import de.tisan.church.untertitelinator.churchtools.instancer.CTEventListener;
+import de.tisan.church.untertitelinator.churchtools.instancer.packets.Packet;
+import de.tisan.church.untertitelinator.churchtools.instancer.packets.SongLinePacket;
 import de.tisan.church.untertitelinator.data.Untertitelinator;
 import de.tisan.church.untertitelinator.settings.UTPersistenceConstants;
 import de.tisan.flatui.components.fbutton.FlatButton;
@@ -70,7 +74,8 @@ public class GUIPresentator extends JFrame {
 				(boolean) JSONPersistence.get().getSetting(UTPersistenceConstants.GUIPRESENTATORMAXIMIZABLE, true));
 		bar.setMinimizable(
 				(boolean) JSONPersistence.get().getSetting(UTPersistenceConstants.GUIPRESENTATORMINIMIZABLE, false));
-		bar.setMoveable((boolean) JSONPersistence.get().getSetting(UTPersistenceConstants.GUIPRESENTATORMOVEABLE, false));
+		bar.setMoveable(
+				(boolean) JSONPersistence.get().getSetting(UTPersistenceConstants.GUIPRESENTATORMOVEABLE, false));
 
 		bar.setMaximizable(false);
 		bar.setMinimizable(false);
@@ -83,7 +88,8 @@ public class GUIPresentator extends JFrame {
 		int width = getWidth() - (spaceX * 2);
 		int height = 250;
 
-		titleLine = new FlatButton((String)JSONPersistence.get().getSetting(UTPersistenceConstants.GUIPRESENTATORCURRENTTITLETEXT, "Aktueller Titel"), man);
+		titleLine = new FlatButton((String) JSONPersistence.get()
+				.getSetting(UTPersistenceConstants.GUIPRESENTATORCURRENTTITLETEXT, "Aktueller Titel"), man);
 		titleLine.setBounds(spaceX, 50, getWidth(), 150);
 		titleLine.setFont(FlatFont.getInstance(60, Font.BOLD));
 		titleLine.setBackground(FlatColors.BLACK);
@@ -124,9 +130,28 @@ public class GUIPresentator extends JFrame {
 		nextLine2.setAnchor(Anchor.LEFT, Anchor.RIGHT);
 		nextLine2.setForeground(fgColor);
 		contentPane.add(nextLine2);
+
+		CTEventHub.get().registerListener(new CTEventListener() {
+
+			@Override
+			public void onEventReceived(Packet packet) {
+				if (packet instanceof SongLinePacket) {
+					SongLinePacket sPacket = (SongLinePacket) packet;
+					new Thread(new Runnable() {
+
+						@Override
+						public void run() {
+							showNewTextLines(sPacket.getSong().getTitle(), sPacket.getCurrentLines().get(0),
+									sPacket.getCurrentLines().get(1), sPacket.getNextLines().get(0),
+									sPacket.getNextLines().get(1), 0, false);
+						}
+					}).start();
+				}
+			}
+		});
 	}
 
-	public void showNewTextLines(String title, String line1, String line2, String line3, String line4, int delay,
+	private void showNewTextLines(String title, String line1, String line2, String line3, String line4, int delay,
 			boolean paused) {
 		new Thread(new Runnable() {
 
@@ -136,7 +161,9 @@ public class GUIPresentator extends JFrame {
 					Thread.sleep(delay);
 				} catch (InterruptedException e) {
 				}
-				titleLine.setText(paused ? (String)JSONPersistence.get().getSetting(UTPersistenceConstants.BLACKOUTLINEFILLER, "") : title);
+				titleLine.setText(paused
+						? (String) JSONPersistence.get().getSetting(UTPersistenceConstants.BLACKOUTLINEFILLER, "")
+						: title);
 				currentLine1.setText(line1);
 				currentLine2.setText(line2);
 				nextLine1.setText(line3);

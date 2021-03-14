@@ -12,6 +12,8 @@ import de.tisan.church.untertitelinator.churchtools.api.ChurchToolsApi;
 import de.tisan.church.untertitelinator.churchtools.api.objects.Event;
 import de.tisan.church.untertitelinator.churchtools.api.objects.EventService;
 import de.tisan.church.untertitelinator.churchtools.api.objects.Service;
+import de.tisan.church.untertitelinator.churchtools.instancer.CTEventHub;
+import de.tisan.church.untertitelinator.churchtools.instancer.packets.EventSelectionChangedPacket;
 import de.tisan.church.untertitelinator.settings.UTPersistenceConstants;
 import de.tisan.tools.persistencemanager.JSONPersistence;
 
@@ -83,6 +85,7 @@ public class Untertitelinator {
 			this.currentPlayer.disable();
 		}
 		this.currentPlayer = newSongPlayer;
+		this.currentPlayer.updateEvent();
 	}
 
 	public SongPlayer getCurrentPlayer() {
@@ -127,6 +130,7 @@ public class Untertitelinator {
 	public void selectEvent(Event event) {
 		if (event != null) {
 			currentEvent = event;
+			CTEventHub.get().publish(new EventSelectionChangedPacket(event));
 		}
 	}
 
