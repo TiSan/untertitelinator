@@ -1,12 +1,13 @@
 package de.tisan.church.untertitelinator.data;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 import de.tisan.church.untertitelinator.churchtools.api.ChurchToolsApi;
 import de.tisan.church.untertitelinator.churchtools.api.objects.Event;
@@ -39,30 +40,19 @@ public class Untertitelinator {
 
 	private Untertitelinator() {
 		songs = new ArrayList<Song>();
-//		loadSongs();
 	}
 
 	public void loadSongs() {
-		songs.clear();
 		File songDir = new File(
 				(String) JSONPersistence.get().getSetting(UTPersistenceConstants.SONGSFOLDERPATH, "songs/"));
 		if (songDir.exists() == false) {
 			songDir.mkdirs();
 			return;
 		}
-		FilenameFilter filter = new FilenameFilter() {
-
-			@Override
-			public boolean accept(File dir, String name) {
-				return name.toLowerCase().endsWith(
-						(String) JSONPersistence.get().getSetting(UTPersistenceConstants.SONGFILESUFFIX, ".song"));
-			}
-
-		};
-
-		for (File song : songDir.listFiles(filter)) {
-			songs.add(new Song(song));
-		}
+		songs = Arrays
+				.asList(songDir.listFiles((dir, name) -> name.toLowerCase().endsWith(
+						(String) JSONPersistence.get().getSetting(UTPersistenceConstants.SONGFILESUFFIX, ".song"))))
+				.parallelStream().map(Song::new).collect(Collectors.toList());
 	}
 
 	public List<Song> getSongs() {
@@ -92,7 +82,7 @@ public class Untertitelinator {
 
 	public Map<String, String> getServiceList() {
 		Map<String, String> serviceListStr = new TreeMap<String, String>();
-
+		
 		for (EventService es : currentEvent.getEventServices()) {
 			if (es.getName() == null || es.getName().trim().isEmpty()) {
 				continue;

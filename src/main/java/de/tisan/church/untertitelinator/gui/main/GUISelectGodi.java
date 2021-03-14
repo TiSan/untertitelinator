@@ -78,7 +78,7 @@ public class GUISelectGodi extends JFrame {
 	}
 
 	public void loadUi() {
-		Untertitelinator.get().getAllEvents().forEach(event -> {
+		Untertitelinator.get().getAllEvents().stream().forEach(event -> {
 			comboBoxModel.addElement(
 					event.getStartDateString() + " - " + event.getName());
 

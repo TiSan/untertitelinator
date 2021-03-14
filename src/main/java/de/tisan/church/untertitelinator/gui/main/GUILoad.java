@@ -2,7 +2,6 @@ package de.tisan.church.untertitelinator.gui.main;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
-import java.util.Random;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -56,7 +55,6 @@ public class GUILoad extends JFrame {
 			@Override
 			public void run() {
 				int i = 0;
-				Random rnd = new Random();
 				while (i <= 100) {
 					switch (i) {
 					case 0:
@@ -85,6 +83,8 @@ public class GUILoad extends JFrame {
 						setVisible(false);
 						break;
 					case 51:
+						break;
+					case 52:
 						say("Lade Event...");
 						setVisible(true);
 						break;
@@ -101,11 +101,11 @@ public class GUILoad extends JFrame {
 						break;
 					}
 					try {
-						Thread.sleep(rnd.nextInt(10) + 1);
+						Thread.sleep(1);
 					} catch (InterruptedException e) {
 					}
 					pro.setValue(i);
-					if (i >= 50 && Loader.isReadyToContinue() == false) {
+					if (i >= 51 && Loader.isReadyToContinue() == false) {
 
 					} else {
 						i++;
@@ -118,9 +118,14 @@ public class GUILoad extends JFrame {
 		}).start();
 
 	}
-
+	private long t1 = System.currentTimeMillis();
+	private String lastSaid = "Programmstart";
+	
 	private void say(String say) {
 		lblLoading.setText(say);
+		System.out.println(lastSaid + " took " + (System.currentTimeMillis() - t1) + " ms");
+		lastSaid = say;
+		t1 = System.currentTimeMillis();
 
 	}
 }

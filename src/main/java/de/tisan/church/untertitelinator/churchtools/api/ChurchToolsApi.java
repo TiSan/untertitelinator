@@ -68,7 +68,7 @@ public class ChurchToolsApi {
 				String.class);
 		long accessTokenUpdate = JSONPersistence.get().getSetting(UTPersistenceConstants.CTLASTACCESSTOKENUPDATED,
 				System.currentTimeMillis(), Long.class);
-		if (accessToken.equals("<ACCESSTOKEN>") == false && (System.currentTimeMillis() - accessTokenUpdate <= 60000)) {
+		if (accessToken.equals("<ACCESSTOKEN>") == false && (System.currentTimeMillis() - accessTokenUpdate <= 600000)) {
 			this.accessToken = new String(Base64.getDecoder().decode(accessToken));
 			System.out.println("ChurchTools Access Token found. Use this.");
 		}

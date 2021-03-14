@@ -247,10 +247,10 @@ public class GUIKeyer extends JFrame {
 			titleString = "Live-Gottesdienst";
 		}
 
-		pnlStartPage.showNextStream(titleString, "Thema: \"" + themaString + "\"",
-				currentEvent.getStartDate().plusHours(1).format(DateTimeFormatter.ofPattern("dd.MM.yyyy - HH:mm"))
-						+ " Uhr",
-				Untertitelinator.get().getServiceList());
+//		pnlStartPage.showNextStream(titleString, "Thema: \"" + themaString + "\"",
+//				currentEvent.getStartDate().plusHours(1).format(DateTimeFormatter.ofPattern("dd.MM.yyyy - HH:mm"))
+//						+ " Uhr",
+//				Untertitelinator.get().getServiceList());
 
 	}
 
