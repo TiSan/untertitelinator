@@ -41,6 +41,11 @@
 			<artifactId>PersistenceManager</artifactId>
 			<version>1.0.0</version>
 		</dependency>
+		<dependency>
+			<groupId>de.tisan.tools</groupId>
+			<artifactId>TisanAPI</artifactId>
+			<version>1.0.0</version>
+		</dependency>
 		
 		<!-- https://mvnrepository.com/artifact/org.jboss.resteasy/resteasy-client -->
 		<dependency>
