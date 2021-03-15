@@ -4,28 +4,28 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import de.tisan.church.untertitelinator.data.Song;
+import de.tisan.church.untertitelinator.data.SongPlayer;
 
 public class SongLinePacket extends Packet {
 
 	private static final long serialVersionUID = -19463254103119350L;
-	Song song;
+	SongPlayer songPlayer;
 	List<String> currentLines;
 	List<String> nextLines;
 
 	public SongLinePacket() {
 	}
 
-	public SongLinePacket(List<String> currentLines, List<String> nextLines, Song song) {
+	public SongLinePacket(List<String> currentLines, List<String> nextLines, SongPlayer songPlayer) {
 		this.currentLines = currentLines;
 		this.nextLines = nextLines;
-		this.song = song;
+		this.songPlayer = songPlayer;
 	}
 	
 	public SongLinePacket(String... currentLines) {
 		this.currentLines = Arrays.asList(currentLines);
 		this.nextLines = new ArrayList<String>();
-		this.song = null;
+		this.songPlayer = null;
 	}
 
 	public List<String> getCurrentLines() {
@@ -44,12 +44,12 @@ public class SongLinePacket extends Packet {
 		this.nextLines = nextLines;
 	}
 
-	public Song getSong() {
-		return song;
+	public SongPlayer getSongPlayer() {
+		return songPlayer;
 	}
 
-	public void setSong(Song song) {
-		this.song = song;
+	public void setSong(SongPlayer songPlayer) {
+		this.songPlayer = songPlayer;
 	}
 
 }

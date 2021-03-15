@@ -141,7 +141,7 @@ public class GUIPresentator extends JFrame {
 
 						@Override
 						public void run() {
-							showNewTextLines(sPacket.getSong().getTitle(), sPacket.getCurrentLines().get(0),
+							showNewTextLines(sPacket.getSongPlayer().getSong().getTitle(), sPacket.getCurrentLines().get(0),
 									sPacket.getCurrentLines().get(1), sPacket.getNextLines().get(0),
 									sPacket.getNextLines().get(1), 0, false);
 						}

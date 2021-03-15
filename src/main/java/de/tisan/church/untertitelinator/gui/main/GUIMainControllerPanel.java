@@ -1,12 +1,13 @@
 package de.tisan.church.untertitelinator.gui.main;
 
 import java.awt.Dimension;
-import java.lang.reflect.Field;
 
 import de.tisan.church.untertitelinator.churchtools.instancer.CTEventHub;
+import de.tisan.church.untertitelinator.churchtools.instancer.CTEventListener;
 import de.tisan.church.untertitelinator.churchtools.instancer.packets.Command;
 import de.tisan.church.untertitelinator.churchtools.instancer.packets.CommandPacket;
-import de.tisan.church.untertitelinator.data.Untertitelinator;
+import de.tisan.church.untertitelinator.churchtools.instancer.packets.Packet;
+import de.tisan.church.untertitelinator.churchtools.instancer.packets.SongLinePacket;
 import de.tisan.flatui.components.fbutton.FlatButton;
 import de.tisan.flatui.components.fcommons.FlatColors;
 import de.tisan.flatui.components.fcommons.FlatLayoutManager;
@@ -108,38 +109,32 @@ public class GUIMainControllerPanel extends AGUIMainPanel
 
 		add(btnEnd);
 
+		CTEventHub.get().registerListener(new CTEventListener()
+		{
+
+			@Override
+			public void onEventReceived(Packet packet)
+			{
+				if (packet instanceof SongLinePacket)
+				{
+					SongLinePacket sPacket = (SongLinePacket) packet;
+					if (sPacket.getSongPlayer().isPaused())
+					{
+						btnPause.setBackground(FlatColors.GREEN);
+						btnPause.setIcon(FlatIcon.PLAY);
+					}
+					else
+					{
+						btnPause.setBackground(FlatColors.ALIZARINRED);
+						btnPause.setIcon(FlatIcon.PAUSE);
+					}
+				}
+			}
+		});
 	}
 
 	@Override
 	public void updateThisComponent()
 	{
-		if (Untertitelinator.get().getCurrentPlayer().isPaused())
-		{
-			btnPause.setBackground(FlatColors.GREEN);
-			try
-			{
-				Field icon = btnPause.getClass().getDeclaredField("icon");
-				icon.setAccessible(true);
-				icon.set(btnPause, FlatIcon.PLAY);
-			}
-			catch (SecurityException | NoSuchFieldException | IllegalArgumentException | IllegalAccessException e)
-			{
-				e.printStackTrace();
-			}
-		}
-		else
-		{
-			btnPause.setBackground(FlatColors.ALIZARINRED);
-			try
-			{
-				Field icon = btnPause.getClass().getDeclaredField("icon");
-				icon.setAccessible(true);
-				icon.set(btnPause, FlatIcon.PAUSE);
-			}
-			catch (SecurityException | NoSuchFieldException | IllegalArgumentException | IllegalAccessException e)
-			{
-				e.printStackTrace();
-			}
-		}
 	}
 }

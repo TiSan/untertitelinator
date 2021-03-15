@@ -1,11 +1,8 @@
 package de.tisan.church.untertitelinator.churchtools.instancer;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 import de.tisan.church.untertitelinator.churchtools.instancer.packets.Packet;
-import de.tisan.church.untertitelinator.churchtools.instancer.packets.SongLinePacket;
-import de.tisan.church.untertitelinator.data.Song;
 import de.tisan.tisanapi.sockets.ObjectServerSocket;
 
 public class CTInstanceServer {
@@ -21,11 +18,6 @@ public class CTInstanceServer {
 		socketServer = new ObjectServerSocket<Packet>(8080);
 		socketServer.addConnectListener(new CTInstanceServerListener<Packet>());
 		socketServer.start();
-	}
-
-	public void sendNewSongLines(String[] currentLines, String[] nextLines, Song song) {
-		SongLinePacket packet = new SongLinePacket(Arrays.asList(currentLines), Arrays.asList(nextLines), song);
-		sendPacket(packet);
 	}
 
 	private void sendPacket(Packet packet) {

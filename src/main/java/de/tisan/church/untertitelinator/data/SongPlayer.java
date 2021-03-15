@@ -154,7 +154,7 @@ public class SongPlayer {
 	
 	public void updateEvent() {
 		CTEventHub.get()
-		.publish(new SongLinePacket(Arrays.asList(getCurrentLines()), Arrays.asList(getNextLines()), song));
+		.publish(new SongLinePacket(Arrays.asList(getCurrentLines()), Arrays.asList(getNextLines()), this));
 	}
 
 	public void enable() {
