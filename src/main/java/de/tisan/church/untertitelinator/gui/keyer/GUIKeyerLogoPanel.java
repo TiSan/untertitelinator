@@ -55,7 +55,6 @@ public class GUIKeyerLogoPanel extends JPanel {
 			int x = width - image.getWidth() - safeBounds;
 			int y = safeBounds;
 			layerImage.setBounds(x, y, image.getWidth(), image.getHeight());
-			System.out.println("x: " + x + "; y: " + y);
 		}
 	}
 }

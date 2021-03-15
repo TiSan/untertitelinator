@@ -9,6 +9,8 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import de.tisan.church.untertitelinator.churchtools.instancer.CTEventHub;
+import de.tisan.church.untertitelinator.churchtools.instancer.packets.Command;
+import de.tisan.church.untertitelinator.churchtools.instancer.packets.CommandPacket;
 import de.tisan.church.untertitelinator.churchtools.instancer.packets.UIRefreshPacket;
 import de.tisan.church.untertitelinator.data.Untertitelinator;
 import de.tisan.church.untertitelinator.main.Loader;
@@ -115,18 +117,20 @@ public class GUIMainSongListPanel extends AGUIMainPanel {
 	}
 
 	private void changeSong(String name) {
-		if (Loader.getMainUi() != null) {
-			Untertitelinator.get().switchSong(Untertitelinator.get().getSongs().stream()
-					.filter(s -> s.getTitle().equals(name)).findFirst().get());
+		CTEventHub.get().publish(new CommandPacket(Command.CHANGE_SONG, name));
+//		if (Loader.getMainUi() != null) {
+//			Untertitelinator.get().switchSong(Untertitelinator.get().getSongs().stream()
+//					.filter(s -> s.getTitle().equals(name)).findFirst().get());
 			
 
-		}
+	//	}
 	}
 
 	private void updateSongList() {
 		list.setSelectedIndex(0);
 		Untertitelinator.get().getSongs().stream().map(song -> song.getTitle()).forEach(songListModel::addElement);
-		Untertitelinator.get().switchSong(Untertitelinator.get().getSongs().get(0));
+		//Untertitelinator.get().switchSong(Untertitelinator.get().getSongs().get(0));
+		
 		CTEventHub.get().publish(new UIRefreshPacket());
 	}
 

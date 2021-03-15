@@ -11,44 +11,50 @@ import de.tisan.church.untertitelinator.churchtools.instancer.packets.UIRefreshP
 import de.tisan.church.untertitelinator.settings.UTPersistenceConstants;
 import de.tisan.tools.persistencemanager.JSONPersistence;
 
-public class SongPlayer {
+public class SongPlayer
+{
 	Song song;
 	int index;
 	boolean pause;
 	private boolean enabled;
 
-	public SongPlayer(Song song) {
+	public SongPlayer(Song song)
+	{
 		this.song = song;
 		this.index = 0;
-		CTEventHub.get().registerListener(new CTEventListener() {
+		CTEventHub.get().registerListener(new CTEventListener()
+		{
 
 			@Override
-			public void onEventReceived(Packet packet) {
-				if (enabled == true && packet instanceof CommandPacket) {
+			public void onEventReceived(Packet packet)
+			{
+				if (enabled == true && packet instanceof CommandPacket)
+				{
 					CommandPacket cPacket = (CommandPacket) packet;
-					switch (cPacket.getCommand()) {
-					case JUMP_END:
-						jumpToEnd();
-						CTEventHub.get().publish(new UIRefreshPacket());
-						break;
-					case JUMP_START:
-						jumpToStart();
-						CTEventHub.get().publish(new UIRefreshPacket());
-						break;
-					case NEXT_LINE:
-						nextLine();
-						CTEventHub.get().publish(new UIRefreshPacket());
-						break;
-					case PAUSE:
-						pause();
-						CTEventHub.get().publish(new UIRefreshPacket());
-						break;
-					case PREVIOUS_LINE:
-						previousLine();
-						CTEventHub.get().publish(new UIRefreshPacket());
-						break;
-					default:
-						break;
+					switch (cPacket.getCommand())
+					{
+						case JUMP_END:
+							jumpToEnd();
+							CTEventHub.get().publish(new UIRefreshPacket());
+							break;
+						case JUMP_START:
+							jumpToStart();
+							CTEventHub.get().publish(new UIRefreshPacket());
+							break;
+						case NEXT_LINE:
+							nextLine();
+							CTEventHub.get().publish(new UIRefreshPacket());
+							break;
+						case PAUSE:
+							pause();
+							CTEventHub.get().publish(new UIRefreshPacket());
+							break;
+						case PREVIOUS_LINE:
+							previousLine();
+							CTEventHub.get().publish(new UIRefreshPacket());
+							break;
+						default:
+							break;
 					}
 				}
 			}
@@ -56,112 +62,152 @@ public class SongPlayer {
 		});
 	}
 
-	public void nextLine() {
-		if (index + 1 >= song.getSongLines().size()) {
+	public SongPlayer()
+	{
+	}
+
+	public void nextLine()
+	{
+		if (index + 1 >= song.getSongLines().size())
+		{
 			setIndex(song.getSongLines().size() - 1);
-		} else {
+		}
+		else
+		{
 			setIndex(index + 1);
 		}
 	}
 
-	public void previousLine() {
-		if (index - 1 < 0) {
+	public void previousLine()
+	{
+		if (index - 1 < 0)
+		{
 			setIndex(0);
-		} else {
+		}
+		else
+		{
 			setIndex(index - 1);
 		}
 	}
 
-	public void jumpToStart() {
+	public void jumpToStart()
+	{
 		setIndex(0);
 	}
 
-	public void jumpToEnd() {
+	public void jumpToEnd()
+	{
 		setIndex(song.getSongLines().size() - 1);
 	}
 
-	public boolean isOnEnd() {
+	public boolean isOnEnd()
+	{
 		return index >= song.getSongLines().size() - 1;
 	}
 
-	public String getCurrentLine() {
+	public String getCurrentLine()
+	{
 		return pause ? getBlackoutLine() : song.getSongLines().get(index);
 	}
 
-	public String getNextLine() {
+	public String getNextLine()
+	{
 		return pause ? getBlackoutLine()
-				: (isValidIndex(index + 1) ? song.getSongLines().get(index + 1) : getBlackoutLine());
+		        : (isValidIndex(index + 1) ? song.getSongLines().get(index + 1) : getBlackoutLine());
 	}
 
-	public String[] getCurrentLines() {
-		if (pause == false) {
+	public String[] getCurrentLines()
+	{
+		if (pause == false)
+		{
 			String[] spl = getCurrentLine().split("\n", 2);
-			if (spl.length > 1) {
+			if (spl.length > 1)
+			{
 				return spl;
-			} else if (spl.length == 1) {
-				return new String[] { spl[0], "" };
 			}
+			else
+				if (spl.length == 1)
+				{
+					return new String[] { spl[0], "" };
+				}
 		}
 		return new String[] { "", "" };
 
 	}
 
-	public String[] getNextLines() {
-		if (pause == false) {
+	public String[] getNextLines()
+	{
+		if (pause == false)
+		{
 			String[] spl = getNextLine().split("\n", 2);
-			if (spl.length > 1) {
+			if (spl.length > 1)
+			{
 				return spl;
-			} else if (spl.length == 1) {
-				return new String[] { spl[0], "" };
 			}
+			else
+				if (spl.length == 1)
+				{
+					return new String[] { spl[0], "" };
+				}
 		}
 		return new String[] { "", "" };
 	}
 
-	private boolean isValidIndex(int i) {
+	private boolean isValidIndex(int i)
+	{
 		return i >= 0 && i <= song.getSongLines().size() - 1;
 	}
 
-	public String getBlackoutLine() {
+	public String getBlackoutLine()
+	{
 		return (String) JSONPersistence.get().getSetting(UTPersistenceConstants.BLACKOUTLINEFILLER, "    ");
 	}
 
-	public String getTitle() {
+	public String getTitle()
+	{
 		return pause ? getBlackoutLine() : song.getTitle();
 	}
 
-	public void pause() {
+	public void pause()
+	{
 		pause = !pause;
 		updateEvent();
 	}
 
-	public Song getSong() {
+	public Song getSong()
+	{
 		return song;
 	}
 
-	public int getCurrentIndex() {
+	public int getCurrentIndex()
+	{
 		return index;
 	}
 
-	public boolean isPaused() {
+	public boolean isPaused()
+	{
 		return pause;
 	}
 
-	private void setIndex(int index) {
+	private void setIndex(int index)
+	{
 		this.index = index;
 		updateEvent();
 	}
-	
-	public void updateEvent() {
+
+	public void updateEvent()
+	{
 		CTEventHub.get()
-		.publish(new SongLinePacket(Arrays.asList(getCurrentLines()), Arrays.asList(getNextLines()), this));
+		        .publish(new SongLinePacket(Arrays.asList(getCurrentLines()), Arrays.asList(getNextLines()), this));
 	}
 
-	public void enable() {
+	public void enable()
+	{
 		this.enabled = true;
 	}
 
-	public void disable() {
+	public void disable()
+	{
 		this.enabled = false;
 	}
 }

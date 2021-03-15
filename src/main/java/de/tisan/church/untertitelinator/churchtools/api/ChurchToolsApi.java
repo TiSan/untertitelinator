@@ -71,7 +71,7 @@ public class ChurchToolsApi {
 				System.currentTimeMillis(), Long.class);
 		if (accessToken.equals("<ACCESSTOKEN>") == false && (System.currentTimeMillis() - accessTokenUpdate <= 60000)) {
 			this.accessToken = new String(Base64.getDecoder().decode(accessToken));
-			System.out.println("ChurchTools Access Token found. Use this.");
+			Logger.getInstance().log("ChurchTools Access Token found. Use this.", ChurchToolsApi.class);
 		}
 		this.cache = new HashMap<String, CacheEntry>();
 		Map<String, Map<String, String>> cacheTmp = JSONPersistence.get().getSetting(UTPersistenceConstants.CTCACHE,
@@ -97,7 +97,6 @@ public class ChurchToolsApi {
 			Logger.getInstance().log("Status: " + response.getStatus(), ChurchToolsApi.class);
 			String token;
 			String rString = (String) response.readEntity(String.class);
-			System.out.println(rString);
 			JsonNode rStatus = mapper.readTree(rString);
 			if (rStatus.get("status").asText().equalsIgnoreCase("fail")) {
 				JOptionPane.showMessageDialog(null,
@@ -108,7 +107,6 @@ public class ChurchToolsApi {
 			}
 			token = rStatus.get("data").get("token").asText();
 
-			System.out.println("Token: " + token);
 			this.accessToken = token;
 			JSONPersistence.get().setSetting(UTPersistenceConstants.CTLASTACCESSTOKEN,
 					Base64.getEncoder().encodeToString(token.getBytes()));
@@ -124,7 +122,7 @@ public class ChurchToolsApi {
 	public Optional<List<Event>> getEvents() {
 		// TODO https://oberstedten.church.tools/api/events/409 Event anreichern!
 		if (accessToken == null) {
-			System.out.println("FEHLER! Der AccessToken ist nicht gesetzt.");
+			Logger.getInstance().err("FEHLER! Der AccessToken ist nicht gesetzt.", ChurchToolsApi.class);
 			login();
 			// return Optional.empty();
 		}
@@ -170,7 +168,7 @@ public class ChurchToolsApi {
 
 	public Optional<List<Service>> getServices() {
 		if (accessToken == null) {
-			System.out.println("FEHLER! Der AccessToken ist nicht gesetzt.");
+			Logger.getInstance().err("FEHLER! Der AccessToken ist nicht gesetzt.", ChurchToolsApi.class);
 			login();
 			// return Optional.empty();
 		}
@@ -195,7 +193,7 @@ public class ChurchToolsApi {
 
 	public Optional<Event> getNextEvent() {
 		if (accessToken == null) {
-			System.out.println("FEHLER! Der AccessToken ist nicht gesetzt.");
+			Logger.getInstance().err("FEHLER! Der AccessToken ist nicht gesetzt.", ChurchToolsApi.class);
 			login();
 		}
 		Optional<List<Event>> allEvents = getEvents();
@@ -208,7 +206,7 @@ public class ChurchToolsApi {
 
 	public Optional<Agenda> getAgendaForEvent(long id) {
 		if (accessToken == null) {
-			System.out.println("FEHLER! Der AccessToken ist nicht gesetzt.");
+			Logger.getInstance().err("FEHLER! Der AccessToken ist nicht gesetzt.", ChurchToolsApi.class);
 			return Optional.empty();
 		}
 		try {

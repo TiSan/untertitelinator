@@ -13,11 +13,16 @@ import de.tisan.church.untertitelinator.churchtools.api.objects.Event;
 import de.tisan.church.untertitelinator.churchtools.api.objects.EventService;
 import de.tisan.church.untertitelinator.churchtools.api.objects.Service;
 import de.tisan.church.untertitelinator.churchtools.instancer.CTEventHub;
+import de.tisan.church.untertitelinator.churchtools.instancer.CTEventListener;
+import de.tisan.church.untertitelinator.churchtools.instancer.packets.Command;
+import de.tisan.church.untertitelinator.churchtools.instancer.packets.CommandPacket;
 import de.tisan.church.untertitelinator.churchtools.instancer.packets.EventSelectionChangedPacket;
+import de.tisan.church.untertitelinator.churchtools.instancer.packets.Packet;
 import de.tisan.church.untertitelinator.settings.UTPersistenceConstants;
 import de.tisan.tools.persistencemanager.JSONPersistence;
 
-public class Untertitelinator {
+public class Untertitelinator
+{
 	public static final String VERSION = Untertitelinator.class.getPackage().getImplementationVersion();
 
 	File currentLineFile;
@@ -32,87 +37,133 @@ public class Untertitelinator {
 
 	private static Untertitelinator instance;
 
-	public static Untertitelinator get() {
-		if (instance == null) {
+	public static Untertitelinator get()
+	{
+		if (instance == null)
+		{
 			instance = new Untertitelinator();
 		}
 		return instance;
 	}
 
-	private Untertitelinator() {
+	private Untertitelinator()
+	{
 		songs = new ArrayList<Song>();
-//		loadSongs();
+		//		loadSongs();
+
+		CTEventHub.get().registerListener(new CTEventListener()
+		{
+
+			@Override
+			public void onEventReceived(Packet packet)
+			{
+				if (packet instanceof CommandPacket)
+				{
+					CommandPacket sPacket = (CommandPacket) packet;
+					switch (sPacket.getCommand())
+					{
+						case CHANGE_SONG:
+							switchSong(Untertitelinator.get().getSongs().stream()
+							        .filter(s -> s.getTitle().equals(sPacket.getArgs().get(0))).findFirst().get());
+							break;
+						default:
+							break;
+					}
+				}
+			}
+		});
 	}
 
-	public void loadSongs() {
+	public synchronized void loadSongs()
+	{
 		songs.clear();
 		File songDir = new File(
-				(String) JSONPersistence.get().getSetting(UTPersistenceConstants.SONGSFOLDERPATH, "songs/"));
-		if (songDir.exists() == false) {
+		        (String) JSONPersistence.get().getSetting(UTPersistenceConstants.SONGSFOLDERPATH, "songs/"));
+		if (songDir.exists() == false)
+		{
 			songDir.mkdirs();
 			return;
 		}
-		FilenameFilter filter = new FilenameFilter() {
+		FilenameFilter filter = new FilenameFilter()
+		{
 
 			@Override
-			public boolean accept(File dir, String name) {
+			public boolean accept(File dir, String name)
+			{
 				return name.toLowerCase().endsWith(
-						(String) JSONPersistence.get().getSetting(UTPersistenceConstants.SONGFILESUFFIX, ".song"));
+				        (String) JSONPersistence.get().getSetting(UTPersistenceConstants.SONGFILESUFFIX, ".song"));
 			}
 
 		};
 
-		for (File song : songDir.listFiles(filter)) {
+		for (File song : songDir.listFiles(filter))
+		{
 			songs.add(new Song(song));
 		}
+		
+		CTEventHub.get().publish(new CommandPacket(Command.CHANGE_SONG, songs.get(0).getTitle()));
 	}
 
-	public List<Song> getSongs() {
+	public List<Song> getSongs()
+	{
 		return songs;
 	}
 
-	private SongPlayer createSongPlayerForSong(Song song) {
+	private SongPlayer createSongPlayerForSong(Song song)
+	{
 		return new SongPlayer(song);
 	}
 
-	public void switchSong(Song song) {
+	private void switchSong(Song song)
+	{
 		SongPlayer newSongPlayer = createSongPlayerForSong(song);
 		newSongPlayer.enable();
-		if (this.currentPlayer != null && this.currentPlayer.isPaused()) {
+		if (this.currentPlayer != null && this.currentPlayer.isPaused())
+		{
 			newSongPlayer.pause();
 		}
-		if (this.currentPlayer != null) {
+		if (this.currentPlayer != null)
+		{
 			this.currentPlayer.disable();
 		}
 		this.currentPlayer = newSongPlayer;
 		this.currentPlayer.updateEvent();
 	}
 
-	public SongPlayer getCurrentPlayer() {
+	public SongPlayer getCurrentPlayer()
+	{
 		return currentPlayer;
 	}
 
-	public void loadEvents() {
+	public void loadEvents()
+	{
 		events = ChurchToolsApi.get().getEvents().orElse(Collections.emptyList());
 		services = ChurchToolsApi.get().getServices().orElse(Collections.emptyList());
 	}
 
-	public Map<String, String> getServiceList() {
+	public Map<String, String> getServiceList()
+	{
 		Map<String, String> serviceListStr = new TreeMap<String, String>();
 
-		for (EventService es : currentEvent.getEventServices()) {
-			if (es.getName() == null || es.getName().trim().isEmpty()) {
+		for (EventService es : currentEvent.getEventServices())
+		{
+			if (es.getName() == null || es.getName().trim().isEmpty())
+			{
 				continue;
 			}
 
 			Service s = services.parallelStream().filter(ss -> ss.getId() == es.getServiceId()).findFirst().get();
-			if (s.getComment().equals("<NOT_VISIBLE>")) {
+			if (s.getComment().equals("<NOT_VISIBLE>"))
+			{
 				continue;
 			}
 			String key = s.getComment().isEmpty() == false ? s.getComment() : s.getName();
-			if (serviceListStr.containsKey(key)) {
+			if (serviceListStr.containsKey(key))
+			{
 				serviceListStr.put(key, serviceListStr.get(key) + ", " + es.getName());
-			} else {
+			}
+			else
+			{
 				serviceListStr.put(key, es.getName());
 
 			}
@@ -121,24 +172,30 @@ public class Untertitelinator {
 		return serviceListStr;
 	}
 
-	public void selectEvent(int no) {
-		if (no >= 0 && no < events.size()) {
+	public void selectEvent(int no)
+	{
+		if (no >= 0 && no < events.size())
+		{
 			selectEvent(events.get(no));
 		}
 	}
 
-	public void selectEvent(Event event) {
-		if (event != null) {
+	public void selectEvent(Event event)
+	{
+		if (event != null)
+		{
 			currentEvent = event;
 			CTEventHub.get().publish(new EventSelectionChangedPacket(event));
 		}
 	}
 
-	public Event getCurrentEvent() {
+	public Event getCurrentEvent()
+	{
 		return currentEvent;
 	}
 
-	public List<Event> getAllEvents() {
+	public List<Event> getAllEvents()
+	{
 		return events;
 	}
 }

@@ -3,6 +3,7 @@ package de.tisan.church.untertitelinator.churchtools.instancer;
 import java.io.IOException;
 
 import de.tisan.church.untertitelinator.churchtools.instancer.packets.Packet;
+import de.tisan.tisanapi.logger.Logger;
 import de.tisan.tisanapi.sockets.ObjectServerSocket;
 
 public class CTInstanceServer {
@@ -28,7 +29,7 @@ public class CTInstanceServer {
 			try {
 				s.writeObject(packet);
 			} catch (IOException e) {
-				System.out.println("Write Packet to " + s.getIP() + "@" + s.getPort() + " failed! " + e.getMessage());
+				Logger.getInstance().log("Write Packet to " + s.getIP() + "@" + s.getPort() + " failed! " + e.getMessage(), CTInstanceServer.class);
 				e.printStackTrace();
 			}
 		});

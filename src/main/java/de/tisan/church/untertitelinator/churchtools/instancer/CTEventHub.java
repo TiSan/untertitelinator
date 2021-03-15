@@ -18,12 +18,12 @@ public class CTEventHub {
 		this.listeners = new ArrayList<CTEventListener>();
 	}
 
-	public void registerListener(CTEventListener listener) {
+	public synchronized void registerListener(CTEventListener listener) {
 		this.listeners.add(listener);
 	}
 
-	public void publish(Packet object) {
+	public synchronized void publish(Packet object) {
 		CTInstanceServer.get().publish(object);
-		listeners.parallelStream().forEach(l -> l.onEventReceived(object));
+		new ArrayList<CTEventListener>(listeners).stream().forEach(l -> l.onEventReceived(object));
 	}
 }

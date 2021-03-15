@@ -1,6 +1,7 @@
 package de.tisan.church.untertitelinator.churchtools.instancer.packets;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class CommandPacket extends Packet {
@@ -15,6 +16,10 @@ public class CommandPacket extends Packet {
 		super();
 		this.command = command;
 		this.args = args;
+	}
+	
+	public CommandPacket(Command command, String... args) {
+		this(command, Arrays.asList(args));
 	}
 
 	public CommandPacket(Command command) {
