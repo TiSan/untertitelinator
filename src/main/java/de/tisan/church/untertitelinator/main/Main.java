@@ -27,8 +27,7 @@ public class Main {
 			load.setVisible(true);
 
 		} else if (result == 1) {
-			CTInstanceClient cli = new CTInstanceClient();
-			cli.connect();
+			CTInstanceClient.get().connect();
 		} else {
 			System.exit(1);
 		}

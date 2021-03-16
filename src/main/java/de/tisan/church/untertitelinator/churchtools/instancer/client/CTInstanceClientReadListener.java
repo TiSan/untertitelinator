@@ -13,12 +13,12 @@ public class CTInstanceClientReadListener<T> extends ObjectSocketReadListener<Pa
 	public void onReadObject(Packet object) {
 		Logger.getInstance().log("Received " + object.getClass(), CTInstanceClientReadListener.class);
 		
-		CTEventHub.get().publish(object);
+		CTEventHub.get().publish(object, false);
 	}
 
 	@Override
 	public void onReadFail(IOException ex) {
-
+		
 	}
 
 }

@@ -1,5 +1,7 @@
 package de.tisan.church.untertitelinator.main;
 
+import java.net.UnknownHostException;
+
 import de.tisan.church.untertitelinator.churchtools.instancer.CTInstanceServer;
 import de.tisan.church.untertitelinator.data.Untertitelinator;
 import de.tisan.church.untertitelinator.gui.keyer.GUIKeyer;
@@ -30,7 +32,14 @@ public class Loader
 
 	public static void startInstanceServer()
 	{
-		CTInstanceServer.get().startServer();
+		try
+		{
+			CTInstanceServer.get().startServer();
+		}
+		catch (UnknownHostException e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 	public static void showUi()

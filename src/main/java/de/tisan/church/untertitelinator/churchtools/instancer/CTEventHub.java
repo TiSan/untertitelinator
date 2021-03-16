@@ -1,8 +1,10 @@
 package de.tisan.church.untertitelinator.churchtools.instancer;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import de.tisan.church.untertitelinator.churchtools.instancer.client.CTInstanceClient;
 import de.tisan.church.untertitelinator.churchtools.instancer.packets.Packet;
 
 public class CTEventHub {
@@ -22,8 +24,19 @@ public class CTEventHub {
 		this.listeners.add(listener);
 	}
 
+	public synchronized void publish(Packet... objects) {
+		Arrays.asList(objects).stream().forEach(this::publish);
+	}
+	
 	public synchronized void publish(Packet object) {
-		CTInstanceServer.get().publish(object);
+		publish(object, true);
+	}
+	
+	public synchronized void publish(Packet object, boolean sendOverSocket) {
+		if(sendOverSocket) {
+			CTInstanceServer.get().publish(object);
+			CTInstanceClient.get().publish(object);
+		}
 		new ArrayList<CTEventListener>(listeners).stream().forEach(l -> l.onEventReceived(object));
 	}
 }

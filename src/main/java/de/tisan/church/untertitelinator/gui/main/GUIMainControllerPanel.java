@@ -118,15 +118,18 @@ public class GUIMainControllerPanel extends AGUIMainPanel
 				if (packet instanceof SongLinePacket)
 				{
 					SongLinePacket sPacket = (SongLinePacket) packet;
-					if (sPacket.getSongPlayer().isPaused())
+					if (sPacket.getSongPlayer() != null)
 					{
-						btnPause.setBackground(FlatColors.GREEN);
-						btnPause.setIcon(FlatIcon.PLAY);
-					}
-					else
-					{
-						btnPause.setBackground(FlatColors.ALIZARINRED);
-						btnPause.setIcon(FlatIcon.PAUSE);
+						if (sPacket.getSongPlayer().isPaused())
+						{
+							btnPause.setBackground(FlatColors.GREEN);
+							btnPause.setIcon(FlatIcon.PLAY);
+						}
+						else
+						{
+							btnPause.setBackground(FlatColors.ALIZARINRED);
+							btnPause.setIcon(FlatIcon.PAUSE);
+						}
 					}
 				}
 			}

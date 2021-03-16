@@ -137,15 +137,17 @@ public class GUIPresentator extends JFrame {
 			public void onEventReceived(Packet packet) {
 				if (packet instanceof SongLinePacket) {
 					SongLinePacket sPacket = (SongLinePacket) packet;
-					new Thread(new Runnable() {
-
-						@Override
-						public void run() {
-							showNewTextLines(sPacket.getSongPlayer().getSong().getTitle(), sPacket.getCurrentLines().get(0),
-									sPacket.getCurrentLines().get(1), sPacket.getNextLines().get(0),
-									sPacket.getNextLines().get(1), 0, false);
-						}
-					}).start();
+					if(sPacket.getSongPlayer() != null) {
+						new Thread(new Runnable() {
+							
+							@Override
+							public void run() {
+								showNewTextLines(sPacket.getSongPlayer().getSong().getTitle(), sPacket.getCurrentLines().get(0),
+										sPacket.getCurrentLines().get(1), sPacket.getNextLines().get(0),
+										sPacket.getNextLines().get(1), 0, false);
+							}
+						}).start();
+					}
 				}
 			}
 		});
