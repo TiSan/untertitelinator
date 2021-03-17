@@ -3,8 +3,13 @@ package de.tisan.church.untertitelinator.churchtools.instancer;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.Inet4Address;
 import java.net.InetAddress;
-import java.util.Optional;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
 
 import de.tisan.church.untertitelinator.settings.UTPersistenceConstants;
 import de.tisan.tools.persistencemanager.JSONPersistence;
@@ -20,8 +25,9 @@ public class CTDiscovery
 		command = "_UNTERTITELINATOR_DISCOVERY_";
 	}
 
-	public Optional<String[]> discoverServerIp()
+	public List<CTInstanceConnection> discoverServerIp()
 	{
+		List<CTInstanceConnection> connections = new ArrayList<CTInstanceConnection>();
 		try
 		{
 			if (receiveSocket == null)
@@ -35,29 +41,43 @@ public class CTDiscovery
 			DatagramPacket packet = new DatagramPacket(buf, size);
 			receiveSocket.receive(packet);
 			String data = new String(packet.getData());
-			String[] spl = data.split("_");
-			String[] returnValue = new String[2];
+			String[] spl = data.split("\\|");
 			for (String s : spl)
 			{
-				if (s.startsWith("IP="))
+				CTInstanceConnection connection = new CTInstanceConnection();
+				String[] spl2 = s.split("_");
+				boolean completeStatement = true;
+				if (spl2[0].trim().startsWith("IP="))
 				{
-					returnValue[0] = s.split("=")[1].trim();
+					connection.setIp(spl2[0].split("=")[1].trim());
 				}
 				else
-					if (s.startsWith("PORT="))
-					{
-						returnValue[1] = s.split("=")[1].trim();
-					}
+				{
+					completeStatement = false;
+				}
+
+				if (spl2[1].trim().startsWith("PORT="))
+				{
+					connection.setPort(spl2[1].split("=")[1].trim());
+				}
+				else
+				{
+					completeStatement = false;
+				}
+				
+				if (completeStatement == true)
+				{
+					connections.add(connection);
+				}
 			}
 			System.out.println(
 			        "Discovery package received! -> " + packet.getAddress() + ":" + packet.getPort() + " : " + data);
-			return Optional.ofNullable(returnValue);
 		}
 		catch (Exception ex)
 		{
 			ex.printStackTrace();
 		}
-		return Optional.empty();
+		return connections;
 	}
 
 	public void startDiscoveryServer()
@@ -91,12 +111,48 @@ public class CTDiscovery
 			sendSocket = new DatagramSocket(8001, InetAddress.getLocalHost());
 			sendSocket.setBroadcast(true);
 		}
-		String ip = InetAddress.getLocalHost().getHostAddress();
+		String data = command;
 		String port = "" + JSONPersistence.get().getSetting(UTPersistenceConstants.SERVER_PORT, 8080, Integer.class);
-		String data = command + "IP=" + ip + "_PORT=" + port;
+
+		List<String> ipAddresses = getIpList();
+		for (String ip : ipAddresses)
+		{
+			data += "|IP=" + ip + "_PORT=" + port;
+		}
 		byte[] buf = data.getBytes();
 		DatagramPacket packet = new DatagramPacket(buf, buf.length, InetAddress.getByName("255.255.255.255"), 8002);
 		sendSocket.send(packet);
 		//System.out.println("Discovery package sent!" + packet.getAddress() + ":" + packet.getPort());
+	}
+
+	List<String> getIpList()
+	{
+		List<String> ipList = new ArrayList<String>();
+		try
+		{
+			Enumeration<NetworkInterface> interfaces;
+			interfaces = NetworkInterface.getNetworkInterfaces();
+			while (interfaces.hasMoreElements())
+			{
+				NetworkInterface interf = interfaces.nextElement();
+				Enumeration<InetAddress> addresses = interf.getInetAddresses();
+				while (addresses.hasMoreElements())
+				{
+					InetAddress adr = addresses.nextElement();
+
+					// Nur(!) IPv4 Adressen ausgeben...
+					if (adr instanceof Inet4Address)
+					{
+						ipList.add(adr.getHostAddress());
+					}
+				}
+			}
+		}
+		catch (SocketException e)
+		{
+			e.printStackTrace();
+		}
+
+		return ipList;
 	}
 }

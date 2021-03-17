@@ -1,9 +1,10 @@
 package de.tisan.church.untertitelinator.churchtools.instancer.client;
 
 import java.io.IOException;
-import java.util.Optional;
+import java.util.List;
 
 import de.tisan.church.untertitelinator.churchtools.instancer.CTDiscovery;
+import de.tisan.church.untertitelinator.churchtools.instancer.CTInstanceConnection;
 import de.tisan.church.untertitelinator.churchtools.instancer.packets.Packet;
 import de.tisan.tisanapi.sockets.ObjectSocket;
 
@@ -26,17 +27,24 @@ public class CTInstanceClient
 
 	public void connect()
 	{
-		Optional<String[]> oServer = discovery.discoverServerIp();
-		String[] server = oServer.get();
-		this.socket = new ObjectSocket<Packet>(server[0], Integer.valueOf(server[1]));
-		socket.addConnectListener(new CTInstanceClientConnectListener<Packet>());
-		socket.addReadListener(new CTInstanceClientReadListener<Packet>());
-		socket.connect();
+		List<CTInstanceConnection> oServer = discovery.discoverServerIp();
+		for (CTInstanceConnection connection : oServer)
+		{
+			this.socket = new ObjectSocket<Packet>(connection.getIp(), Integer.valueOf(connection.getPort()));
+			boolean result = socket.connect();
+			if (result == true)
+			{
+				socket.addConnectListener(new CTInstanceClientConnectListener<Packet>());
+				socket.addReadListener(new CTInstanceClientReadListener<Packet>());
+				break;
+			}
+		}
 	}
 
 	public void publish(Packet packet)
 	{
-		if(socket == null) {
+		if (socket == null)
+		{
 			return;
 		}
 		try
@@ -46,6 +54,7 @@ public class CTInstanceClient
 		catch (IOException e)
 		{
 			e.printStackTrace();
+			socket.disconnect();
 		}
 	}
 }

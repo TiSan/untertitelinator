@@ -38,6 +38,7 @@ public class CTInstanceServer {
 			} catch (IOException e) {
 				Logger.getInstance().log("Write Packet to " + s.getIP() + "@" + s.getPort() + " failed! " + e.getMessage(), CTInstanceServer.class);
 				e.printStackTrace();
+				s.disconnect();
 			}
 		});
 	}
