@@ -4,13 +4,14 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import de.tisan.church.untertitelinator.churchtools.api.ChurchToolsApi;
 import de.tisan.church.untertitelinator.churchtools.api.objects.Event;
-import de.tisan.church.untertitelinator.churchtools.api.objects.EventService;
 import de.tisan.church.untertitelinator.churchtools.api.objects.Service;
 import de.tisan.church.untertitelinator.instancer.UTEventHub;
 import de.tisan.church.untertitelinator.instancer.UTEventListener;
@@ -141,11 +142,10 @@ public class Untertitelinator
 		services = ChurchToolsApi.get().getServices().orElse(Collections.emptyList());
 	}
 
-	public Map<String, String> getServiceList()
+	public List<EventService> getServiceList()
 	{
-		Map<String, String> serviceListStr = new TreeMap<String, String>();
-
-		for (EventService es : currentEvent.getEventServices())
+		Set<EventService> eventServices = new HashSet<EventService>();
+		for (de.tisan.church.untertitelinator.churchtools.api.objects.EventService es : currentEvent.getEventServices())
 		{
 			if (es.getName() == null || es.getName().trim().isEmpty())
 			{
@@ -157,19 +157,13 @@ public class Untertitelinator
 			{
 				continue;
 			}
-			String key = s.getComment().isEmpty() == false ? s.getComment() : s.getName();
-			if (serviceListStr.containsKey(key))
-			{
-				serviceListStr.put(key, serviceListStr.get(key) + ", " + es.getName());
-			}
-			else
-			{
-				serviceListStr.put(key, es.getName());
-
-			}
+			String serviceName = s.getComment().isEmpty() == false ? s.getComment() : s.getName();
+			
+			EventService service = eventServices.stream().filter(e -> e.getName().equalsIgnoreCase(serviceName)).findFirst().orElse(new EventService(serviceName));
+			service.addCast(es.getName());
+			eventServices.add(service);
 		}
-
-		return serviceListStr;
+		return eventServices.stream().sorted(Comparator.comparing(EventService::getName)).collect(Collectors.toList());
 	}
 
 	public void selectEvent(int no)

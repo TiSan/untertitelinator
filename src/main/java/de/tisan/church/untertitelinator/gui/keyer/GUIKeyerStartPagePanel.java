@@ -9,7 +9,7 @@ import java.awt.event.ComponentEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Map;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -17,6 +17,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import de.tisan.church.untertitelinator.churchtools.api.objects.Event;
+import de.tisan.church.untertitelinator.data.EventService;
 import de.tisan.church.untertitelinator.data.Untertitelinator;
 import de.tisan.church.untertitelinator.instancer.UTEventHub;
 import de.tisan.church.untertitelinator.instancer.UTEventListener;
@@ -147,8 +148,7 @@ public class GUIKeyerStartPagePanel extends JPanel {
 					}
 
 					showNextStream(titleString, "Thema: \"" + themaString + "\"",
-							currentEvent.getStartDateString() + " Uhr",
-							Untertitelinator.get().getServiceList());
+							currentEvent.getStartDateString() + " Uhr", Untertitelinator.get().getServiceList());
 				}
 			}
 
@@ -165,8 +165,7 @@ public class GUIKeyerStartPagePanel extends JPanel {
 		layerImage.setBounds(0, 0, width, height);
 	}
 
-	private void showNextStream(String streamTitle, String streamSubtitle, String streamDate,
-			Map<String, String> cast) {
+	private void showNextStream(String streamTitle, String streamSubtitle, String streamDate, List<EventService> cast) {
 		layerTitle.setText(streamTitle);
 		layerSubTitle.setText(streamSubtitle);
 		layerDate.setText(streamDate);
@@ -179,12 +178,9 @@ public class GUIKeyerStartPagePanel extends JPanel {
 		int x1 = 150;
 		int y1 = heightCastBegin;
 
-		for (String castItem : cast.keySet()) {
-			if (cast.get(castItem) == null) {
-				continue;
-			}
-			FlatButton layerCast = new FlatButton(castItem + ": " + cast.get(castItem), man);
-			layerCast.setBounds(x1, y1, widthElements, heightElements);
+		for (EventService castItem : cast) {
+			FlatButton layerCast = new FlatButton(castItem.getName() + ": " + castItem.getCastListString(), man);
+			layerCast.setBounds(x1, y1, widthElements - x1, heightElements);
 			layerCast.setFont(font);
 			layerCast.setBackground(new Color(0, 0, 0, 0));
 			layerCast.setAnchor(Anchor.LEFT, Anchor.RIGHT);
