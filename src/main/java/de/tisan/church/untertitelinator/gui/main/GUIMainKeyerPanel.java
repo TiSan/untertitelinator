@@ -6,12 +6,12 @@ import java.awt.Font;
 
 import javax.swing.JLabel;
 
-import de.tisan.church.untertitelinator.churchtools.instancer.CTEventHub;
-import de.tisan.church.untertitelinator.churchtools.instancer.CTEventListener;
-import de.tisan.church.untertitelinator.churchtools.instancer.packets.Command;
-import de.tisan.church.untertitelinator.churchtools.instancer.packets.CommandPacket;
-import de.tisan.church.untertitelinator.churchtools.instancer.packets.GUIKeyerLayerChangePacket;
-import de.tisan.church.untertitelinator.churchtools.instancer.packets.Packet;
+import de.tisan.church.untertitelinator.instancer.UTEventHub;
+import de.tisan.church.untertitelinator.instancer.UTEventListener;
+import de.tisan.church.untertitelinator.instancer.packets.Command;
+import de.tisan.church.untertitelinator.instancer.packets.CommandPacket;
+import de.tisan.church.untertitelinator.instancer.packets.GUIKeyerLayerChangePacket;
+import de.tisan.church.untertitelinator.instancer.packets.Packet;
 import de.tisan.flatui.components.fbutton.FlatButton;
 import de.tisan.flatui.components.fcommons.FlatColors;
 import de.tisan.flatui.components.fcommons.FlatLayoutManager;
@@ -55,7 +55,7 @@ public class GUIMainKeyerPanel extends AGUIMainPanel {
 		btnUntertitel.addMouseListener(Priority.NORMAL, new MouseListenerImpl() {
 			@Override
 			public void onMouseRelease(MouseReleaseHandler handler) {
-				CTEventHub.get().publish(new CommandPacket(Command.TOGGLE_UNTERTITEL));
+				UTEventHub.get().publish(new CommandPacket(Command.TOGGLE_UNTERTITEL));
 			}
 		});
 		add(btnUntertitel);
@@ -68,7 +68,7 @@ public class GUIMainKeyerPanel extends AGUIMainPanel {
 		btnKollekte.addMouseListener(Priority.NORMAL, new MouseListenerImpl() {
 			@Override
 			public void onMouseRelease(MouseReleaseHandler handler) {
-				CTEventHub.get().publish(new CommandPacket(Command.TOGGLE_KOLLEKTE));
+				UTEventHub.get().publish(new CommandPacket(Command.TOGGLE_KOLLEKTE));
 			}
 		});
 		add(btnKollekte);
@@ -81,7 +81,7 @@ public class GUIMainKeyerPanel extends AGUIMainPanel {
 		btnLogo.addMouseListener(Priority.NORMAL, new MouseListenerImpl() {
 			@Override
 			public void onMouseRelease(MouseReleaseHandler handler) {
-				CTEventHub.get().publish(new CommandPacket(Command.TOGGLE_LOGO));
+				UTEventHub.get().publish(new CommandPacket(Command.TOGGLE_LOGO));
 			}
 		});
 		add(btnLogo);
@@ -94,14 +94,14 @@ public class GUIMainKeyerPanel extends AGUIMainPanel {
 		btnMaxButton.addMouseListener(Priority.NORMAL, new MouseListenerImpl() {
 			@Override
 			public void onMouseRelease(MouseReleaseHandler handler) {
-				CTEventHub.get().publish(new CommandPacket(Command.TOGGLE_WINDOW_BAR));
+				UTEventHub.get().publish(new CommandPacket(Command.TOGGLE_WINDOW_BAR));
 			}
 		});
 		add(btnMaxButton);
 
 		updateThisComponent();
 
-		CTEventHub.get().registerListener(new CTEventListener() {
+		UTEventHub.get().registerListener(new UTEventListener() {
 
 			@Override
 			public void onEventReceived(Packet packet) {

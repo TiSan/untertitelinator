@@ -11,11 +11,11 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 
-import de.tisan.church.untertitelinator.churchtools.instancer.CTEventHub;
-import de.tisan.church.untertitelinator.churchtools.instancer.CTEventListener;
-import de.tisan.church.untertitelinator.churchtools.instancer.packets.Packet;
-import de.tisan.church.untertitelinator.churchtools.instancer.packets.UIRefreshPacket;
 import de.tisan.church.untertitelinator.data.Untertitelinator;
+import de.tisan.church.untertitelinator.instancer.UTEventHub;
+import de.tisan.church.untertitelinator.instancer.UTEventListener;
+import de.tisan.church.untertitelinator.instancer.packets.Packet;
+import de.tisan.church.untertitelinator.instancer.packets.UIRefreshPacket;
 import de.tisan.church.untertitelinator.settings.UTPersistenceConstants;
 import de.tisan.flatui.components.fcommons.Anchor;
 import de.tisan.flatui.components.fcommons.FlatColors;
@@ -85,7 +85,7 @@ public class GUIMain extends JFrame {
 
 		getAllComponents(this).forEach(c -> c.addKeyListener(new LukasWillsSoKeyListener()));
 
-		CTEventHub.get().registerListener(new CTEventListener() {
+		UTEventHub.get().registerListener(new UTEventListener() {
 
 			@Override
 			public void onEventReceived(Packet packet) {

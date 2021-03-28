@@ -1,4 +1,4 @@
-package de.tisan.church.untertitelinator.churchtools.instancer.packets;
+package de.tisan.church.untertitelinator.instancer.packets;
 
 import java.util.ArrayList;
 import java.util.Arrays;

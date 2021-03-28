@@ -8,11 +8,11 @@ import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
-import de.tisan.church.untertitelinator.churchtools.instancer.CTEventHub;
-import de.tisan.church.untertitelinator.churchtools.instancer.CTEventListener;
-import de.tisan.church.untertitelinator.churchtools.instancer.packets.Packet;
-import de.tisan.church.untertitelinator.churchtools.instancer.packets.SongLinePacket;
 import de.tisan.church.untertitelinator.data.Untertitelinator;
+import de.tisan.church.untertitelinator.instancer.UTEventHub;
+import de.tisan.church.untertitelinator.instancer.UTEventListener;
+import de.tisan.church.untertitelinator.instancer.packets.Packet;
+import de.tisan.church.untertitelinator.instancer.packets.SongLinePacket;
 import de.tisan.flatui.components.fbutton.FlatButton;
 import de.tisan.flatui.components.fcommons.Anchor;
 import de.tisan.flatui.components.fcommons.FlatColors;
@@ -56,7 +56,7 @@ public class GUIMainSongTextPanel extends AGUIMainPanel {
 		scrollPane.setBounds(0, 95, preferredSize.width, 300);
 		add(scrollPane);
 
-		CTEventHub.get().registerListener(new CTEventListener() {
+		UTEventHub.get().registerListener(new UTEventListener() {
 
 			@Override
 			public void onEventReceived(Packet packet) {

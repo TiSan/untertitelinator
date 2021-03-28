@@ -2,12 +2,12 @@ package de.tisan.church.untertitelinator.gui.main;
 
 import java.awt.Dimension;
 
-import de.tisan.church.untertitelinator.churchtools.instancer.CTEventHub;
-import de.tisan.church.untertitelinator.churchtools.instancer.CTEventListener;
-import de.tisan.church.untertitelinator.churchtools.instancer.packets.Command;
-import de.tisan.church.untertitelinator.churchtools.instancer.packets.CommandPacket;
-import de.tisan.church.untertitelinator.churchtools.instancer.packets.Packet;
-import de.tisan.church.untertitelinator.churchtools.instancer.packets.SongLinePacket;
+import de.tisan.church.untertitelinator.instancer.UTEventHub;
+import de.tisan.church.untertitelinator.instancer.UTEventListener;
+import de.tisan.church.untertitelinator.instancer.packets.Command;
+import de.tisan.church.untertitelinator.instancer.packets.CommandPacket;
+import de.tisan.church.untertitelinator.instancer.packets.Packet;
+import de.tisan.church.untertitelinator.instancer.packets.SongLinePacket;
 import de.tisan.flatui.components.fbutton.FlatButton;
 import de.tisan.flatui.components.fcommons.FlatColors;
 import de.tisan.flatui.components.fcommons.FlatLayoutManager;
@@ -40,7 +40,7 @@ public class GUIMainControllerPanel extends AGUIMainPanel
 			@Override
 			public void onMouseRelease(MouseReleaseHandler handler)
 			{
-				CTEventHub.get().publish(new CommandPacket(Command.JUMP_START));
+				UTEventHub.get().publish(new CommandPacket(Command.JUMP_START));
 			}
 		});
 
@@ -56,7 +56,7 @@ public class GUIMainControllerPanel extends AGUIMainPanel
 			@Override
 			public void onMouseRelease(MouseReleaseHandler handler)
 			{
-				CTEventHub.get().publish(new CommandPacket(Command.PREVIOUS_LINE));
+				UTEventHub.get().publish(new CommandPacket(Command.PREVIOUS_LINE));
 			}
 		});
 
@@ -72,7 +72,7 @@ public class GUIMainControllerPanel extends AGUIMainPanel
 			@Override
 			public void onMouseRelease(MouseReleaseHandler handler)
 			{
-				CTEventHub.get().publish(new CommandPacket(Command.PAUSE));
+				UTEventHub.get().publish(new CommandPacket(Command.PAUSE));
 			}
 		});
 
@@ -87,7 +87,7 @@ public class GUIMainControllerPanel extends AGUIMainPanel
 			@Override
 			public void onMouseRelease(MouseReleaseHandler handler)
 			{
-				CTEventHub.get().publish(new CommandPacket(Command.NEXT_LINE));
+				UTEventHub.get().publish(new CommandPacket(Command.NEXT_LINE));
 
 			}
 		});
@@ -103,13 +103,13 @@ public class GUIMainControllerPanel extends AGUIMainPanel
 			@Override
 			public void onMouseRelease(MouseReleaseHandler handler)
 			{
-				CTEventHub.get().publish(new CommandPacket(Command.JUMP_END));
+				UTEventHub.get().publish(new CommandPacket(Command.JUMP_END));
 			}
 		});
 
 		add(btnEnd);
 
-		CTEventHub.get().registerListener(new CTEventListener()
+		UTEventHub.get().registerListener(new UTEventListener()
 		{
 
 			@Override

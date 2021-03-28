@@ -10,14 +10,14 @@ import java.awt.event.ComponentEvent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import de.tisan.church.untertitelinator.churchtools.instancer.CTEventHub;
-import de.tisan.church.untertitelinator.churchtools.instancer.CTEventListener;
-import de.tisan.church.untertitelinator.churchtools.instancer.packets.CommandPacket;
-import de.tisan.church.untertitelinator.churchtools.instancer.packets.GUIKeyerLayerChangePacket;
-import de.tisan.church.untertitelinator.churchtools.instancer.packets.Packet;
-import de.tisan.church.untertitelinator.churchtools.instancer.packets.SongLinePacket;
-import de.tisan.church.untertitelinator.churchtools.instancer.packets.UIRefreshPacket;
 import de.tisan.church.untertitelinator.data.Untertitelinator;
+import de.tisan.church.untertitelinator.instancer.UTEventHub;
+import de.tisan.church.untertitelinator.instancer.UTEventListener;
+import de.tisan.church.untertitelinator.instancer.packets.CommandPacket;
+import de.tisan.church.untertitelinator.instancer.packets.GUIKeyerLayerChangePacket;
+import de.tisan.church.untertitelinator.instancer.packets.Packet;
+import de.tisan.church.untertitelinator.instancer.packets.SongLinePacket;
+import de.tisan.church.untertitelinator.instancer.packets.UIRefreshPacket;
 import de.tisan.church.untertitelinator.settings.UTPersistenceConstants;
 import de.tisan.flatui.components.fcommons.Anchor;
 import de.tisan.flatui.components.fcommons.FlatLayoutManager;
@@ -97,7 +97,7 @@ public class GUIKeyer extends JFrame {
 					if ((GUIKeyer.this.getExtendedState() == Frame.MAXIMIZED_BOTH) == false) {
 						bar.setVisible(false);
 					}
-					CTEventHub.get().publish(new UIRefreshPacket());
+					UTEventHub.get().publish(new UIRefreshPacket());
 				}
 
 				@Override
@@ -173,7 +173,7 @@ public class GUIKeyer extends JFrame {
 				}
 			});
 
-			CTEventHub.get().registerListener(new CTEventListener() {
+			UTEventHub.get().registerListener(new UTEventListener() {
 
 				@Override
 				public void onEventReceived(Packet packet) {
@@ -181,35 +181,35 @@ public class GUIKeyer extends JFrame {
 						switch (((CommandPacket) packet).getCommand()) {
 						case TOGGLE_KOLLEKTE:
 							boolean newState = toggleKollekte();
-							CTEventHub.get().publish(new GUIKeyerLayerChangePacket(GUIKeyerLayer.KOLLEKTE, newState));
-							CTEventHub.get().publish(new UIRefreshPacket());
+							UTEventHub.get().publish(new GUIKeyerLayerChangePacket(GUIKeyerLayer.KOLLEKTE, newState));
+							UTEventHub.get().publish(new UIRefreshPacket());
 							break;
 						case TOGGLE_LOGO:
 							boolean newState1 = toggleLogo();
-							CTEventHub.get().publish(new GUIKeyerLayerChangePacket(GUIKeyerLayer.LOGO, newState1));
-							CTEventHub.get().publish(new UIRefreshPacket());
+							UTEventHub.get().publish(new GUIKeyerLayerChangePacket(GUIKeyerLayer.LOGO, newState1));
+							UTEventHub.get().publish(new UIRefreshPacket());
 							break;
 						case TOGGLE_UNTERTITEL:
 							boolean newState2 = toggleUntertitel();
-							CTEventHub.get()
+							UTEventHub.get()
 									.publish(new GUIKeyerLayerChangePacket(GUIKeyerLayer.UNTERTITEL, newState2));
-							CTEventHub.get().publish(new UIRefreshPacket());
+							UTEventHub.get().publish(new UIRefreshPacket());
 							break;
 						case TOGGLE_WINDOW_BAR:
 							boolean newState3 = toggleWindowBar();
-							CTEventHub.get().publish(new GUIKeyerLayerChangePacket(GUIKeyerLayer.MAXBUTTON, newState3));
-							CTEventHub.get().publish(new UIRefreshPacket());
+							UTEventHub.get().publish(new GUIKeyerLayerChangePacket(GUIKeyerLayer.MAXBUTTON, newState3));
+							UTEventHub.get().publish(new UIRefreshPacket());
 							break;
 						case TOGGLE_BEGIN_LAYER:
 							boolean newState4 = toggleBeginLayer();
-							CTEventHub.get()
+							UTEventHub.get()
 									.publish(new GUIKeyerLayerChangePacket(GUIKeyerLayer.BEGINLAYER, newState4));
-							CTEventHub.get().publish(new UIRefreshPacket());
+							UTEventHub.get().publish(new UIRefreshPacket());
 							break;
 						case TOGGLE_ENDCARD:
 							boolean newState5 = toggleEndcard();
-							CTEventHub.get().publish(new GUIKeyerLayerChangePacket(GUIKeyerLayer.ENDCARD, newState5));
-							CTEventHub.get().publish(new UIRefreshPacket());
+							UTEventHub.get().publish(new GUIKeyerLayerChangePacket(GUIKeyerLayer.ENDCARD, newState5));
+							UTEventHub.get().publish(new UIRefreshPacket());
 							break;
 						default:
 							break;
@@ -227,15 +227,15 @@ public class GUIKeyer extends JFrame {
 			public void run() {
 				while (true) {
 					repaint();
-					CTEventHub.get()
+					UTEventHub.get()
 							.publish(new GUIKeyerLayerChangePacket(GUIKeyerLayer.ENDCARD, pnlEndcardPage.isVisible()));
-					CTEventHub.get()
+					UTEventHub.get()
 							.publish(new GUIKeyerLayerChangePacket(GUIKeyerLayer.BEGINLAYER, pnlStartPage.isVisible()));
-					CTEventHub.get()
+					UTEventHub.get()
 							.publish(new GUIKeyerLayerChangePacket(GUIKeyerLayer.KOLLEKTE, pnlKollekte.isVisible()));
-					CTEventHub.get().publish(new GUIKeyerLayerChangePacket(GUIKeyerLayer.LOGO, pnlLogo.isVisible()));
-					CTEventHub.get().publish(new GUIKeyerLayerChangePacket(GUIKeyerLayer.MAXBUTTON, bar.isVisible()));
-					CTEventHub.get().publish(
+					UTEventHub.get().publish(new GUIKeyerLayerChangePacket(GUIKeyerLayer.LOGO, pnlLogo.isVisible()));
+					UTEventHub.get().publish(new GUIKeyerLayerChangePacket(GUIKeyerLayer.MAXBUTTON, bar.isVisible()));
+					UTEventHub.get().publish(
 							new GUIKeyerLayerChangePacket(GUIKeyerLayer.UNTERTITEL, pnlUntertitel.isVisible()));
 
 					try {
@@ -302,9 +302,9 @@ public class GUIKeyer extends JFrame {
 
 				@Override
 				public void run() {
-					CTEventHub.get().publish(new SongLinePacket("", ""));
+					UTEventHub.get().publish(new SongLinePacket("", ""));
 					pnlKollekte.setVisible(false);
-					CTEventHub.get().publish(new UIRefreshPacket());
+					UTEventHub.get().publish(new UIRefreshPacket());
 				}
 			}).start();
 			return !pnlKollekte.isVisible();
@@ -312,9 +312,9 @@ public class GUIKeyer extends JFrame {
 			pnlKollekte.setVisible(true);
 			String kollekteLine1 = JSONPersistence.get().getSetting(UTPersistenceConstants.GUIKEYERKOLLEKTELINE1,
 					"Kollektenkonto: DE76 5006 1741 0000 0096 87", String.class);
-			CTEventHub.get().publish(new SongLinePacket(kollekteLine1, "Verwendungszweck: 'Kollekte "
+			UTEventHub.get().publish(new SongLinePacket(kollekteLine1, "Verwendungszweck: 'Kollekte "
 					+ Untertitelinator.get().getCurrentEvent().getStartDayString() + "'"));
-			CTEventHub.get().publish(new UIRefreshPacket());
+			UTEventHub.get().publish(new UIRefreshPacket());
 		}
 		return pnlKollekte.isVisible();
 

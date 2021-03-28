@@ -2,12 +2,12 @@ package de.tisan.church.untertitelinator.data;
 
 import java.util.Arrays;
 
-import de.tisan.church.untertitelinator.churchtools.instancer.CTEventHub;
-import de.tisan.church.untertitelinator.churchtools.instancer.CTEventListener;
-import de.tisan.church.untertitelinator.churchtools.instancer.packets.CommandPacket;
-import de.tisan.church.untertitelinator.churchtools.instancer.packets.Packet;
-import de.tisan.church.untertitelinator.churchtools.instancer.packets.SongLinePacket;
-import de.tisan.church.untertitelinator.churchtools.instancer.packets.UIRefreshPacket;
+import de.tisan.church.untertitelinator.instancer.UTEventHub;
+import de.tisan.church.untertitelinator.instancer.UTEventListener;
+import de.tisan.church.untertitelinator.instancer.packets.CommandPacket;
+import de.tisan.church.untertitelinator.instancer.packets.Packet;
+import de.tisan.church.untertitelinator.instancer.packets.SongLinePacket;
+import de.tisan.church.untertitelinator.instancer.packets.UIRefreshPacket;
 import de.tisan.church.untertitelinator.settings.UTPersistenceConstants;
 import de.tisan.tools.persistencemanager.JSONPersistence;
 
@@ -22,7 +22,7 @@ public class SongPlayer
 	{
 		this.song = song;
 		this.index = 0;
-		CTEventHub.get().registerListener(new CTEventListener()
+		UTEventHub.get().registerListener(new UTEventListener()
 		{
 
 			@Override
@@ -35,23 +35,23 @@ public class SongPlayer
 					{
 						case JUMP_END:
 							jumpToEnd();
-							CTEventHub.get().publish(new UIRefreshPacket());
+							UTEventHub.get().publish(new UIRefreshPacket());
 							break;
 						case JUMP_START:
 							jumpToStart();
-							CTEventHub.get().publish(new UIRefreshPacket());
+							UTEventHub.get().publish(new UIRefreshPacket());
 							break;
 						case NEXT_LINE:
 							nextLine();
-							CTEventHub.get().publish(new UIRefreshPacket());
+							UTEventHub.get().publish(new UIRefreshPacket());
 							break;
 						case PAUSE:
 							pause();
-							CTEventHub.get().publish(new UIRefreshPacket());
+							UTEventHub.get().publish(new UIRefreshPacket());
 							break;
 						case PREVIOUS_LINE:
 							previousLine();
-							CTEventHub.get().publish(new UIRefreshPacket());
+							UTEventHub.get().publish(new UIRefreshPacket());
 							break;
 						default:
 							break;
@@ -197,7 +197,7 @@ public class SongPlayer
 
 	public void updateEvent()
 	{
-		CTEventHub.get()
+		UTEventHub.get()
 		        .publish(new SongLinePacket(Arrays.asList(getCurrentLines()), Arrays.asList(getNextLines()), this));
 	}
 

@@ -2,9 +2,9 @@ package de.tisan.church.untertitelinator.main;
 
 import javax.swing.JOptionPane;
 
-import de.tisan.church.untertitelinator.churchtools.instancer.client.CTInstanceClient;
 import de.tisan.church.untertitelinator.data.Untertitelinator;
 import de.tisan.church.untertitelinator.gui.main.GUILoad;
+import de.tisan.church.untertitelinator.instancer.client.UTInstanceClient;
 import de.tisan.tisanapi.logger.Logger;
 
 public class Main {
@@ -27,7 +27,7 @@ public class Main {
 			load.setVisible(true);
 
 		} else if (result == 1) {
-			CTInstanceClient.get().connect();
+			UTInstanceClient.get().connect();
 		} else {
 			System.exit(1);
 		}

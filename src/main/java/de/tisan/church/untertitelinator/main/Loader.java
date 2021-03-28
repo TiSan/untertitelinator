@@ -2,12 +2,12 @@ package de.tisan.church.untertitelinator.main;
 
 import java.net.UnknownHostException;
 
-import de.tisan.church.untertitelinator.churchtools.instancer.CTInstanceServer;
 import de.tisan.church.untertitelinator.data.Untertitelinator;
 import de.tisan.church.untertitelinator.gui.keyer.GUIKeyer;
 import de.tisan.church.untertitelinator.gui.main.GUIMain;
 import de.tisan.church.untertitelinator.gui.main.GUISelectGodi;
 import de.tisan.church.untertitelinator.gui.presentator.GUIPresentator;
+import de.tisan.church.untertitelinator.instancer.UTInstanceServer;
 
 public class Loader
 {
@@ -34,7 +34,7 @@ public class Loader
 	{
 		try
 		{
-			CTInstanceServer.get().startServer();
+			UTInstanceServer.get().startServer();
 		}
 		catch (UnknownHostException e)
 		{

@@ -12,12 +12,12 @@ import de.tisan.church.untertitelinator.churchtools.api.ChurchToolsApi;
 import de.tisan.church.untertitelinator.churchtools.api.objects.Event;
 import de.tisan.church.untertitelinator.churchtools.api.objects.EventService;
 import de.tisan.church.untertitelinator.churchtools.api.objects.Service;
-import de.tisan.church.untertitelinator.churchtools.instancer.CTEventHub;
-import de.tisan.church.untertitelinator.churchtools.instancer.CTEventListener;
-import de.tisan.church.untertitelinator.churchtools.instancer.packets.Command;
-import de.tisan.church.untertitelinator.churchtools.instancer.packets.CommandPacket;
-import de.tisan.church.untertitelinator.churchtools.instancer.packets.EventSelectionChangedPacket;
-import de.tisan.church.untertitelinator.churchtools.instancer.packets.Packet;
+import de.tisan.church.untertitelinator.instancer.UTEventHub;
+import de.tisan.church.untertitelinator.instancer.UTEventListener;
+import de.tisan.church.untertitelinator.instancer.packets.Command;
+import de.tisan.church.untertitelinator.instancer.packets.CommandPacket;
+import de.tisan.church.untertitelinator.instancer.packets.EventSelectionChangedPacket;
+import de.tisan.church.untertitelinator.instancer.packets.Packet;
 import de.tisan.church.untertitelinator.settings.UTPersistenceConstants;
 import de.tisan.tools.persistencemanager.JSONPersistence;
 
@@ -51,7 +51,7 @@ public class Untertitelinator
 		songs = new ArrayList<Song>();
 		//		loadSongs();
 
-		CTEventHub.get().registerListener(new CTEventListener()
+		UTEventHub.get().registerListener(new UTEventListener()
 		{
 
 			@Override
@@ -101,7 +101,7 @@ public class Untertitelinator
 			songs.add(new Song(song));
 		}
 		
-		CTEventHub.get().publish(new CommandPacket(Command.CHANGE_SONG, songs.get(0).getTitle()));
+		UTEventHub.get().publish(new CommandPacket(Command.CHANGE_SONG, songs.get(0).getTitle()));
 	}
 
 	public List<Song> getSongs()
@@ -185,7 +185,7 @@ public class Untertitelinator
 		if (event != null)
 		{
 			currentEvent = event;
-			CTEventHub.get().publish(new EventSelectionChangedPacket(event));
+			UTEventHub.get().publish(new EventSelectionChangedPacket(event));
 		}
 	}
 

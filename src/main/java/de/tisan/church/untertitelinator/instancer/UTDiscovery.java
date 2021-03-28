@@ -1,4 +1,4 @@
-package de.tisan.church.untertitelinator.churchtools.instancer;
+package de.tisan.church.untertitelinator.instancer;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -14,20 +14,20 @@ import java.util.List;
 import de.tisan.church.untertitelinator.settings.UTPersistenceConstants;
 import de.tisan.tools.persistencemanager.JSONPersistence;
 
-public class CTDiscovery
+public class UTDiscovery
 {
 	private DatagramSocket sendSocket;
 	private DatagramSocket receiveSocket;
 	private String command;
 
-	public CTDiscovery()
+	public UTDiscovery()
 	{
 		command = "_UNTERTITELINATOR_DISCOVERY_";
 	}
 
-	public List<CTInstanceConnection> discoverServerIp()
+	public List<UTInstanceConnection> discoverServerIp()
 	{
-		List<CTInstanceConnection> connections = new ArrayList<CTInstanceConnection>();
+		List<UTInstanceConnection> connections = new ArrayList<UTInstanceConnection>();
 		try
 		{
 			if (receiveSocket == null)
@@ -44,7 +44,7 @@ public class CTDiscovery
 			String[] spl = data.split("\\|");
 			for (String s : spl)
 			{
-				CTInstanceConnection connection = new CTInstanceConnection();
+				UTInstanceConnection connection = new UTInstanceConnection();
 				String[] spl2 = s.split("_");
 				boolean completeStatement = true;
 				if (spl2[0].trim().startsWith("IP="))

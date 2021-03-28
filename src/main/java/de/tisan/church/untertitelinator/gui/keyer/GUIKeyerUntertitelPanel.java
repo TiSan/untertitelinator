@@ -8,10 +8,10 @@ import java.awt.event.ComponentEvent;
 
 import javax.swing.JPanel;
 
-import de.tisan.church.untertitelinator.churchtools.instancer.CTEventHub;
-import de.tisan.church.untertitelinator.churchtools.instancer.CTEventListener;
-import de.tisan.church.untertitelinator.churchtools.instancer.packets.Packet;
-import de.tisan.church.untertitelinator.churchtools.instancer.packets.SongLinePacket;
+import de.tisan.church.untertitelinator.instancer.UTEventHub;
+import de.tisan.church.untertitelinator.instancer.UTEventListener;
+import de.tisan.church.untertitelinator.instancer.packets.Packet;
+import de.tisan.church.untertitelinator.instancer.packets.SongLinePacket;
 import de.tisan.flatui.components.fbutton.FlatButton;
 import de.tisan.flatui.components.fcommons.Anchor;
 import de.tisan.flatui.components.fcommons.FlatLayoutManager;
@@ -59,7 +59,7 @@ public class GUIKeyerUntertitelPanel extends JPanel {
 
 			}
 		});
-		CTEventHub.get().registerListener(new CTEventListener() {
+		UTEventHub.get().registerListener(new UTEventListener() {
 
 			@Override
 			public void onEventReceived(Packet packet) {

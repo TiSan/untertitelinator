@@ -1,15 +1,15 @@
-package de.tisan.church.untertitelinator.churchtools.instancer;
+package de.tisan.church.untertitelinator.instancer;
 
-public class CTInstanceConnection
+public class UTInstanceConnection
 {
 	String ip;
 	String port;
 
-	public CTInstanceConnection()
+	public UTInstanceConnection()
 	{
 	}
 
-	public CTInstanceConnection(String ip, String port)
+	public UTInstanceConnection(String ip, String port)
 	{
 		super();
 		this.ip = ip;
