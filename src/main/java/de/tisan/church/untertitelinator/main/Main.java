@@ -18,6 +18,18 @@ public class Main {
 						+ "|______/|___|  /__|  \\___  >__|   |__| |__||__|  \\___  >____/__|___|  (____  /__|  \\____/|__|   \r\n"
 						+ "             \\/          \\/                          \\/             \\/     \\/                   ");
 		Logger.getInstance().log("Loading Untertitelinator v" + Untertitelinator.VERSION, Main.class);
+		for(int i = 0; i < args.length; i++) {
+			if(args[i].contains("debug")) {
+				debugMode();
+				return;
+			}
+		}
+		GUILoad load = new GUILoad();
+		load.setVisible(true);
+	}
+	
+	private static void debugMode() {
+		
 		int result = JOptionPane.showOptionDialog(null,
 				"Möchten Sie den Standalone-Modus starten oder betreiben Sie ein verteiltes UT-Netzwerk?",
 				"Abfrage zur Laufart", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null,
@@ -25,7 +37,7 @@ public class Main {
 		if (result == 0) {
 			GUILoad load = new GUILoad();
 			load.setVisible(true);
-
+			
 		} else if (result == 1) {
 			UTInstanceClient.get().connect();
 		} else {
