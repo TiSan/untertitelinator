@@ -53,10 +53,11 @@ public class Song
 		{
 			BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(dataFile), "UTF-8"));
 			String line = null;
-			while ((line = reader.readLine()) != null)
-			{
-				line = line.replaceAll(
-				        (String) JSONPersistence.get().getSetting(UTPersistenceConstants.LINESEPARATOR, "<BR>"), "\n");
+			while ((line = reader.readLine()) != null) {
+				line = line.replaceAll((String) JSONPersistence.get().getSetting(UTPersistenceConstants.LINESEPARATOR, "<BR>"), "\n").trim();
+				if(line.startsWith("#") || line.startsWith("//")) {
+					continue;
+				}
 				lines.add(line);
 			}
 			reader.close();
