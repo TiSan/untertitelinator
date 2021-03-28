@@ -3,8 +3,10 @@ package de.tisan.church.untertitelinator.gui.main;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-import de.tisan.church.untertitelinator.data.Untertitelinator;
-import de.tisan.church.untertitelinator.main.Loader;
+import de.tisan.church.untertitelinator.instancer.UTEventHub;
+import de.tisan.church.untertitelinator.instancer.packets.Command;
+import de.tisan.church.untertitelinator.instancer.packets.CommandPacket;
+import de.tisan.church.untertitelinator.instancer.packets.UIRefreshPacket;
 
 public class LukasWillsSoKeyListener implements KeyListener {
 
@@ -16,16 +18,16 @@ public class LukasWillsSoKeyListener implements KeyListener {
 	@Override
 	public void keyPressed(KeyEvent e) {
 		if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-			Untertitelinator.get().getCurrentPlayer().previousLine();
-			Loader.getMainUi().updateUIComponents();
+			UTEventHub.get().publish(new CommandPacket(Command.PREVIOUS_LINE));
+			UTEventHub.get().publish(new UIRefreshPacket());
 			e.consume();
 		} else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-			Untertitelinator.get().getCurrentPlayer().nextLine();
-			Loader.getMainUi().updateUIComponents();
+			UTEventHub.get().publish(new CommandPacket(Command.NEXT_LINE));
+			UTEventHub.get().publish(new UIRefreshPacket());
 			e.consume();
 		} else if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-			Untertitelinator.get().getCurrentPlayer().pause();
-			Loader.getMainUi().updateUIComponents();
+			UTEventHub.get().publish(new CommandPacket(Command.PAUSE));
+			UTEventHub.get().publish(new UIRefreshPacket());
 			e.consume();
 		}
 		

@@ -68,8 +68,8 @@ public class GUILoad extends JFrame {
 						Loader.loadUi();
 						break;
 					case 20:
-						say("Lade Songs in Hauptoberfläche...");
-						Loader.loadSongsIntoMainGui();
+						say("Starte InstanceServer...");
+						Loader.startInstanceServer();
 						break;
 					case 30:
 						say("Lade ChurchTools Veranstaltungen...");

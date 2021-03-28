@@ -6,19 +6,20 @@ import java.awt.Frame;
 import java.awt.Toolkit;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.time.format.DateTimeFormatter;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 
-import de.tisan.church.untertitelinator.churchtools.api.objects.Event;
 import de.tisan.church.untertitelinator.data.Untertitelinator;
-import de.tisan.church.untertitelinator.main.Loader;
+import de.tisan.church.untertitelinator.instancer.UTEventHub;
+import de.tisan.church.untertitelinator.instancer.UTEventListener;
+import de.tisan.church.untertitelinator.instancer.packets.CommandPacket;
+import de.tisan.church.untertitelinator.instancer.packets.GUIKeyerLayerChangePacket;
+import de.tisan.church.untertitelinator.instancer.packets.Packet;
+import de.tisan.church.untertitelinator.instancer.packets.SongLinePacket;
+import de.tisan.church.untertitelinator.instancer.packets.UIRefreshPacket;
 import de.tisan.church.untertitelinator.settings.UTPersistenceConstants;
-import de.tisan.flatui.components.fbutton.FlatButton;
 import de.tisan.flatui.components.fcommons.Anchor;
-import de.tisan.flatui.components.fcommons.FlatColors;
 import de.tisan.flatui.components.fcommons.FlatLayoutManager;
 import de.tisan.flatui.components.ftitlebar.DefaultFlatTitleBarListener;
 import de.tisan.flatui.components.ftitlebar.FlatTitleBarListener;
@@ -30,11 +31,6 @@ public class GUIKeyer extends JFrame {
 	private static final long serialVersionUID = 7666681011188876592L;
 	private static GUIKeyer instance;
 
-	Color btnActiveColor = FlatColors.ALIZARINRED;
-	Color btnInactiveColor = FlatColors.HIGHLIGHTBACKGROUND;
-
-	private FlatButton btnMaxButton;
-
 	public static GUIKeyer get() {
 		if (instance == null) {
 			instance = new GUIKeyer();
@@ -45,11 +41,12 @@ public class GUIKeyer extends JFrame {
 	private GUIKeyerUntertitelPanel pnlUntertitel;
 	private GUIKeyerStartPagePanel pnlStartPage;
 	private FlatTitleBarWin10 bar;
-	Color bg;
-	Color fg;
 	private GUIKeyerLogoPanel pnlLogo;
 	private GUIKeyerEndcardPanel pnlEndcardPage;
 	private GUIKeyerUntertitelPanel pnlKollekte;
+
+	Color bg;
+	Color fg;
 
 	public GUIKeyer() {
 		try {
@@ -81,70 +78,50 @@ public class GUIKeyer extends JFrame {
 
 				@Override
 				public void onWindowDragged() {
-					// TODO Auto-generated method stub
-
 				}
 
 				@Override
 				public void onMinimizeButtonReleased() {
-					// TODO Auto-generated method stub
-
 				}
 
 				@Override
 				public void onMinimizeButtonPressed() {
-					// TODO Auto-generated method stub
-
 				}
 
 				@Override
 				public void onMinimizeButtonMouseMove() {
-					// TODO Auto-generated method stub
-
 				}
 
 				@Override
 				public void onMaximizeButtonReleased() {
 					if ((GUIKeyer.this.getExtendedState() == Frame.MAXIMIZED_BOTH) == false) {
-					bar.setVisible(false);
+						bar.setVisible(false);
 					}
-					Loader.getMainUi().updateUIComponents();
+					UTEventHub.get().publish(new UIRefreshPacket());
 				}
 
 				@Override
 				public void onMaximizeButtonPressed() {
-					// TODO Auto-generated method stub
-
 				}
 
 				@Override
 				public void onMaximizeButtonMouseMove() {
-					// TODO Auto-generated method stub
-
 				}
 
 				@Override
 				public void onImageClicked() {
-					// TODO Auto-generated method stub
-
 				}
 
 				@Override
 				public void onCloseButtonReleased() {
-					// TODO Auto-generated method stub
-
 				}
 
 				@Override
 				public void onCloseButtonPressed() {
-					// TODO Auto-generated method stub
-
 				}
 
 				@Override
 				public void onCloseButtonMouseMove() {
-					// TODO Auto-generated method stub
-
 				}
 			});
 			bar.setOptionMenuToggleEnabled(false);
@@ -196,6 +173,51 @@ public class GUIKeyer extends JFrame {
 				}
 			});
 
+			UTEventHub.get().registerListener(new UTEventListener() {
+
+				@Override
+				public void onEventReceived(Packet packet) {
+					if (packet instanceof CommandPacket) {
+						switch (((CommandPacket) packet).getCommand()) {
+						case TOGGLE_KOLLEKTE:
+							boolean newState = toggleKollekte();
+							UTEventHub.get().publish(new GUIKeyerLayerChangePacket(GUIKeyerLayer.KOLLEKTE, newState));
+							UTEventHub.get().publish(new UIRefreshPacket());
+							break;
+						case TOGGLE_LOGO:
+							boolean newState1 = toggleLogo();
+							UTEventHub.get().publish(new GUIKeyerLayerChangePacket(GUIKeyerLayer.LOGO, newState1));
+							UTEventHub.get().publish(new UIRefreshPacket());
+							break;
+						case TOGGLE_UNTERTITEL:
+							boolean newState2 = toggleUntertitel();
+							UTEventHub.get()
+									.publish(new GUIKeyerLayerChangePacket(GUIKeyerLayer.UNTERTITEL, newState2));
+							UTEventHub.get().publish(new UIRefreshPacket());
+							break;
+						case TOGGLE_WINDOW_BAR:
+							boolean newState3 = toggleWindowBar();
+							UTEventHub.get().publish(new GUIKeyerLayerChangePacket(GUIKeyerLayer.MAXBUTTON, newState3));
+							UTEventHub.get().publish(new UIRefreshPacket());
+							break;
+						case TOGGLE_BEGIN_LAYER:
+							boolean newState4 = toggleBeginLayer();
+							UTEventHub.get()
+									.publish(new GUIKeyerLayerChangePacket(GUIKeyerLayer.BEGINLAYER, newState4));
+							UTEventHub.get().publish(new UIRefreshPacket());
+							break;
+						case TOGGLE_ENDCARD:
+							boolean newState5 = toggleEndcard();
+							UTEventHub.get().publish(new GUIKeyerLayerChangePacket(GUIKeyerLayer.ENDCARD, newState5));
+							UTEventHub.get().publish(new UIRefreshPacket());
+							break;
+						default:
+							break;
+						}
+					}
+				}
+			});
+
 		} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
 			e.printStackTrace();
 		}
@@ -205,6 +227,17 @@ public class GUIKeyer extends JFrame {
 			public void run() {
 				while (true) {
 					repaint();
+					UTEventHub.get()
+							.publish(new GUIKeyerLayerChangePacket(GUIKeyerLayer.ENDCARD, pnlEndcardPage.isVisible()));
+					UTEventHub.get()
+							.publish(new GUIKeyerLayerChangePacket(GUIKeyerLayer.BEGINLAYER, pnlStartPage.isVisible()));
+					UTEventHub.get()
+							.publish(new GUIKeyerLayerChangePacket(GUIKeyerLayer.KOLLEKTE, pnlKollekte.isVisible()));
+					UTEventHub.get().publish(new GUIKeyerLayerChangePacket(GUIKeyerLayer.LOGO, pnlLogo.isVisible()));
+					UTEventHub.get().publish(new GUIKeyerLayerChangePacket(GUIKeyerLayer.MAXBUTTON, bar.isVisible()));
+					UTEventHub.get().publish(
+							new GUIKeyerLayerChangePacket(GUIKeyerLayer.UNTERTITEL, pnlUntertitel.isVisible()));
+
 					try {
 						Thread.sleep(1000);
 					} catch (InterruptedException e) {
@@ -215,46 +248,7 @@ public class GUIKeyer extends JFrame {
 		}).start();
 	}
 
-	public void showNewTextLines(String title, String line1, String line2, int delay, boolean paused) {
-		new Thread(new Runnable() {
-
-			@Override
-			public void run() {
-				try {
-					Thread.sleep(delay);
-				} catch (InterruptedException e) {
-				}
-				pnlUntertitel.showNewTextLines(line1, line2);
-			}
-		}).start();
-	}
-
-	public void loadUi() {
-		Event currentEvent = Untertitelinator.get().getCurrentEvent();
-		String themaString = currentEvent.getName();
-
-		// Gottesdienst-Titel aus "Info-Feld" lesen
-		String titleString = currentEvent.getDescription();
-		int indexEnter = titleString.indexOf("\n");
-		if (indexEnter == -1) {
-			indexEnter = titleString.length();
-		}
-
-		titleString = titleString.substring(0, indexEnter);
-
-		// Fallback, wenn nicht gesetzt
-		if (titleString.startsWith("Weitere Infos...")) {
-			titleString = "Live-Gottesdienst";
-		}
-
-		pnlStartPage.showNextStream(titleString, "Thema: \"" + themaString + "\"",
-				currentEvent.getStartDate().plusHours(1).format(DateTimeFormatter.ofPattern("dd.MM.yyyy - HH:mm"))
-						+ " Uhr",
-				Untertitelinator.get().getServiceList());
-
-	}
-
-	public boolean toggleBeginLayer() {
+	private boolean toggleBeginLayer() {
 		if (pnlStartPage.isVisible()) {
 			pnlStartPage.setVisible(false);
 		} else {
@@ -263,11 +257,7 @@ public class GUIKeyer extends JFrame {
 		return pnlStartPage.isVisible();
 	}
 
-	public boolean isBeginLayerVisible() {
-		return pnlStartPage.isVisible();
-	}
-
-	public boolean toggleUntertitel() {
+	private boolean toggleUntertitel() {
 		if (pnlUntertitel.isVisible()) {
 			pnlUntertitel.setVisible(false);
 			// bar.setBackground(new Color(0, 0, 0, 0));
@@ -278,11 +268,7 @@ public class GUIKeyer extends JFrame {
 		return pnlUntertitel.isVisible();
 	}
 
-	public boolean isUntertitelVisible() {
-		return pnlUntertitel.isVisible();
-	}
-
-	public boolean toggleLogo() {
+	private boolean toggleLogo() {
 		if (pnlLogo.isVisible()) {
 			pnlLogo.setVisible(false);
 		} else {
@@ -291,11 +277,7 @@ public class GUIKeyer extends JFrame {
 		return pnlLogo.isVisible();
 	}
 
-	public boolean isLogoVisible() {
-		return pnlLogo.isVisible();
-	}
-
-	public boolean toggleEndcard() {
+	private boolean toggleEndcard() {
 		if (pnlEndcardPage.isVisible()) {
 			pnlEndcardPage.setVisible(false);
 		} else {
@@ -304,12 +286,7 @@ public class GUIKeyer extends JFrame {
 		return pnlEndcardPage.isVisible();
 	}
 
-	public boolean isEndcardVisible() {
-		return pnlEndcardPage.isVisible();
-	}
-
-	// Max-Button on Main GUI set active or inactive
-	public boolean toggleWindowBar() {
+	private boolean toggleWindowBar() {
 		if (bar.isVisible()) {
 			bar.setVisible(false);
 		} else {
@@ -319,36 +296,28 @@ public class GUIKeyer extends JFrame {
 
 	}
 
-	public boolean isWindowBarVisible() {
-		return bar.isVisible();
-	}
-
-	public boolean toggleKollekte() {
+	private boolean toggleKollekte() {
 		if (pnlKollekte.isVisible()) {
 			new Thread(new Runnable() {
 
 				@Override
 				public void run() {
-					pnlKollekte.showNewTextLines("", "", true);
+					UTEventHub.get().publish(new SongLinePacket("", ""));
 					pnlKollekte.setVisible(false);
-					Loader.getMainUi().updateUIComponents();
+					UTEventHub.get().publish(new UIRefreshPacket());
 				}
 			}).start();
+			return !pnlKollekte.isVisible();
 		} else {
 			pnlKollekte.setVisible(true);
 			String kollekteLine1 = JSONPersistence.get().getSetting(UTPersistenceConstants.GUIKEYERKOLLEKTELINE1,
 					"Kollektenkonto: DE76 5006 1741 0000 0096 87", String.class);
-			pnlKollekte.showNewTextLines(kollekteLine1, "Verwendungszweck: 'Kollekte "
-					+ Untertitelinator.get().getCurrentEvent().getStartDayString() + "'");
+			UTEventHub.get().publish(new SongLinePacket(kollekteLine1, "Verwendungszweck: 'Kollekte "
+					+ Untertitelinator.get().getCurrentEvent().getStartDayString() + "'"));
+			UTEventHub.get().publish(new UIRefreshPacket());
 		}
 		return pnlKollekte.isVisible();
 
 	}
-
-	public boolean isKollekteVisible() {
-		return pnlKollekte.isVisible();
-	}
-	
-	
 
 }

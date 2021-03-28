@@ -3,8 +3,12 @@ package de.tisan.church.untertitelinator.gui.main;
 import java.awt.Color;
 import java.awt.Dimension;
 
-import de.tisan.church.untertitelinator.gui.keyer.GUIKeyer;
-import de.tisan.church.untertitelinator.main.Loader;
+import de.tisan.church.untertitelinator.instancer.UTEventHub;
+import de.tisan.church.untertitelinator.instancer.UTEventListener;
+import de.tisan.church.untertitelinator.instancer.packets.Command;
+import de.tisan.church.untertitelinator.instancer.packets.CommandPacket;
+import de.tisan.church.untertitelinator.instancer.packets.GUIKeyerLayerChangePacket;
+import de.tisan.church.untertitelinator.instancer.packets.Packet;
 import de.tisan.flatui.components.fbutton.FlatButton;
 import de.tisan.flatui.components.fcommons.FlatColors;
 import de.tisan.flatui.components.fcommons.FlatLayoutManager;
@@ -35,8 +39,7 @@ public class GUIStartEndCardsPanel extends AGUIMainPanel {
 		btnBeginLayer.addMouseListener(Priority.NORMAL, new MouseListenerImpl() {
 			@Override
 			public void onMouseRelease(MouseReleaseHandler handler) {
-				GUIKeyer.get().toggleBeginLayer();
-				Loader.getMainUi().updateUIComponents();
+				UTEventHub.get().publish(new CommandPacket(Command.TOGGLE_BEGIN_LAYER));
 			}
 		});
 		add(btnBeginLayer);
@@ -49,8 +52,7 @@ public class GUIStartEndCardsPanel extends AGUIMainPanel {
 		btnEndcard.addMouseListener(Priority.NORMAL, new MouseListenerImpl() {
 			@Override
 			public void onMouseRelease(MouseReleaseHandler handler) {
-				GUIKeyer.get().toggleEndcard();
-				Loader.getMainUi().updateUIComponents();
+				UTEventHub.get().publish(new CommandPacket(Command.TOGGLE_ENDCARD));
 			}
 		});
 		add(btnEndcard);
@@ -59,23 +61,28 @@ public class GUIStartEndCardsPanel extends AGUIMainPanel {
 
 		updateThisComponent();
 		
+		UTEventHub.get().registerListener(new UTEventListener() {
+
+			@Override
+			public void onEventReceived(Packet packet) {
+				if (packet instanceof GUIKeyerLayerChangePacket) {
+					GUIKeyerLayerChangePacket bPacket = (GUIKeyerLayerChangePacket) packet;
+					switch (bPacket.getLayerName()) {
+					case ENDCARD:
+						btnEndcard.setBackground(bPacket.isVisible() ? btnActiveColor : btnInactiveColor, true);
+						break;
+					case BEGINLAYER:
+						btnBeginLayer.setBackground(bPacket.isVisible() ? btnActiveColor : btnInactiveColor, true);
+						break;
+					default:
+						break;
+					} 
+				} 
+			}
+		});
 	}
 
 	@Override
 	public void updateThisComponent() {
-		// TODO Auto-generated method stub
-
-		if (GUIKeyer.get().isEndcardVisible()) {
-			btnEndcard.setBackground(btnActiveColor, true);
-		} else {
-			btnEndcard.setBackground(btnInactiveColor, true);
-		}
-
-		if (GUIKeyer.get().isBeginLayerVisible()) {
-			btnBeginLayer.setBackground(btnActiveColor, true);
-		} else {
-			btnBeginLayer.setBackground(btnInactiveColor, true);
-		}
-		
 	}
 }

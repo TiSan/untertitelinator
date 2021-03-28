@@ -1,7 +1,9 @@
 package de.tisan.church.untertitelinator.churchtools.api.objects;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoField;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -60,15 +62,16 @@ public class Event {
 	}
 
 	public LocalDateTime getStartDate() {
-		return startDate;
+		ZoneId zone = ZoneId.of("Europe/Berlin");
+		return startDate.plusSeconds(zone.getRules().getOffset(startDate).get(ChronoField.OFFSET_SECONDS));
 	}
-
+	
 	public String getStartDateString() {
-		return sdf.format(startDate);
+		return sdf.format(getStartDate());
 	}
 	
 	public String getStartDayString() {
-		return sdfDay.format(startDate);
+		return sdfDay.format(getStartDate());
 	}
 
 	public void setStartDate(LocalDateTime startDate) {

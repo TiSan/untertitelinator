@@ -22,12 +22,12 @@ public class GUIKeyerLogoPanel extends JPanel {
 	public GUIKeyerLogoPanel(FlatLayoutManager man, GUIKeyer instance, Dimension preferredSize) {
 		setLayout(null);
 		setOpaque(false);
-		
+
 		layerImage = new JLabel();
-		
+
 		try {
-			image = ImageIO.read(
-					GUIKeyerLogoPanel.class.getResourceAsStream("/de/tisan/church/untertitelinator/resources/evko_broadcast_watermark_v1_small.png"));
+			image = ImageIO.read(GUIKeyerLogoPanel.class.getResourceAsStream(
+					"/de/tisan/church/untertitelinator/resources/evko_broadcast_watermark_v1_small.png"));
 			layerImage.setIcon(new ImageIcon(image));
 			setBounds(0, 0, image.getWidth(), image.getHeight());
 		} catch (IOException e1) {
@@ -35,9 +35,9 @@ public class GUIKeyerLogoPanel extends JPanel {
 		}
 
 		add(layerImage);
-		
+
 		fitImage(preferredSize.width, preferredSize.height);
-				
+
 		addComponentListener(new ComponentAdapter() {
 
 			@Override
@@ -45,17 +45,16 @@ public class GUIKeyerLogoPanel extends JPanel {
 				fitImage(getWidth(), getHeight());
 			}
 		});
-		
+
 		repaint();
 	}
 
-	public void fitImage(int width, int height) {
+	private void fitImage(int width, int height) {
 		int safeBounds = 80;
 		if (isVisible()) {
 			int x = width - image.getWidth() - safeBounds;
 			int y = safeBounds;
 			layerImage.setBounds(x, y, image.getWidth(), image.getHeight());
-			System.out.println("x: " + x + "; y: " + y);
 		}
 	}
 }

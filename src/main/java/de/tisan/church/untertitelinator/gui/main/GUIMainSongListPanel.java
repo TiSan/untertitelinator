@@ -1,7 +1,6 @@
 package de.tisan.church.untertitelinator.gui.main;
 
 import java.awt.Dimension;
-import java.awt.Font;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
@@ -10,6 +9,10 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import de.tisan.church.untertitelinator.data.Untertitelinator;
+import de.tisan.church.untertitelinator.instancer.UTEventHub;
+import de.tisan.church.untertitelinator.instancer.packets.Command;
+import de.tisan.church.untertitelinator.instancer.packets.CommandPacket;
+import de.tisan.church.untertitelinator.instancer.packets.UIRefreshPacket;
 import de.tisan.church.untertitelinator.main.Loader;
 import de.tisan.flatui.components.fbutton.FlatButton;
 import de.tisan.flatui.components.fcommons.FlatColors;
@@ -17,7 +20,6 @@ import de.tisan.flatui.components.fcommons.FlatLayoutManager;
 import de.tisan.flatui.components.fhintbox.FlatHintBoxEntry;
 import de.tisan.flatui.components.fhintbox.FlatHintBoxManager;
 import de.tisan.flatui.components.ficon.FlatIcon;
-import de.tisan.flatui.components.ficon.FlatIconFont;
 import de.tisan.flatui.components.flisteners.MouseListenerImpl;
 import de.tisan.flatui.components.flisteners.MouseReleaseHandler;
 import de.tisan.flatui.components.flisteners.Priority;
@@ -74,7 +76,6 @@ public class GUIMainSongListPanel extends AGUIMainPanel {
 		FlatButton btnMoveDown = new FlatButton("", FlatIcon.ARROW_DOWN, man);
 		btnMoveDown.setBounds(x, y, widthBtn, heightBtn);
 		btnMoveDown.setBackground(FlatColors.BLUE);
-		//btnMoveDown.setIconFont(FlatIconFont.getInstance(18, Font.PLAIN));
 		btnMoveDown.addMouseListener(Priority.NORMAL, new MouseListenerImpl() {
 			@Override
 			public void onMouseRelease(MouseReleaseHandler handler) {
@@ -116,22 +117,24 @@ public class GUIMainSongListPanel extends AGUIMainPanel {
 	}
 
 	private void changeSong(String name) {
-		if (Loader.getMainUi() != null) {
-			Untertitelinator.get().switchSong(Untertitelinator.get().getSongs().stream()
-					.filter(s -> s.getTitle().equals(name)).findFirst().get());
-			Loader.getMainUi().updateUIComponents();
+		UTEventHub.get().publish(new CommandPacket(Command.CHANGE_SONG, name));
+//		if (Loader.getMainUi() != null) {
+//			Untertitelinator.get().switchSong(Untertitelinator.get().getSongs().stream()
+//					.filter(s -> s.getTitle().equals(name)).findFirst().get());
+			
 
-		}
+	//	}
 	}
 
 	private void updateSongList() {
 		list.setSelectedIndex(0);
 		Untertitelinator.get().getSongs().stream().map(song -> song.getTitle()).forEach(songListModel::addElement);
-		Untertitelinator.get().switchSong(Untertitelinator.get().getSongs().get(0));
+		//Untertitelinator.get().switchSong(Untertitelinator.get().getSongs().get(0));
+		
+		UTEventHub.get().publish(new UIRefreshPacket());
 	}
 
 	@Override
 	public void updateThisComponent() {
-		// updateSongList();
 	}
 }

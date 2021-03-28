@@ -1,10 +1,13 @@
 package de.tisan.church.untertitelinator.gui.main;
 
 import java.awt.Dimension;
-import java.lang.reflect.Field;
 
-import de.tisan.church.untertitelinator.data.Untertitelinator;
-import de.tisan.church.untertitelinator.main.Loader;
+import de.tisan.church.untertitelinator.instancer.UTEventHub;
+import de.tisan.church.untertitelinator.instancer.UTEventListener;
+import de.tisan.church.untertitelinator.instancer.packets.Command;
+import de.tisan.church.untertitelinator.instancer.packets.CommandPacket;
+import de.tisan.church.untertitelinator.instancer.packets.Packet;
+import de.tisan.church.untertitelinator.instancer.packets.SongLinePacket;
 import de.tisan.flatui.components.fbutton.FlatButton;
 import de.tisan.flatui.components.fcommons.FlatColors;
 import de.tisan.flatui.components.fcommons.FlatLayoutManager;
@@ -37,7 +40,7 @@ public class GUIMainControllerPanel extends AGUIMainPanel
 			@Override
 			public void onMouseRelease(MouseReleaseHandler handler)
 			{
-				jumpToStart();
+				UTEventHub.get().publish(new CommandPacket(Command.JUMP_START));
 			}
 		});
 
@@ -53,7 +56,7 @@ public class GUIMainControllerPanel extends AGUIMainPanel
 			@Override
 			public void onMouseRelease(MouseReleaseHandler handler)
 			{
-				previousLine();
+				UTEventHub.get().publish(new CommandPacket(Command.PREVIOUS_LINE));
 			}
 		});
 
@@ -69,7 +72,7 @@ public class GUIMainControllerPanel extends AGUIMainPanel
 			@Override
 			public void onMouseRelease(MouseReleaseHandler handler)
 			{
-				pause();
+				UTEventHub.get().publish(new CommandPacket(Command.PAUSE));
 			}
 		});
 
@@ -84,7 +87,7 @@ public class GUIMainControllerPanel extends AGUIMainPanel
 			@Override
 			public void onMouseRelease(MouseReleaseHandler handler)
 			{
-				nextLine();
+				UTEventHub.get().publish(new CommandPacket(Command.NEXT_LINE));
 
 			}
 		});
@@ -100,74 +103,41 @@ public class GUIMainControllerPanel extends AGUIMainPanel
 			@Override
 			public void onMouseRelease(MouseReleaseHandler handler)
 			{
-				jumpToEnd();
+				UTEventHub.get().publish(new CommandPacket(Command.JUMP_END));
 			}
 		});
 
 		add(btnEnd);
 
-	}
+		UTEventHub.get().registerListener(new UTEventListener()
+		{
 
-	void jumpToStart()
-	{
-		Untertitelinator.get().getCurrentPlayer().jumpToStart();
-		Loader.getMainUi().updateUIComponents();
-	}
-
-	void jumpToEnd()
-	{
-		Untertitelinator.get().getCurrentPlayer().jumpToEnd();
-		Loader.getMainUi().updateUIComponents();
-	}
-
-	public void nextLine()
-	{
-		Untertitelinator.get().getCurrentPlayer().nextLine();
-		Loader.getMainUi().updateUIComponents();
-	}
-
-	public void previousLine()
-	{
-		Untertitelinator.get().getCurrentPlayer().previousLine();
-		Loader.getMainUi().updateUIComponents();
-	}
-
-	public void pause()
-	{
-		Untertitelinator.get().getCurrentPlayer().pause();
-		Loader.getMainUi().updateUIComponents();
+			@Override
+			public void onEventReceived(Packet packet)
+			{
+				if (packet instanceof SongLinePacket)
+				{
+					SongLinePacket sPacket = (SongLinePacket) packet;
+					if (sPacket.getSongPlayer() != null)
+					{
+						if (sPacket.getSongPlayer().isPaused())
+						{
+							btnPause.setBackground(FlatColors.GREEN);
+							btnPause.setIcon(FlatIcon.PLAY);
+						}
+						else
+						{
+							btnPause.setBackground(FlatColors.ALIZARINRED);
+							btnPause.setIcon(FlatIcon.PAUSE);
+						}
+					}
+				}
+			}
+		});
 	}
 
 	@Override
 	public void updateThisComponent()
 	{
-		if (Untertitelinator.get().getCurrentPlayer().isPaused())
-		{
-			btnPause.setBackground(FlatColors.GREEN);
-			try
-			{
-				Field icon = btnPause.getClass().getDeclaredField("icon");
-				icon.setAccessible(true);
-				icon.set(btnPause, FlatIcon.PLAY);
-			}
-			catch (SecurityException | NoSuchFieldException | IllegalArgumentException | IllegalAccessException e)
-			{
-				e.printStackTrace();
-			}
-		}
-		else
-		{
-			btnPause.setBackground(FlatColors.ALIZARINRED);
-			try
-			{
-				Field icon = btnPause.getClass().getDeclaredField("icon");
-				icon.setAccessible(true);
-				icon.set(btnPause, FlatIcon.PAUSE);
-			}
-			catch (SecurityException | NoSuchFieldException | IllegalArgumentException | IllegalAccessException e)
-			{
-				e.printStackTrace();
-			}
-		}
 	}
 }

@@ -6,8 +6,12 @@ import java.awt.Font;
 
 import javax.swing.JLabel;
 
-import de.tisan.church.untertitelinator.gui.keyer.GUIKeyer;
-import de.tisan.church.untertitelinator.main.Loader;
+import de.tisan.church.untertitelinator.instancer.UTEventHub;
+import de.tisan.church.untertitelinator.instancer.UTEventListener;
+import de.tisan.church.untertitelinator.instancer.packets.Command;
+import de.tisan.church.untertitelinator.instancer.packets.CommandPacket;
+import de.tisan.church.untertitelinator.instancer.packets.GUIKeyerLayerChangePacket;
+import de.tisan.church.untertitelinator.instancer.packets.Packet;
 import de.tisan.flatui.components.fbutton.FlatButton;
 import de.tisan.flatui.components.fcommons.FlatColors;
 import de.tisan.flatui.components.fcommons.FlatLayoutManager;
@@ -51,8 +55,7 @@ public class GUIMainKeyerPanel extends AGUIMainPanel {
 		btnUntertitel.addMouseListener(Priority.NORMAL, new MouseListenerImpl() {
 			@Override
 			public void onMouseRelease(MouseReleaseHandler handler) {
-				GUIKeyer.get().toggleUntertitel();
-				Loader.getMainUi().updateUIComponents();
+				UTEventHub.get().publish(new CommandPacket(Command.TOGGLE_UNTERTITEL));
 			}
 		});
 		add(btnUntertitel);
@@ -65,15 +68,12 @@ public class GUIMainKeyerPanel extends AGUIMainPanel {
 		btnKollekte.addMouseListener(Priority.NORMAL, new MouseListenerImpl() {
 			@Override
 			public void onMouseRelease(MouseReleaseHandler handler) {
-				GUIKeyer.get().toggleKollekte();
-				Loader.getMainUi().updateUIComponents();
+				UTEventHub.get().publish(new CommandPacket(Command.TOGGLE_KOLLEKTE));
 			}
 		});
 		add(btnKollekte);
 
 		x += widthBtn + 5;
-
-
 
 		btnLogo = new FlatButton("Logo", man);
 		btnLogo.setBounds(x, y, widthBtn, heightBtn);
@@ -81,8 +81,7 @@ public class GUIMainKeyerPanel extends AGUIMainPanel {
 		btnLogo.addMouseListener(Priority.NORMAL, new MouseListenerImpl() {
 			@Override
 			public void onMouseRelease(MouseReleaseHandler handler) {
-				GUIKeyer.get().toggleLogo();
-				Loader.getMainUi().updateUIComponents();
+				UTEventHub.get().publish(new CommandPacket(Command.TOGGLE_LOGO));
 			}
 		});
 		add(btnLogo);
@@ -95,41 +94,41 @@ public class GUIMainKeyerPanel extends AGUIMainPanel {
 		btnMaxButton.addMouseListener(Priority.NORMAL, new MouseListenerImpl() {
 			@Override
 			public void onMouseRelease(MouseReleaseHandler handler) {
-				GUIKeyer.get().toggleWindowBar();
-				Loader.getMainUi().updateUIComponents();
+				UTEventHub.get().publish(new CommandPacket(Command.TOGGLE_WINDOW_BAR));
 			}
 		});
 		add(btnMaxButton);
-		
+
 		updateThisComponent();
+
+		UTEventHub.get().registerListener(new UTEventListener() {
+
+			@Override
+			public void onEventReceived(Packet packet) {
+				if (packet instanceof GUIKeyerLayerChangePacket) {
+					GUIKeyerLayerChangePacket bPacket = (GUIKeyerLayerChangePacket) packet;
+					switch (bPacket.getLayerName()) {
+					case KOLLEKTE:
+						btnKollekte.setBackground(bPacket.isVisible() ? btnActiveColor : btnInactiveColor, true);
+						break;
+					case UNTERTITEL:
+						btnUntertitel.setBackground(bPacket.isVisible() ? btnActiveColor : btnInactiveColor, true);
+						break;
+					case LOGO:
+						btnLogo.setBackground(bPacket.isVisible() ? btnActiveColor : btnInactiveColor, true);
+						break;
+					case MAXBUTTON:
+						btnMaxButton.setBackground(bPacket.isVisible() ? btnActiveColor : btnInactiveColor, true);
+						break;
+					default:
+						break;
+					}
+				}
+			}
+		});
 	}
 
 	@Override
 	public void updateThisComponent() {
-		if (GUIKeyer.get().isKollekteVisible()) {
-			btnKollekte.setBackground(btnActiveColor, true);
-		} else {
-			btnKollekte.setBackground(btnInactiveColor, true);
-		}
-
-		if (GUIKeyer.get().isUntertitelVisible()) {
-			btnUntertitel.setBackground(btnActiveColor, true);
-		} else {
-			btnUntertitel.setBackground(btnInactiveColor, true);
-		}
-
-
-
-		if (GUIKeyer.get().isLogoVisible()) {
-			btnLogo.setBackground(btnActiveColor, true);
-		} else {
-			btnLogo.setBackground(btnInactiveColor, true);
-		}
-
-		if (GUIKeyer.get().isWindowBarVisible()) {
-			btnMaxButton.setBackground(btnActiveColor, true);
-		} else {
-			btnMaxButton.setBackground(btnInactiveColor, true);
-		}
 	}
 }
