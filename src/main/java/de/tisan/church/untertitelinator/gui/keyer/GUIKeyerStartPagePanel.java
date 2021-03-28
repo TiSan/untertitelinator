@@ -148,8 +148,7 @@ public class GUIKeyerStartPagePanel extends JPanel {
 					}
 
 					showNextStream(titleString, "Thema: \"" + themaString + "\"",
-							currentEvent.getStartDate().plusHours(1)
-									.format(DateTimeFormatter.ofPattern("dd.MM.yyyy - HH:mm")) + " Uhr",
+							currentEvent.getStartDateString() + " Uhr",
 							Untertitelinator.get().getServiceList());
 				}
 			}
