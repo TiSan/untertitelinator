@@ -31,6 +31,11 @@ public class GUIKeyerLayerChangePacket extends Packet{
 	public void setVisible(boolean visible) {
 		this.visible = visible;
 	}
+
+	@Override
+	public String toString() {
+		return "Keyer Layer " + layerName + " is now " + (isVisible() ? "visible" : "not visible");
+	}
 	
 	
 }

@@ -12,6 +12,7 @@ import java.util.Enumeration;
 import java.util.List;
 
 import de.tisan.church.untertitelinator.settings.UTPersistenceConstants;
+import de.tisan.tisanapi.logger.Logger;
 import de.tisan.tools.persistencemanager.JSONPersistence;
 
 public class UTDiscovery
@@ -70,12 +71,12 @@ public class UTDiscovery
 					connections.add(connection);
 				}
 			}
-			System.out.println(
-			        "Discovery package received! -> " + packet.getAddress() + ":" + packet.getPort() + " : " + data);
+			Logger.getInstance().log(
+			        "Discovery package received! -> " + packet.getAddress() + ":" + packet.getPort() + " : " + data, getClass());
 		}
 		catch (Exception ex)
 		{
-			ex.printStackTrace();
+			Logger.getInstance().err("UDP Listener Error! " + ex.getMessage(), ex, getClass());
 		}
 		return connections;
 	}
@@ -97,7 +98,7 @@ public class UTDiscovery
 					}
 					catch (Exception e)
 					{
-						e.printStackTrace();
+						Logger.getInstance().err("SendDiscoveryPacket failed! " + e.getMessage(), e, getClass());
 					}
 				}
 			}
@@ -150,7 +151,8 @@ public class UTDiscovery
 		}
 		catch (SocketException e)
 		{
-			e.printStackTrace();
+			Logger.getInstance().err("IP Addresses from current computer couldnt be fetched! " + e.getMessage(), e, getClass());
+			
 		}
 
 		return ipList;

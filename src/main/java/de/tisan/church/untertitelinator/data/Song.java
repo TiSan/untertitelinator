@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import de.tisan.church.untertitelinator.settings.UTPersistenceConstants;
+import de.tisan.tisanapi.logger.Logger;
 import de.tisan.tools.persistencemanager.JSONPersistence;
 
 public class Song
@@ -62,13 +63,9 @@ public class Song
 			}
 			reader.close();
 		}
-		catch (FileNotFoundException e)
+		catch(Exception e)
 		{
-			e.printStackTrace();
-		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
+			Logger.getInstance().err("Error while reading Song file " + e.getMessage(), e, getClass());
 		}
 
 		this.lines = lines;

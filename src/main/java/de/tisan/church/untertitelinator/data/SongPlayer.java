@@ -17,12 +17,13 @@ public class SongPlayer
 	int index;
 	boolean pause;
 	private boolean enabled;
+	private UTEventListener listener;
 
 	public SongPlayer(Song song)
 	{
 		this.song = song;
 		this.index = 0;
-		UTEventHub.get().registerListener(new UTEventListener()
+		UTEventHub.get().registerListener(listener = new UTEventListener()
 		{
 
 			@Override
@@ -209,5 +210,6 @@ public class SongPlayer
 	public void disable()
 	{
 		this.enabled = false;
+		UTEventHub.get().unregisterListener(listener);
 	}
 }

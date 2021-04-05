@@ -27,6 +27,7 @@ import de.tisan.flatui.components.fbutton.FlatButton;
 import de.tisan.flatui.components.fcommons.Anchor;
 import de.tisan.flatui.components.fcommons.FlatLayoutManager;
 import de.tisan.flatui.components.ffont.FlatFont;
+import de.tisan.tisanapi.logger.Logger;
 
 public class GUIKeyerStartPagePanel extends JPanel {
 
@@ -111,7 +112,8 @@ public class GUIKeyerStartPagePanel extends JPanel {
 			image = ImageIO.read(GUIKeyerStartPagePanel.class
 					.getResourceAsStream("/de/tisan/church/untertitelinator/resources/bg.jpg"));
 		} catch (IOException e1) {
-			e1.printStackTrace();
+			Logger.getInstance().err("Couldnt load BeginCard Image! " + e1.getMessage(), e1, getClass());
+			
 		}
 		fitImage(preferredSize.width, preferredSize.height);
 		add(layerImage);

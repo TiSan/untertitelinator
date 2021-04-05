@@ -36,8 +36,7 @@ public class UTInstanceServer {
 			try {
 				s.writeObject(packet);
 			} catch (IOException e) {
-				Logger.getInstance().log("Write Packet to " + s.getIP() + "@" + s.getPort() + " failed! " + e.getMessage(), UTInstanceServer.class);
-				e.printStackTrace();
+				Logger.getInstance().err("Write Packet to " + s.getIP() + "@" + s.getPort() + " failed! " + e.getMessage(), e, UTInstanceServer.class);
 				s.disconnect();
 			}
 		});

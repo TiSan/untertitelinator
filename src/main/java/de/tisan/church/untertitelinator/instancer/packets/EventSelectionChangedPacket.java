@@ -22,4 +22,9 @@ public class EventSelectionChangedPacket extends Packet{
 		this.event = event;
 	}
 
+	@Override
+	public String toString() {
+		return "Event: " + event.getName();
+	}
+
 }

@@ -21,7 +21,7 @@ public class SongLinePacket extends Packet {
 		this.nextLines = nextLines;
 		this.songPlayer = songPlayer;
 	}
-	
+
 	public SongLinePacket(String... currentLines) {
 		this.currentLines = Arrays.asList(currentLines);
 		this.nextLines = new ArrayList<String>();
@@ -50,6 +50,17 @@ public class SongLinePacket extends Packet {
 
 	public void setSong(SongPlayer songPlayer) {
 		this.songPlayer = songPlayer;
+	}
+
+	@Override
+	public String toString() {
+		String songTitle = "";
+		if (songPlayer != null && songPlayer.getSong() != null) {
+			songTitle = songPlayer.getTitle();
+		}
+		return "New Song Lines for " + songTitle + ": CurrentLines size = "
+				+ (currentLines != null ? currentLines.size() : "-1") + ", NextLines size = "
+				+ (nextLines != null ? nextLines.size() : "-1");
 	}
 
 }

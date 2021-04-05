@@ -12,6 +12,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import de.tisan.flatui.components.fcommons.FlatLayoutManager;
+import de.tisan.tisanapi.logger.Logger;
 
 public class GUIKeyerLogoPanel extends JPanel {
 
@@ -31,7 +32,8 @@ public class GUIKeyerLogoPanel extends JPanel {
 			layerImage.setIcon(new ImageIcon(image));
 			setBounds(0, 0, image.getWidth(), image.getHeight());
 		} catch (IOException e1) {
-			e1.printStackTrace();
+			Logger.getInstance().err("Couldnt load Watermark image! " + e1.getMessage(), e1, getClass());
+			
 		}
 
 		add(layerImage);

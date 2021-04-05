@@ -6,6 +6,7 @@ import java.util.List;
 import de.tisan.church.untertitelinator.instancer.UTDiscovery;
 import de.tisan.church.untertitelinator.instancer.UTInstanceConnection;
 import de.tisan.church.untertitelinator.instancer.packets.Packet;
+import de.tisan.tisanapi.logger.Logger;
 import de.tisan.tisanapi.sockets.ObjectSocket;
 
 public class UTInstanceClient
@@ -53,7 +54,7 @@ public class UTInstanceClient
 		}
 		catch (IOException e)
 		{
-			e.printStackTrace();
+			Logger.getInstance().err("Publishing Packet (" + packet.toString() + ") to socket is failed! " + e.getMessage(), e, getClass());
 			socket.disconnect();
 		}
 	}

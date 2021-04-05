@@ -21,6 +21,7 @@ import de.tisan.flatui.components.fcommons.FlatLayoutManager;
 import de.tisan.flatui.components.ffont.FlatFont;
 import de.tisan.flatui.components.ftitlebar.DefaultFlatTitleBarListener;
 import de.tisan.flatui.components.ftitlebar.FlatTitleBarWin10;
+import de.tisan.tisanapi.logger.Logger;
 
 public class GUISelectGodi extends JFrame {
 
@@ -32,7 +33,8 @@ public class GUISelectGodi extends JFrame {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
 				| UnsupportedLookAndFeelException e) {
-			e.printStackTrace();
+			Logger.getInstance().err("LookAndFeel couldnt be set! " + e.getMessage(), e, getClass());
+			
 		}
 
 		JPanel contentPane = new JPanel();

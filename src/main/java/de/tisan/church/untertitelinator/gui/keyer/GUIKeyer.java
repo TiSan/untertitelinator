@@ -24,6 +24,7 @@ import de.tisan.flatui.components.fcommons.FlatLayoutManager;
 import de.tisan.flatui.components.ftitlebar.DefaultFlatTitleBarListener;
 import de.tisan.flatui.components.ftitlebar.FlatTitleBarListener;
 import de.tisan.flatui.components.ftitlebar.FlatTitleBarWin10;
+import de.tisan.tisanapi.logger.Logger;
 import de.tisan.tools.persistencemanager.JSONPersistence;
 
 public class GUIKeyer extends JFrame {
@@ -219,7 +220,7 @@ public class GUIKeyer extends JFrame {
 			});
 
 		} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
-			e.printStackTrace();
+			Logger.getInstance().err("Error while toggling Keyer Layers " + e.getMessage(), e, getClass());
 		}
 		new Thread(new Runnable() {
 
@@ -241,7 +242,8 @@ public class GUIKeyer extends JFrame {
 					try {
 						Thread.sleep(1000);
 					} catch (InterruptedException e) {
-						e.printStackTrace();
+						Logger.getInstance().err("Timer for Refreshing Keyer Panes is stopped! " + e.getMessage(), e, getClass());
+						
 					}
 				}
 			}

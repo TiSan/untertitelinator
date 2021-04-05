@@ -42,4 +42,9 @@ public class CommandPacket extends Packet {
 		this.args = args;
 	}
 
+	@Override
+	public String toString() {
+		return "Command: " + command.name() + ", Args: " + (args != null ? Arrays.toString(args.toArray()) : args);
+	}
+
 }
