@@ -18,7 +18,6 @@ import javax.swing.JPanel;
 
 import de.tisan.church.untertitelinator.churchtools.api.objects.Event;
 import de.tisan.church.untertitelinator.data.EventService;
-import de.tisan.church.untertitelinator.data.Untertitelinator;
 import de.tisan.church.untertitelinator.instancer.UTEventHub;
 import de.tisan.church.untertitelinator.instancer.UTEventListener;
 import de.tisan.church.untertitelinator.instancer.packets.EventSelectionChangedPacket;
@@ -148,9 +147,9 @@ public class GUIKeyerStartPagePanel extends JPanel {
 					if (titleString.startsWith("Weitere Infos...")) {
 						titleString = "Live-Gottesdienst";
 					}
-
+					
 					showNextStream(titleString, "Thema: \"" + themaString + "\"",
-							currentEvent.getStartDateString() + " Uhr", Untertitelinator.get().getServiceList());
+							currentEvent.getStartDateString() + " Uhr", sPacket.getServices());
 				}
 			}
 

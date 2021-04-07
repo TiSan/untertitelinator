@@ -12,10 +12,6 @@ import javax.swing.JPanel;
 import javax.swing.UIManager;
 
 import de.tisan.church.untertitelinator.data.Untertitelinator;
-import de.tisan.church.untertitelinator.instancer.UTEventHub;
-import de.tisan.church.untertitelinator.instancer.UTEventListener;
-import de.tisan.church.untertitelinator.instancer.packets.Packet;
-import de.tisan.church.untertitelinator.instancer.packets.UIRefreshPacket;
 import de.tisan.church.untertitelinator.settings.UTPersistenceConstants;
 import de.tisan.flatui.components.fcommons.Anchor;
 import de.tisan.flatui.components.fcommons.FlatColors;
@@ -84,16 +80,6 @@ public class GUIMain extends JFrame {
 		contentPane.add(pnlStartEnd);
 
 		getAllComponents(this).forEach(c -> c.addKeyListener(new LukasWillsSoKeyListener()));
-
-		UTEventHub.get().registerListener(new UTEventListener() {
-
-			@Override
-			public void onEventReceived(Packet packet) {
-				if (packet instanceof UIRefreshPacket) {
-					updateUIComponents();
-				}
-			}
-		});
 	}
 
 	private static List<Component> getAllComponents(final Container c) {
@@ -107,9 +93,5 @@ public class GUIMain extends JFrame {
 		return compList;
 	}
 
-	private void updateUIComponents() {
-		getAllComponents(this).parallelStream().filter(c -> c instanceof AGUIMainPanel).map(AGUIMainPanel.class::cast)
-				.forEach(AGUIMainPanel::updateThisComponent);
-	}
 
 }

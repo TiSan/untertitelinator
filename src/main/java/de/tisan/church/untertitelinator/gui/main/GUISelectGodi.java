@@ -14,7 +14,12 @@ import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-import de.tisan.church.untertitelinator.data.Untertitelinator;
+import de.tisan.church.untertitelinator.instancer.UTEventHub;
+import de.tisan.church.untertitelinator.instancer.UTEventListener;
+import de.tisan.church.untertitelinator.instancer.packets.Command;
+import de.tisan.church.untertitelinator.instancer.packets.CommandPacket;
+import de.tisan.church.untertitelinator.instancer.packets.EventListPacket;
+import de.tisan.church.untertitelinator.instancer.packets.Packet;
 import de.tisan.church.untertitelinator.main.Loader;
 import de.tisan.flatui.components.fcommons.FlatColors;
 import de.tisan.flatui.components.fcommons.FlatLayoutManager;
@@ -34,7 +39,7 @@ public class GUISelectGodi extends JFrame {
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
 				| UnsupportedLookAndFeelException e) {
 			Logger.getInstance().err("LookAndFeel couldnt be set! " + e.getMessage(), e, getClass());
-			
+
 		}
 
 		JPanel contentPane = new JPanel();
@@ -70,20 +75,30 @@ public class GUISelectGodi extends JFrame {
 			@Override
 			public void itemStateChanged(ItemEvent e) {
 				if (isVisible()) {
-					Untertitelinator.get().selectEvent(comboBox.getSelectedIndex() - 1);
+					UTEventHub.get()
+							.publish(new CommandPacket(Command.SELECT_EVENT, comboBox.getSelectedIndex() - 1 + ""));
 					Loader.selectionTaken();
 					setVisible(false);
 					dispose();
 				}
 			}
 		});
-	}
 
-	public void loadUi() {
-		Untertitelinator.get().getAllEvents().forEach(event -> {
-			comboBoxModel.addElement(
-					event.getStartDateString() + " - " + event.getName());
+		UTEventHub.get().registerListener(new UTEventListener() {
 
+			@Override
+			public void onEventReceived(Packet packet) {
+				if (packet instanceof EventListPacket) {
+					EventListPacket sPacket = (EventListPacket) packet;
+					comboBoxModel.removeAllElements();
+					sPacket.getEventList().forEach(event -> {
+						comboBoxModel.addElement(event.getStartDateString() + " - " + event.getName());
+					});
+				}
+			}
 		});
+
+		UTEventHub.get().publish(new CommandPacket(Command.LOAD_EVENTS));
 	}
+
 }

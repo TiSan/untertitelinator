@@ -10,14 +10,15 @@ import java.awt.event.ComponentEvent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import de.tisan.church.untertitelinator.data.Untertitelinator;
+import de.tisan.church.untertitelinator.churchtools.api.objects.Event;
 import de.tisan.church.untertitelinator.instancer.UTEventHub;
 import de.tisan.church.untertitelinator.instancer.UTEventListener;
+import de.tisan.church.untertitelinator.instancer.packets.Command;
 import de.tisan.church.untertitelinator.instancer.packets.CommandPacket;
+import de.tisan.church.untertitelinator.instancer.packets.EventSelectionChangedPacket;
 import de.tisan.church.untertitelinator.instancer.packets.GUIKeyerLayerChangePacket;
 import de.tisan.church.untertitelinator.instancer.packets.Packet;
 import de.tisan.church.untertitelinator.instancer.packets.SongLinePacket;
-import de.tisan.church.untertitelinator.instancer.packets.UIRefreshPacket;
 import de.tisan.church.untertitelinator.settings.UTPersistenceConstants;
 import de.tisan.flatui.components.fcommons.Anchor;
 import de.tisan.flatui.components.fcommons.FlatLayoutManager;
@@ -48,6 +49,7 @@ public class GUIKeyer extends JFrame {
 
 	Color bg;
 	Color fg;
+	protected Event event;
 
 	public GUIKeyer() {
 		try {
@@ -98,7 +100,6 @@ public class GUIKeyer extends JFrame {
 					if ((GUIKeyer.this.getExtendedState() == Frame.MAXIMIZED_BOTH) == false) {
 						bar.setVisible(false);
 					}
-					UTEventHub.get().publish(new UIRefreshPacket());
 				}
 
 				@Override
@@ -183,38 +184,35 @@ public class GUIKeyer extends JFrame {
 						case TOGGLE_KOLLEKTE:
 							boolean newState = toggleKollekte();
 							UTEventHub.get().publish(new GUIKeyerLayerChangePacket(GUIKeyerLayer.KOLLEKTE, newState));
-							UTEventHub.get().publish(new UIRefreshPacket());
 							break;
 						case TOGGLE_LOGO:
 							boolean newState1 = toggleLogo();
 							UTEventHub.get().publish(new GUIKeyerLayerChangePacket(GUIKeyerLayer.LOGO, newState1));
-							UTEventHub.get().publish(new UIRefreshPacket());
 							break;
 						case TOGGLE_UNTERTITEL:
 							boolean newState2 = toggleUntertitel();
 							UTEventHub.get()
 									.publish(new GUIKeyerLayerChangePacket(GUIKeyerLayer.UNTERTITEL, newState2));
-							UTEventHub.get().publish(new UIRefreshPacket());
 							break;
 						case TOGGLE_WINDOW_BAR:
 							boolean newState3 = toggleWindowBar();
 							UTEventHub.get().publish(new GUIKeyerLayerChangePacket(GUIKeyerLayer.MAXBUTTON, newState3));
-							UTEventHub.get().publish(new UIRefreshPacket());
 							break;
 						case TOGGLE_BEGIN_LAYER:
 							boolean newState4 = toggleBeginLayer();
 							UTEventHub.get()
 									.publish(new GUIKeyerLayerChangePacket(GUIKeyerLayer.BEGINLAYER, newState4));
-							UTEventHub.get().publish(new UIRefreshPacket());
 							break;
 						case TOGGLE_ENDCARD:
 							boolean newState5 = toggleEndcard();
 							UTEventHub.get().publish(new GUIKeyerLayerChangePacket(GUIKeyerLayer.ENDCARD, newState5));
-							UTEventHub.get().publish(new UIRefreshPacket());
 							break;
 						default:
 							break;
 						}
+					} else if(packet instanceof EventSelectionChangedPacket) {
+						EventSelectionChangedPacket p = (EventSelectionChangedPacket) packet;
+						event = p.getEvent();
 					}
 				}
 			});
@@ -248,6 +246,8 @@ public class GUIKeyer extends JFrame {
 				}
 			}
 		}).start();
+		
+		UTEventHub.get().publish(new CommandPacket(Command.SEND_EVENT));
 	}
 
 	private boolean toggleBeginLayer() {
@@ -306,7 +306,6 @@ public class GUIKeyer extends JFrame {
 				public void run() {
 					UTEventHub.get().publish(new SongLinePacket("", ""));
 					pnlKollekte.setVisible(false);
-					UTEventHub.get().publish(new UIRefreshPacket());
 				}
 			}).start();
 			return !pnlKollekte.isVisible();
@@ -314,9 +313,9 @@ public class GUIKeyer extends JFrame {
 			pnlKollekte.setVisible(true);
 			String kollekteLine1 = JSONPersistence.get().getSetting(UTPersistenceConstants.GUIKEYERKOLLEKTELINE1,
 					"Kollektenkonto: DE76 5006 1741 0000 0096 87", String.class);
+			UTEventHub.get().publish(new CommandPacket(Command.SEND_EVENT));
 			UTEventHub.get().publish(new SongLinePacket(kollekteLine1, "Verwendungszweck: 'Kollekte "
-					+ Untertitelinator.get().getCurrentEvent().getStartDayString() + "'"));
-			UTEventHub.get().publish(new UIRefreshPacket());
+					+ (event != null ? event.getStartDayString() : "") + "'"));
 		}
 		return pnlKollekte.isVisible();
 

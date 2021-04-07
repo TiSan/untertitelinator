@@ -19,13 +19,22 @@ public class UTInstanceServer {
 
 	private ObjectServerSocket<Packet> socketServer;
 	private UTDiscovery discovery;
+	private boolean started;
 
 	public void startServer() throws UnknownHostException {
-		socketServer = new ObjectServerSocket<Packet>(JSONPersistence.get().getSetting(UTPersistenceConstants.SERVER_PORT, 8080, Integer.class), InetAddress.getByName("0.0.0.0"));
+		socketServer = new ObjectServerSocket<Packet>(
+				JSONPersistence.get().getSetting(UTPersistenceConstants.SERVER_PORT, 8080, Integer.class),
+				InetAddress.getByName("0.0.0.0"));
 		socketServer.addConnectListener(new UTInstanceServerListener<Packet>());
+
 		socketServer.start();
 		discovery = new UTDiscovery();
 		discovery.startDiscoveryServer();
+		started = true;
+	}
+
+	public boolean isStarted() {
+		return started;
 	}
 
 	private void sendPacket(Packet packet) {
@@ -36,7 +45,9 @@ public class UTInstanceServer {
 			try {
 				s.writeObject(packet);
 			} catch (IOException e) {
-				Logger.getInstance().err("Write Packet to " + s.getIP() + "@" + s.getPort() + " failed! " + e.getMessage(), e, UTInstanceServer.class);
+				Logger.getInstance().err(
+						"Write Packet to " + s.getIP() + "@" + s.getPort() + " failed! " + e.getMessage(), e,
+						UTInstanceServer.class);
 				s.disconnect();
 			}
 		});

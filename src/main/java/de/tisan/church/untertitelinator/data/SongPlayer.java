@@ -7,7 +7,6 @@ import de.tisan.church.untertitelinator.instancer.UTEventListener;
 import de.tisan.church.untertitelinator.instancer.packets.CommandPacket;
 import de.tisan.church.untertitelinator.instancer.packets.Packet;
 import de.tisan.church.untertitelinator.instancer.packets.SongLinePacket;
-import de.tisan.church.untertitelinator.instancer.packets.UIRefreshPacket;
 import de.tisan.church.untertitelinator.settings.UTPersistenceConstants;
 import de.tisan.tools.persistencemanager.JSONPersistence;
 
@@ -36,23 +35,18 @@ public class SongPlayer
 					{
 						case JUMP_END:
 							jumpToEnd();
-							UTEventHub.get().publish(new UIRefreshPacket());
 							break;
 						case JUMP_START:
 							jumpToStart();
-							UTEventHub.get().publish(new UIRefreshPacket());
 							break;
 						case NEXT_LINE:
 							nextLine();
-							UTEventHub.get().publish(new UIRefreshPacket());
 							break;
 						case PAUSE:
 							pause();
-							UTEventHub.get().publish(new UIRefreshPacket());
 							break;
 						case PREVIOUS_LINE:
 							previousLine();
-							UTEventHub.get().publish(new UIRefreshPacket());
 							break;
 						default:
 							break;

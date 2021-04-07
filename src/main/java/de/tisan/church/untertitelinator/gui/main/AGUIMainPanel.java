@@ -21,5 +21,4 @@ public abstract class AGUIMainPanel extends JPanel {
 		setOpaque(false);
 	}
 
-	public abstract void updateThisComponent();
 }

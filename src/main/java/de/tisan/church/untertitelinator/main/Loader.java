@@ -2,7 +2,6 @@ package de.tisan.church.untertitelinator.main;
 
 import java.net.UnknownHostException;
 
-import de.tisan.church.untertitelinator.data.Untertitelinator;
 import de.tisan.church.untertitelinator.gui.keyer.GUIKeyer;
 import de.tisan.church.untertitelinator.gui.main.GUIMain;
 import de.tisan.church.untertitelinator.gui.main.GUISelectGodi;
@@ -28,7 +27,7 @@ public class Loader
 
 	public static void loadUntertitelinatorSongs()
 	{
-		Untertitelinator.get().loadSongs();
+		//Untertitelinator.get().loadSongs();
 	}
 
 	public static void startInstanceServer()
@@ -52,7 +51,7 @@ public class Loader
 
 	public static void loadChurchtoolsEvents()
 	{
-		Untertitelinator.get().loadEvents();
+//		/Untertitelinator.get().loadEvents();
 	}
 
 	public static void loadKeyerUi()
@@ -62,7 +61,7 @@ public class Loader
 
 	public static void loadSelectionMenu()
 	{
-		selectionUi.loadUi();
+		//selectionUi.loadUi();
 	}
 
 	public static void showSelectionMenu()

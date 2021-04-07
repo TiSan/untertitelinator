@@ -8,7 +8,6 @@ import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
-import de.tisan.church.untertitelinator.data.Untertitelinator;
 import de.tisan.church.untertitelinator.instancer.UTEventHub;
 import de.tisan.church.untertitelinator.instancer.UTEventListener;
 import de.tisan.church.untertitelinator.instancer.packets.Packet;
@@ -65,17 +64,13 @@ public class GUIMainSongTextPanel extends AGUIMainPanel {
 					List<String> currentLines = sPacket.getCurrentLines();
 					boxCurrentLine1.setText(currentLines.size() > 0 ? currentLines.get(0) : "");
 					boxCurrentLine2.setText(currentLines.size() > 1 ? currentLines.get(1) : "");
-					sentenceModel.changeSong(Untertitelinator.get().getCurrentPlayer().getSong(),
-							Untertitelinator.get().getCurrentPlayer().getCurrentIndex());
-					sentenceModel.scrollToVisible(table, Untertitelinator.get().getCurrentPlayer().getCurrentIndex(), 0);
+					if(sPacket.getSongPlayer() != null && sPacket.getSongPlayer().getSong() != null) {
+						sentenceModel.changeSong(sPacket.getSongPlayer().getSong(),
+								sPacket.getSongPlayer().getCurrentIndex());
+						sentenceModel.scrollToVisible(table, sPacket.getSongPlayer().getCurrentIndex(), 0);
+					}
 				}
 			}
 		});
-	}
-
-	@Override
-	public void updateThisComponent() {
-		
-
 	}
 }

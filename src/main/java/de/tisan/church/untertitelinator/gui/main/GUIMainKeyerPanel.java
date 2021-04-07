@@ -99,8 +99,6 @@ public class GUIMainKeyerPanel extends AGUIMainPanel {
 		});
 		add(btnMaxButton);
 
-		updateThisComponent();
-
 		UTEventHub.get().registerListener(new UTEventListener() {
 
 			@Override
@@ -126,9 +124,5 @@ public class GUIMainKeyerPanel extends AGUIMainPanel {
 				}
 			}
 		});
-	}
-
-	@Override
-	public void updateThisComponent() {
 	}
 }
