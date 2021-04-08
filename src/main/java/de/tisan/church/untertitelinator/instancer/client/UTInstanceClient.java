@@ -15,6 +15,8 @@ public class UTInstanceClient {
 	private UTDiscovery discovery;
 	private ObjectSocket<Packet> socket;
 	private List<Packet> queue;
+	private List<UTInstanceConnection> oServer;
+	private int indexServerList;
 
 	public static UTInstanceClient get() {
 		return instance == null ? instance = new UTInstanceClient() : instance;
@@ -30,14 +32,22 @@ public class UTInstanceClient {
 
 			@Override
 			public void run() {
-				List<UTInstanceConnection> oServer = discovery.discoverServerIp();
-				for (UTInstanceConnection connection : oServer) {
+				if (oServer == null) {
+					oServer = discovery.discoverServerIp();
+				}
+				for (int i = indexServerList; i < oServer.size(); i++) {
+					UTInstanceConnection connection = oServer.get(i);
 					socket = new ObjectSocket<Packet>(connection.getIp(), Integer.valueOf(connection.getPort()));
 					boolean result = socket.connect();
 					if (result == true) {
 						socket.addConnectListener(new UTInstanceClientConnectListener<Packet>());
 						socket.addReadListener(new UTInstanceClientReadListener<Packet>());
 						break;
+					}
+					if (i == oServer.size() - 1) {
+						indexServerList = 0;
+					} else {
+						indexServerList = i;
 					}
 				}
 			}

@@ -18,7 +18,7 @@ public class UTInstanceClientConnectListener<Packet> extends ObjectSocketConnect
 	public void onSocketConnectFailed(IOException ex)
 	{
 		Logger.getInstance().err("Connection failed! " + ex.getMessage(), UTInstanceClientConnectListener.class);
-		UTInstanceClient.get().connect();
+//		UTInstanceClient.get().connect();
 	}
 
 	@Override
@@ -26,7 +26,7 @@ public class UTInstanceClientConnectListener<Packet> extends ObjectSocketConnect
 	{
 		Logger.getInstance().err("Socket disconnected, bereite neue Verbindung vor...",
 		        UTInstanceClientConnectListener.class);
-		UTInstanceClient.get().connect();
+//		UTInstanceClient.get().connect();
 	}
 
 }

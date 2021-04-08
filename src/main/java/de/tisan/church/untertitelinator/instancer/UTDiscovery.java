@@ -10,32 +10,38 @@ import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Optional;
 
 import de.tisan.church.untertitelinator.settings.UTPersistenceConstants;
 import de.tisan.tisanapi.logger.Logger;
 import de.tisan.tools.persistencemanager.JSONPersistence;
 
-public class UTDiscovery
-{
+public class UTDiscovery {
 	private DatagramSocket sendSocket;
 	private DatagramSocket receiveSocket;
 	private String command;
+	private Integer startPort;
+	private Integer endPort;
 
-	public UTDiscovery()
-	{
+	public UTDiscovery() {
 		command = "_UNTERTITELINATOR_DISCOVERY_";
+		startPort = JSONPersistence.get().getSetting(UTPersistenceConstants.UDP_START_PORT, Integer.valueOf(8020),
+				Integer.class);
+		endPort = JSONPersistence.get().getSetting(UTPersistenceConstants.UDP_END_PORT, Integer.valueOf(8050),
+				Integer.class);
+
 	}
 
-	public List<UTInstanceConnection> discoverServerIp()
-	{
+	public List<UTInstanceConnection> discoverServerIp() {
 		List<UTInstanceConnection> connections = new ArrayList<UTInstanceConnection>();
-		try
-		{
-			if (receiveSocket == null)
-			{
-				receiveSocket = new DatagramSocket(8002, InetAddress.getByName("0.0.0.0")); // 0.0.0.0 for listen to all ips
-				receiveSocket.setTrafficClass(0x10); // High prio in unifi network
-				receiveSocket.setBroadcast(true);
+		try {
+			if (receiveSocket == null) {
+				Optional<DatagramSocket> oSocket = getNewDatagramSocket();
+				if (oSocket.isPresent()) {
+					receiveSocket = getNewDatagramSocket().get();
+				} else {
+					return connections;
+				}
 			}
 			int size = 4096;
 			byte[] buf = new byte[size];
@@ -43,61 +49,61 @@ public class UTDiscovery
 			receiveSocket.receive(packet);
 			String data = new String(packet.getData());
 			String[] spl = data.split("\\|");
-			for (String s : spl)
-			{
+			for (String s : spl) {
 				UTInstanceConnection connection = new UTInstanceConnection();
 				String[] spl2 = s.split("_");
 				boolean completeStatement = true;
-				if (spl2[0].trim().startsWith("IP="))
-				{
+				if (spl2[0].trim().startsWith("IP=")) {
 					connection.setIp(spl2[0].split("=")[1].trim());
-				}
-				else
-				{
+				} else {
 					completeStatement = false;
 				}
 
-				if (spl2[1].trim().startsWith("PORT="))
-				{
+				if (spl2[1].trim().startsWith("PORT=")) {
 					connection.setPort(spl2[1].split("=")[1].trim());
-				}
-				else
-				{
+				} else {
 					completeStatement = false;
 				}
-				
-				if (completeStatement == true)
-				{
+
+				if (completeStatement == true) {
 					connections.add(connection);
 				}
 			}
 			Logger.getInstance().log(
-			        "Discovery package received! -> " + packet.getAddress() + ":" + packet.getPort() + " : " + data, getClass());
-		}
-		catch (Exception ex)
-		{
+					"Discovery package received! -> " + packet.getAddress() + ":" + packet.getPort() + " : " + data,
+					getClass());
+		} catch (Exception ex) {
 			Logger.getInstance().err("UDP Listener Error! " + ex.getMessage(), ex, getClass());
 		}
 		return connections;
 	}
 
-	public void startDiscoveryServer()
-	{
-		new Thread(new Runnable()
-		{
+	private Optional<DatagramSocket> getNewDatagramSocket() {
+		for (int i = startPort.intValue(); i < endPort.intValue(); i++) {
+			try {
+				DatagramSocket s = new DatagramSocket(i, InetAddress.getByName("0.0.0.0")); // 0.0.0.0 for listen to all
+				s.setTrafficClass(0x10); // High prio in unifi network
+				s.setBroadcast(true);
+				return Optional.ofNullable(s);
+			} catch (Exception e) {
+				Logger.getInstance().err("Port " + i + " scheint belegt zu sein. Nehme " + (i + 1) + " ...",
+						getClass());
+			}
+		}
+		Logger.getInstance().err("Kein freier Port vorhanden!", getClass());
+		return Optional.empty();
+	}
+
+	public void startDiscoveryServer() {
+		new Thread(new Runnable() {
 
 			@Override
-			public void run()
-			{
-				while (true)
-				{
-					try
-					{
+			public void run() {
+				while (true) {
+					try {
 						sendDiscoveryPacket();
 						Thread.sleep(1000);
-					}
-					catch (Exception e)
-					{
+					} catch (Exception e) {
 						Logger.getInstance().err("SendDiscoveryPacket failed! " + e.getMessage(), e, getClass());
 					}
 				}
@@ -105,10 +111,8 @@ public class UTDiscovery
 		}).start();
 	}
 
-	private void sendDiscoveryPacket() throws IOException
-	{
-		if (sendSocket == null)
-		{
+	private void sendDiscoveryPacket() throws IOException {
+		if (sendSocket == null) {
 			sendSocket = new DatagramSocket(8001, InetAddress.getLocalHost());
 			sendSocket.setBroadcast(true);
 		}
@@ -116,43 +120,37 @@ public class UTDiscovery
 		String port = "" + JSONPersistence.get().getSetting(UTPersistenceConstants.SERVER_PORT, 8080, Integer.class);
 
 		List<String> ipAddresses = getIpList();
-		for (String ip : ipAddresses)
-		{
+		for (String ip : ipAddresses) {
 			data += "|IP=" + ip + "_PORT=" + port;
 		}
 		byte[] buf = data.getBytes();
-		DatagramPacket packet = new DatagramPacket(buf, buf.length, InetAddress.getByName("255.255.255.255"), 8002);
-		sendSocket.send(packet);
-		//System.out.println("Discovery package sent!" + packet.getAddress() + ":" + packet.getPort());
+		for (int i = startPort.intValue(); i < endPort.intValue(); i++) {
+			DatagramPacket packet = new DatagramPacket(buf, buf.length, InetAddress.getByName("255.255.255.255"), i);
+			sendSocket.send(packet);
+		}
 	}
 
-	List<String> getIpList()
-	{
+	List<String> getIpList() {
 		List<String> ipList = new ArrayList<String>();
-		try
-		{
+		try {
 			Enumeration<NetworkInterface> interfaces;
 			interfaces = NetworkInterface.getNetworkInterfaces();
-			while (interfaces.hasMoreElements())
-			{
+			while (interfaces.hasMoreElements()) {
 				NetworkInterface interf = interfaces.nextElement();
 				Enumeration<InetAddress> addresses = interf.getInetAddresses();
-				while (addresses.hasMoreElements())
-				{
+				while (addresses.hasMoreElements()) {
 					InetAddress adr = addresses.nextElement();
 
 					// Nur(!) IPv4 Adressen ausgeben...
-					if (adr instanceof Inet4Address)
-					{
+					if (adr instanceof Inet4Address) {
 						ipList.add(adr.getHostAddress());
 					}
 				}
 			}
-		}
-		catch (SocketException e)
-		{
-			Logger.getInstance().err("IP Addresses from current computer couldnt be fetched! " + e.getMessage(), e, getClass());
-			
+		} catch (SocketException e) {
+			Logger.getInstance().err("IP Addresses from current computer couldnt be fetched! " + e.getMessage(), e,
+					getClass());
+
 		}
 
 		return ipList;
