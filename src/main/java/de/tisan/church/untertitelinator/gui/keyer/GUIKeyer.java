@@ -15,6 +15,7 @@ import de.tisan.church.untertitelinator.instancer.UTEventHub;
 import de.tisan.church.untertitelinator.instancer.UTEventListener;
 import de.tisan.church.untertitelinator.instancer.packets.Command;
 import de.tisan.church.untertitelinator.instancer.packets.CommandPacket;
+import de.tisan.church.untertitelinator.instancer.packets.CommandState;
 import de.tisan.church.untertitelinator.instancer.packets.EventSelectionChangedPacket;
 import de.tisan.church.untertitelinator.instancer.packets.GUIKeyerLayerChangePacket;
 import de.tisan.church.untertitelinator.instancer.packets.Packet;
@@ -61,7 +62,7 @@ public class GUIKeyer extends JFrame {
 			setLocation((Integer) JSONPersistence.get().getSetting(UTPersistenceConstants.GUIKEYERX, 0),
 					(Integer) JSONPersistence.get().getSetting(UTPersistenceConstants.GUIKEYERY, 0));
 			setSize(screenSize);
-			setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+			setDefaultCloseOperation(EXIT_ON_CLOSE);
 			bg = (Color) Color.class.getField(
 					(String) JSONPersistence.get().getSetting(UTPersistenceConstants.GUIKEYERBACKGROUND, "GREEN"))
 					.get(new Color(0));
@@ -180,32 +181,40 @@ public class GUIKeyer extends JFrame {
 				@Override
 				public void onEventReceived(Packet packet) {
 					if (packet instanceof CommandPacket) {
-						switch (((CommandPacket) packet).getCommand()) {
-						case TOGGLE_KOLLEKTE:
-							boolean newState = toggleKollekte();
-							UTEventHub.get().publish(new GUIKeyerLayerChangePacket(GUIKeyerLayer.KOLLEKTE, newState));
+						CommandPacket sPacket = (CommandPacket) packet;
+						CommandState state = null;
+						switch (sPacket.getCommand()) {
+						case STATE_KOLLEKTE:
+							state = CommandState.convert(sPacket.getArgs());
+							boolean newState = toggleKollekte(state);
+							UTEventHub.get().publish(new GUIKeyerLayerChangePacket(GUIKeyerLayer.KOLLEKTE, newState ? CommandState.ON : CommandState.OFF));
 							break;
-						case TOGGLE_LOGO:
-							boolean newState1 = toggleLogo();
-							UTEventHub.get().publish(new GUIKeyerLayerChangePacket(GUIKeyerLayer.LOGO, newState1));
+						case STATE_LOGO:
+							state = CommandState.convert(sPacket.getArgs());
+							boolean newState1 = toggleLogo(state);
+							UTEventHub.get().publish(new GUIKeyerLayerChangePacket(GUIKeyerLayer.LOGO, newState1 ? CommandState.ON : CommandState.OFF));
 							break;
-						case TOGGLE_UNTERTITEL:
-							boolean newState2 = toggleUntertitel();
+						case STATE_UNTERTITEL:
+							state = CommandState.convert(sPacket.getArgs());
+							boolean newState2 = toggleUntertitel(state);
 							UTEventHub.get()
-									.publish(new GUIKeyerLayerChangePacket(GUIKeyerLayer.UNTERTITEL, newState2));
+									.publish(new GUIKeyerLayerChangePacket(GUIKeyerLayer.UNTERTITEL, newState2 ? CommandState.ON : CommandState.OFF));
 							break;
-						case TOGGLE_WINDOW_BAR:
-							boolean newState3 = toggleWindowBar();
-							UTEventHub.get().publish(new GUIKeyerLayerChangePacket(GUIKeyerLayer.MAXBUTTON, newState3));
+						case STATE_WINDOW_BAR:
+							state = CommandState.convert(sPacket.getArgs());
+							boolean newState3 = toggleWindowBar(state);
+							UTEventHub.get().publish(new GUIKeyerLayerChangePacket(GUIKeyerLayer.MAXBUTTON, newState3 ? CommandState.ON : CommandState.OFF));
 							break;
-						case TOGGLE_BEGIN_LAYER:
-							boolean newState4 = toggleBeginLayer();
+						case STATE_BEGIN_CARD:
+							state = CommandState.convert(sPacket.getArgs());
+							boolean newState4 = toggleBeginLayer(state);
 							UTEventHub.get()
-									.publish(new GUIKeyerLayerChangePacket(GUIKeyerLayer.BEGINLAYER, newState4));
+									.publish(new GUIKeyerLayerChangePacket(GUIKeyerLayer.BEGINLAYER, newState4 ? CommandState.ON : CommandState.OFF));
 							break;
-						case TOGGLE_ENDCARD:
-							boolean newState5 = toggleEndcard();
-							UTEventHub.get().publish(new GUIKeyerLayerChangePacket(GUIKeyerLayer.ENDCARD, newState5));
+						case STATE_END_CARD:
+							state = CommandState.convert(sPacket.getArgs());
+							boolean newState5 = toggleEndcard(state);
+							UTEventHub.get().publish(new GUIKeyerLayerChangePacket(GUIKeyerLayer.ENDCARD, newState5 ? CommandState.ON : CommandState.OFF));
 							break;
 						default:
 							break;
@@ -220,86 +229,46 @@ public class GUIKeyer extends JFrame {
 		} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
 			Logger.getInstance().err("Error while toggling Keyer Layers " + e.getMessage(), e, getClass());
 		}
-		new Thread(new Runnable() {
-
-			@Override
-			public void run() {
-				while (true) {
-					repaint();
-					UTEventHub.get()
-							.publish(new GUIKeyerLayerChangePacket(GUIKeyerLayer.ENDCARD, pnlEndcardPage.isVisible()));
-					UTEventHub.get()
-							.publish(new GUIKeyerLayerChangePacket(GUIKeyerLayer.BEGINLAYER, pnlStartPage.isVisible()));
-					UTEventHub.get()
-							.publish(new GUIKeyerLayerChangePacket(GUIKeyerLayer.KOLLEKTE, pnlKollekte.isVisible()));
-					UTEventHub.get().publish(new GUIKeyerLayerChangePacket(GUIKeyerLayer.LOGO, pnlLogo.isVisible()));
-					UTEventHub.get().publish(new GUIKeyerLayerChangePacket(GUIKeyerLayer.MAXBUTTON, bar.isVisible()));
-					UTEventHub.get().publish(
-							new GUIKeyerLayerChangePacket(GUIKeyerLayer.UNTERTITEL, pnlUntertitel.isVisible()));
-
-					try {
-						Thread.sleep(1000);
-					} catch (InterruptedException e) {
-						Logger.getInstance().err("Timer for Refreshing Keyer Panes is stopped! " + e.getMessage(), e, getClass());
-						
-					}
-				}
-			}
-		}).start();
 		
 		UTEventHub.get().publish(new CommandPacket(Command.SEND_EVENT));
 	}
 
-	private boolean toggleBeginLayer() {
-		if (pnlStartPage.isVisible()) {
-			pnlStartPage.setVisible(false);
-		} else {
-			pnlStartPage.setVisible(true);
-		}
+	private boolean toggleBeginLayer(CommandState state) {
+		pnlStartPage.setVisible(state == CommandState.ON);
 		return pnlStartPage.isVisible();
 	}
 
-	private boolean toggleUntertitel() {
-		if (pnlUntertitel.isVisible()) {
-			pnlUntertitel.setVisible(false);
-			// bar.setBackground(new Color(0, 0, 0, 0));
-		} else {
-			pnlUntertitel.setVisible(true);
-			// bar.setBackground(bg);
-		}
+	private boolean toggleUntertitel(CommandState state) {
+		pnlUntertitel.setVisible(state == CommandState.ON);
 		return pnlUntertitel.isVisible();
 	}
 
-	private boolean toggleLogo() {
-		if (pnlLogo.isVisible()) {
-			pnlLogo.setVisible(false);
-		} else {
-			pnlLogo.setVisible(true);
-		}
+	private boolean toggleLogo(CommandState state) {
+		pnlLogo.setVisible(state == CommandState.ON);
 		return pnlLogo.isVisible();
 	}
 
-	private boolean toggleEndcard() {
-		if (pnlEndcardPage.isVisible()) {
-			pnlEndcardPage.setVisible(false);
-		} else {
-			pnlEndcardPage.setVisible(true);
-		}
+	private boolean toggleEndcard(CommandState state) {
+		pnlEndcardPage.setVisible(state == CommandState.ON);
 		return pnlEndcardPage.isVisible();
 	}
 
-	private boolean toggleWindowBar() {
-		if (bar.isVisible()) {
-			bar.setVisible(false);
-		} else {
-			bar.setVisible(true);
-		}
+	private boolean toggleWindowBar(CommandState state) {
+		bar.setVisible(state == CommandState.ON);
 		return bar.isVisible();
 
 	}
 
-	private boolean toggleKollekte() {
-		if (pnlKollekte.isVisible()) {
+	private boolean toggleKollekte(CommandState state) {
+		if (state == CommandState.ON) {
+			pnlKollekte.setVisible(true);
+			String kollekteLine1 = JSONPersistence.get().getSetting(UTPersistenceConstants.GUIKEYERKOLLEKTELINE1,
+					"Kollektenkonto: DE76 5006 1741 0000 0096 87", String.class);
+			UTEventHub.get().publish(new CommandPacket(Command.SEND_EVENT));
+			UTEventHub.get().publish(new SongLinePacket(kollekteLine1, "Verwendungszweck: 'Kollekte "
+					+ (event != null ? event.getStartDayString() : "") + "'"));
+			return true;
+		} else {
 			new Thread(new Runnable() {
 
 				@Override
@@ -308,16 +277,8 @@ public class GUIKeyer extends JFrame {
 					pnlKollekte.setVisible(false);
 				}
 			}).start();
-			return !pnlKollekte.isVisible();
-		} else {
-			pnlKollekte.setVisible(true);
-			String kollekteLine1 = JSONPersistence.get().getSetting(UTPersistenceConstants.GUIKEYERKOLLEKTELINE1,
-					"Kollektenkonto: DE76 5006 1741 0000 0096 87", String.class);
-			UTEventHub.get().publish(new CommandPacket(Command.SEND_EVENT));
-			UTEventHub.get().publish(new SongLinePacket(kollekteLine1, "Verwendungszweck: 'Kollekte "
-					+ (event != null ? event.getStartDayString() : "") + "'"));
-		}
-		return pnlKollekte.isVisible();
+			return false;
+		} 
 
 	}
 

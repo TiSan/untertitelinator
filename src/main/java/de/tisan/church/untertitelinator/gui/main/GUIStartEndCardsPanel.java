@@ -7,6 +7,7 @@ import de.tisan.church.untertitelinator.instancer.UTEventHub;
 import de.tisan.church.untertitelinator.instancer.UTEventListener;
 import de.tisan.church.untertitelinator.instancer.packets.Command;
 import de.tisan.church.untertitelinator.instancer.packets.CommandPacket;
+import de.tisan.church.untertitelinator.instancer.packets.CommandState;
 import de.tisan.church.untertitelinator.instancer.packets.GUIKeyerLayerChangePacket;
 import de.tisan.church.untertitelinator.instancer.packets.Packet;
 import de.tisan.flatui.components.fbutton.FlatButton;
@@ -23,8 +24,10 @@ public class GUIStartEndCardsPanel extends AGUIMainPanel {
 	Color btnInactiveColor = FlatColors.HIGHLIGHTBACKGROUND;
 
 	private FlatButton btnEndcard;
+	private CommandState endcardState = CommandState.OFF;
 
 	private FlatButton btnBeginLayer;
+	private CommandState beginlayerState = CommandState.ON;
 
 	public GUIStartEndCardsPanel(FlatLayoutManager man, GUIMain instance, Dimension preferredSize) {
 		super(man, instance, preferredSize);
@@ -36,10 +39,12 @@ public class GUIStartEndCardsPanel extends AGUIMainPanel {
 		btnBeginLayer = new FlatButton("Begincard", man);
 		btnBeginLayer.setBounds(x, y, widthBtn, heightBtn);
 		btnBeginLayer.disableEffects();
+		btnBeginLayer.setBackground(btnActiveColor);
 		btnBeginLayer.addMouseListener(Priority.NORMAL, new MouseListenerImpl() {
 			@Override
 			public void onMouseRelease(MouseReleaseHandler handler) {
-				UTEventHub.get().publish(new CommandPacket(Command.TOGGLE_BEGIN_LAYER));
+				beginlayerState = beginlayerState.toggle();
+				UTEventHub.get().publish(new CommandPacket(Command.STATE_BEGIN_CARD, beginlayerState.name()));
 			}
 		});
 		add(btnBeginLayer);
@@ -49,10 +54,12 @@ public class GUIStartEndCardsPanel extends AGUIMainPanel {
 		btnEndcard = new FlatButton("Endcard", man);
 		btnEndcard.setBounds(x, y, widthBtn, heightBtn +20);
 		btnEndcard.disableEffects();
+		btnEndcard.setBackground(btnInactiveColor);
 		btnEndcard.addMouseListener(Priority.NORMAL, new MouseListenerImpl() {
 			@Override
 			public void onMouseRelease(MouseReleaseHandler handler) {
-				UTEventHub.get().publish(new CommandPacket(Command.TOGGLE_ENDCARD));
+				endcardState = endcardState.toggle();
+				UTEventHub.get().publish(new CommandPacket(Command.STATE_END_CARD, endcardState.name()));
 			}
 		});
 		add(btnEndcard);
@@ -67,10 +74,12 @@ public class GUIStartEndCardsPanel extends AGUIMainPanel {
 					GUIKeyerLayerChangePacket bPacket = (GUIKeyerLayerChangePacket) packet;
 					switch (bPacket.getLayerName()) {
 					case ENDCARD:
-						btnEndcard.setBackground(bPacket.isVisible() ? btnActiveColor : btnInactiveColor, true);
+						endcardState = bPacket.getState();
+						btnEndcard.setBackground(bPacket.getState().equals(CommandState.ON) ? btnActiveColor : btnInactiveColor, true);
 						break;
 					case BEGINLAYER:
-						btnBeginLayer.setBackground(bPacket.isVisible() ? btnActiveColor : btnInactiveColor, true);
+						beginlayerState = bPacket.getState();
+						btnBeginLayer.setBackground(bPacket.getState().equals(CommandState.ON) ? btnActiveColor : btnInactiveColor, true);
 						break;
 					default:
 						break;

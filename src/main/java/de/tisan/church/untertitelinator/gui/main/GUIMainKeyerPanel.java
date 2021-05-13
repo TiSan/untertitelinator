@@ -10,6 +10,7 @@ import de.tisan.church.untertitelinator.instancer.UTEventHub;
 import de.tisan.church.untertitelinator.instancer.UTEventListener;
 import de.tisan.church.untertitelinator.instancer.packets.Command;
 import de.tisan.church.untertitelinator.instancer.packets.CommandPacket;
+import de.tisan.church.untertitelinator.instancer.packets.CommandState;
 import de.tisan.church.untertitelinator.instancer.packets.GUIKeyerLayerChangePacket;
 import de.tisan.church.untertitelinator.instancer.packets.Packet;
 import de.tisan.flatui.components.fbutton.FlatButton;
@@ -27,13 +28,17 @@ public class GUIMainKeyerPanel extends AGUIMainPanel {
 	Color btnInactiveColor = FlatColors.HIGHLIGHTBACKGROUND;
 
 	private FlatButton btnUntertitel;
-
+	private CommandState untertitelState = CommandState.OFF;
+	
 	private FlatButton btnKollekte;
-
+	private CommandState kollekteState = CommandState.OFF;
+	
 	private FlatButton btnLogo;
+	private CommandState logoState= CommandState.ON;
 
 	private FlatButton btnMaxButton;
-
+	private CommandState maxButtonState= CommandState.ON;
+	
 	public GUIMainKeyerPanel(FlatLayoutManager man, GUIMain instance, Dimension preferredSize) {
 		super(man, instance, preferredSize);
 		int x = 0;
@@ -52,10 +57,12 @@ public class GUIMainKeyerPanel extends AGUIMainPanel {
 		btnUntertitel = new FlatButton("Untertitel", man);
 		btnUntertitel.setBounds(x, y, widthBtn, heightBtn);
 		btnUntertitel.disableEffects();
+		btnUntertitel.setBackground(btnInactiveColor);
 		btnUntertitel.addMouseListener(Priority.NORMAL, new MouseListenerImpl() {
 			@Override
 			public void onMouseRelease(MouseReleaseHandler handler) {
-				UTEventHub.get().publish(new CommandPacket(Command.TOGGLE_UNTERTITEL));
+				untertitelState = untertitelState.toggle();
+				UTEventHub.get().publish(new CommandPacket(Command.STATE_UNTERTITEL, untertitelState.name()));
 			}
 		});
 		add(btnUntertitel);
@@ -65,10 +72,12 @@ public class GUIMainKeyerPanel extends AGUIMainPanel {
 		btnKollekte = new FlatButton("Kollekte", man);
 		btnKollekte.setBounds(x, y, widthBtn, heightBtn);
 		btnKollekte.disableEffects();
+		btnKollekte.setBackground(btnInactiveColor);
 		btnKollekte.addMouseListener(Priority.NORMAL, new MouseListenerImpl() {
 			@Override
 			public void onMouseRelease(MouseReleaseHandler handler) {
-				UTEventHub.get().publish(new CommandPacket(Command.TOGGLE_KOLLEKTE));
+				kollekteState = kollekteState.toggle();
+				UTEventHub.get().publish(new CommandPacket(Command.STATE_KOLLEKTE, kollekteState.name()));
 			}
 		});
 		add(btnKollekte);
@@ -78,10 +87,12 @@ public class GUIMainKeyerPanel extends AGUIMainPanel {
 		btnLogo = new FlatButton("Logo", man);
 		btnLogo.setBounds(x, y, widthBtn, heightBtn);
 		btnLogo.disableEffects();
+		btnLogo.setBackground(btnInactiveColor);
 		btnLogo.addMouseListener(Priority.NORMAL, new MouseListenerImpl() {
 			@Override
 			public void onMouseRelease(MouseReleaseHandler handler) {
-				UTEventHub.get().publish(new CommandPacket(Command.TOGGLE_LOGO));
+				logoState = logoState.toggle();
+				UTEventHub.get().publish(new CommandPacket(Command.STATE_LOGO, logoState.name()));
 			}
 		});
 		add(btnLogo);
@@ -91,10 +102,12 @@ public class GUIMainKeyerPanel extends AGUIMainPanel {
 		btnMaxButton = new FlatButton("Max-Button", man);
 		btnMaxButton.setBounds(x, y, widthBtn, heightBtn);
 		btnMaxButton.disableEffects();
+		btnMaxButton.setBackground(btnActiveColor);
 		btnMaxButton.addMouseListener(Priority.NORMAL, new MouseListenerImpl() {
 			@Override
 			public void onMouseRelease(MouseReleaseHandler handler) {
-				UTEventHub.get().publish(new CommandPacket(Command.TOGGLE_WINDOW_BAR));
+				maxButtonState = maxButtonState.toggle();
+				UTEventHub.get().publish(new CommandPacket(Command.STATE_WINDOW_BAR, maxButtonState.name()));
 			}
 		});
 		add(btnMaxButton);
@@ -107,16 +120,20 @@ public class GUIMainKeyerPanel extends AGUIMainPanel {
 					GUIKeyerLayerChangePacket bPacket = (GUIKeyerLayerChangePacket) packet;
 					switch (bPacket.getLayerName()) {
 					case KOLLEKTE:
-						btnKollekte.setBackground(bPacket.isVisible() ? btnActiveColor : btnInactiveColor, true);
+						kollekteState = bPacket.getState();
+						btnKollekte.setBackground(bPacket.getState().equals(CommandState.ON) ? btnActiveColor : btnInactiveColor, true);
 						break;
 					case UNTERTITEL:
-						btnUntertitel.setBackground(bPacket.isVisible() ? btnActiveColor : btnInactiveColor, true);
+						untertitelState = bPacket.getState();
+						btnUntertitel.setBackground(bPacket.getState().equals(CommandState.ON) ? btnActiveColor : btnInactiveColor, true);
 						break;
 					case LOGO:
-						btnLogo.setBackground(bPacket.isVisible() ? btnActiveColor : btnInactiveColor, true);
+						logoState = bPacket.getState();
+						btnLogo.setBackground(bPacket.getState().equals(CommandState.ON) ? btnActiveColor : btnInactiveColor, true);
 						break;
 					case MAXBUTTON:
-						btnMaxButton.setBackground(bPacket.isVisible() ? btnActiveColor : btnInactiveColor, true);
+						maxButtonState = bPacket.getState();
+						btnMaxButton.setBackground(bPacket.getState().equals(CommandState.ON) ? btnActiveColor : btnInactiveColor, true);
 						break;
 					default:
 						break;

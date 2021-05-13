@@ -5,15 +5,15 @@ import de.tisan.church.untertitelinator.gui.keyer.GUIKeyerLayer;
 public class GUIKeyerLayerChangePacket extends Packet{
 	private static final long serialVersionUID = 1268973976649151700L;
 	GUIKeyerLayer layerName;
-	boolean visible;
+	CommandState state;
 	
 	public GUIKeyerLayerChangePacket() {
 	}
 
-	public GUIKeyerLayerChangePacket(GUIKeyerLayer layerName, boolean visible) {
+	public GUIKeyerLayerChangePacket(GUIKeyerLayer layerName, CommandState state) {
 		super();
 		this.layerName = layerName;
-		this.visible = visible;
+		this.state = state;
 	}
 
 	public GUIKeyerLayer getLayerName() {
@@ -24,17 +24,13 @@ public class GUIKeyerLayerChangePacket extends Packet{
 		this.layerName = layerName;
 	}
 
-	public boolean isVisible() {
-		return visible;
-	}
-
-	public void setVisible(boolean visible) {
-		this.visible = visible;
+	public CommandState getState() {
+		return state;
 	}
 
 	@Override
 	public String toString() {
-		return "Keyer Layer " + layerName + " is now " + (isVisible() ? "visible" : "not visible");
+		return "Keyer Layer " + layerName + " is now " + (getState().equals(CommandState.ON) ? "visible" : "not visible");
 	}
 	
 	
