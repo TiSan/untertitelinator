@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Toolkit;
+import java.util.Objects;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -59,7 +60,7 @@ public class GUIPresentator extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setBackground(FlatColors.BLACK);
 		FlatLayoutManager man = FlatLayoutManager.get(this);
-
+		
 		FlatTitleBarWin10 bar = new FlatTitleBarWin10(man,
 				(String) JSONPersistence.get().getSetting(UTPersistenceConstants.CHURCHNAME,
 						"Evangelische Kirchengemeinde Oberstedten") + " - Untertitelinator v"
@@ -77,9 +78,6 @@ public class GUIPresentator extends JFrame {
 		bar.setMoveable(
 				(boolean) JSONPersistence.get().getSetting(UTPersistenceConstants.GUIPRESENTATORMOVEABLE, false));
 
-		bar.setMaximizable(false);
-		bar.setMinimizable(false);
-		bar.setMoveable(false);
 		bar.setAnchor(Anchor.LEFT, Anchor.RIGHT);
 
 		Font font = FlatFont.getInstance(195, Font.BOLD);
@@ -90,7 +88,7 @@ public class GUIPresentator extends JFrame {
 
 		titleLine = new FlatButton((String) JSONPersistence.get()
 				.getSetting(UTPersistenceConstants.GUIPRESENTATORCURRENTTITLETEXT, "Aktueller Titel"), man);
-		titleLine.setBounds(spaceX, 50, getWidth(), 150);
+		titleLine.setBounds(spaceX, 50, width, 150);
 		titleLine.setFont(FlatFont.getInstance(60, Font.BOLD));
 		titleLine.setBackground(FlatColors.BLACK);
 		titleLine.setAnchor(Anchor.LEFT, Anchor.RIGHT);
@@ -115,7 +113,7 @@ public class GUIPresentator extends JFrame {
 		font = FlatFont.getInstance(100, Font.BOLD);
 		Color fgColor = FlatColors.GRAY;
 
-		nextLine1 = new FlatButton("N�chste Zeile 1", man);
+		nextLine1 = new FlatButton("N\u00E4chste Zeile 1", man);
 		nextLine1.setBounds(spaceX, currentLine2.getY() + currentLine2.getHeight() + spaceY, width, height);
 		nextLine1.setFont(font);
 		nextLine1.setBackground(FlatColors.BLACK);
@@ -123,7 +121,7 @@ public class GUIPresentator extends JFrame {
 		nextLine1.setForeground(fgColor);
 		contentPane.add(nextLine1);
 
-		nextLine2 = new FlatButton("N�chste Zeile 2", man);
+		nextLine2 = new FlatButton("N\u00E4chste Zeile 2", man);
 		nextLine2.setBounds(spaceX, nextLine1.getY() + nextLine1.getHeight() + spaceY, width, height);
 		nextLine2.setFont(font);
 		nextLine2.setBackground(FlatColors.BLACK);
@@ -142,15 +140,27 @@ public class GUIPresentator extends JFrame {
 							
 							@Override
 							public void run() {
-								showNewTextLines(sPacket.getSongPlayer().getSong().getTitle(), sPacket.getCurrentLines().get(0),
-										sPacket.getCurrentLines().get(1), sPacket.getNextLines().get(0),
-										sPacket.getNextLines().get(1), 0, false);
+								showNewTextLines(sPacket.getSongPlayer().getSong().getTitle(), 
+										sPacket.getCurrentLines().get(0),
+										sPacket.getCurrentLines().get(1),
+										sPacket.getNextLines().get(0),
+										sPacket.getNextLines().get(1), 
+										0, 
+										sPacket.getCurrentLines()
+											.stream()
+											.filter(Objects::nonNull)
+											.filter(e -> (e.length() > 0))
+											.findFirst()
+											.isPresent() == false
+									);
 							}
 						}).start();
 					}
 				}
 			}
 		});
+		
+		man.disableAllEffects();
 	}
 
 	private void showNewTextLines(String title, String line1, String line2, String line3, String line4, int delay,
