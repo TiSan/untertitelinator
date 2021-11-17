@@ -1,9 +1,6 @@
 package de.tisan.church.untertitelinator.gui.presentator;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Toolkit;
+import java.awt.*;
 import java.util.Objects;
 
 import javax.swing.JFrame;
@@ -26,161 +23,152 @@ import de.tisan.tools.persistencemanager.JSONPersistence;
 
 public class GUIPresentator extends JFrame {
 
-	private static final long serialVersionUID = 7666681011188876592L;
-	private static GUIPresentator instance;
+    private static final long serialVersionUID = 7666681011188876592L;
+    private static GUIPresentator instance;
 
-	public static GUIPresentator get() {
-		if (instance == null) {
-			instance = new GUIPresentator();
+    public static GUIPresentator get() {
+        if (instance == null) {
+            instance = new GUIPresentator();
 //			instance.setVisible(true);
-		}
-		return instance;
-	}
+        }
+        return instance;
+    }
 
-	private FlatButton currentLine1;
-	private FlatButton currentLine2;
-	private FlatButton nextLine1;
-	private FlatButton nextLine2;
-	private FlatButton titleLine;
+    private FlatButton currentLine1;
+    private FlatButton currentLine2;
+    private FlatButton nextLine1;
+    private FlatButton nextLine2;
+    private FlatButton titleLine;
 
-	public GUIPresentator() {
-		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		screenSize = new Dimension(
-				(Integer) JSONPersistence.get().getSetting(UTPersistenceConstants.GUIPRESENTATORWIDTH, 1024),
-				(Integer) JSONPersistence.get().getSetting(UTPersistenceConstants.GUIPRESENTATORHEIGHT, 768));
-		setUndecorated(true);
-		setLocation((Integer) JSONPersistence.get().getSetting(UTPersistenceConstants.GUIPRESENTATORX, 0),
-				(Integer) JSONPersistence.get().getSetting(UTPersistenceConstants.GUIPRESENTATORY, 0));
-		setSize(screenSize);
-		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-		setBackground(FlatColors.BLACK);
+    public GUIPresentator() {
 
-		JPanel contentPane = new JPanel();
-		contentPane.setLayout(null);
-		setContentPane(contentPane);
-		contentPane.setBackground(FlatColors.BLACK);
-		FlatLayoutManager man = FlatLayoutManager.get(this);
-		
-		FlatTitleBarWin10 bar = new FlatTitleBarWin10(man,
-				(String) JSONPersistence.get().getSetting(UTPersistenceConstants.CHURCHNAME,
-						"Evangelische Kirchengemeinde Oberstedten") + " - Untertitelinator v"
-						+ Untertitelinator.VERSION);
-		bar.setBounds(0, 0, getWidth(), 30);
-		bar.setBackground(FlatColors.BLACK);
-		contentPane.add(bar);
-		bar.addFlatTitleBarListener(new DefaultFlatTitleBarListener(this));
-		bar.setCloseable(
-				(boolean) JSONPersistence.get().getSetting(UTPersistenceConstants.GUIPRESENTATORCLOSEABLE, false));
-		bar.setMaximizable(
-				(boolean) JSONPersistence.get().getSetting(UTPersistenceConstants.GUIPRESENTATORMAXIMIZABLE, true));
-		bar.setMinimizable(
-				(boolean) JSONPersistence.get().getSetting(UTPersistenceConstants.GUIPRESENTATORMINIMIZABLE, false));
-		bar.setMoveable(
-				(boolean) JSONPersistence.get().getSetting(UTPersistenceConstants.GUIPRESENTATORMOVEABLE, false));
+        String useDisplay = (String) JSONPersistence.get().getSetting(UTPersistenceConstants.GUIPRESENTATORDISPLAYID, "\\Display0");
+        GraphicsDevice[] devices = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices();
+        GraphicsDevice display = devices[0];
+        for (GraphicsDevice device : devices) {
+            System.out.println("'" + device.getIDstring() + "'");
+            if (useDisplay.equals(device.getIDstring())) {
+                display = device;
+                break;
+            }
+        }
+        Rectangle displayRect = display.getDefaultConfiguration().getBounds();
+        setUndecorated(true);
+        setLocation(displayRect.getLocation());
+        setSize(displayRect.getSize());
 
-		bar.setAnchor(Anchor.LEFT, Anchor.RIGHT);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setBackground(FlatColors.BLACK);
 
-		Font font = FlatFont.getInstance(195, Font.BOLD);
-		int spaceY = 60;
-		int spaceX = 30;
-		int width = getWidth() - (spaceX * 2);
-		int height = 250;
+        JPanel contentPane = new JPanel();
+        contentPane.setLayout(null);
+        setContentPane(contentPane);
+        contentPane.setBackground(FlatColors.BLACK);
+        FlatLayoutManager man = FlatLayoutManager.get(this);
 
-		titleLine = new FlatButton((String) JSONPersistence.get()
-				.getSetting(UTPersistenceConstants.GUIPRESENTATORCURRENTTITLETEXT, "Aktueller Titel"), man);
-		titleLine.setBounds(spaceX, 50, width, 150);
-		titleLine.setFont(FlatFont.getInstance(60, Font.BOLD));
-		titleLine.setBackground(FlatColors.BLACK);
-		titleLine.setAnchor(Anchor.LEFT, Anchor.RIGHT);
-		contentPane.add(titleLine);
 
-		currentLine1 = new FlatButton("Aktuelle Zeile 1", man);
-		currentLine1.setBounds(spaceX, titleLine.getY() + titleLine.getHeight() + spaceY, width, height);
-		currentLine1.setFont(font);
-		currentLine1.setBackground(FlatColors.BLACK);
-		currentLine1.setAnchor(Anchor.LEFT, Anchor.RIGHT);
-		contentPane.add(currentLine1);
 
-		currentLine2 = new FlatButton("Aktuelle Zeile 2", man);
-		currentLine2.setBounds(spaceX, currentLine1.getY() + currentLine1.getHeight(), width, height);
-		currentLine2.setFont(font);
-		currentLine2.setBackground(FlatColors.BLACK);
-		currentLine2.setAnchor(Anchor.LEFT, Anchor.RIGHT);
-		contentPane.add(currentLine2);
+        Font font = FlatFont.getInstance(195, Font.BOLD);
+        int spaceY = 60;
+        int spaceX = 30;
+        int width = getWidth() - (spaceX * 2);
+        int height = 250;
 
-		height = 130;
-		spaceY = 10;
-		font = FlatFont.getInstance(100, Font.BOLD);
-		Color fgColor = FlatColors.GRAY;
+        titleLine = new FlatButton((String) JSONPersistence.get()
+                .getSetting(UTPersistenceConstants.GUIPRESENTATORCURRENTTITLETEXT, "Aktueller Titel"), man);
+        titleLine.setBounds(spaceX, 50, width, 150);
+        titleLine.setFont(FlatFont.getInstance(60, Font.BOLD));
+        titleLine.setBackground(FlatColors.BLACK);
+        titleLine.setAnchor(Anchor.LEFT, Anchor.RIGHT);
+        contentPane.add(titleLine);
 
-		nextLine1 = new FlatButton("N\u00E4chste Zeile 1", man);
-		nextLine1.setBounds(spaceX, currentLine2.getY() + currentLine2.getHeight() + spaceY, width, height);
-		nextLine1.setFont(font);
-		nextLine1.setBackground(FlatColors.BLACK);
-		nextLine1.setAnchor(Anchor.LEFT, Anchor.RIGHT);
-		nextLine1.setForeground(fgColor);
-		contentPane.add(nextLine1);
+        currentLine1 = new FlatButton("Aktuelle Zeile 1", man);
+        currentLine1.setBounds(spaceX, titleLine.getY() + titleLine.getHeight() + spaceY, width, height);
+        currentLine1.setFont(font);
+        currentLine1.setBackground(FlatColors.BLACK);
+        currentLine1.setAnchor(Anchor.LEFT, Anchor.RIGHT);
+        contentPane.add(currentLine1);
 
-		nextLine2 = new FlatButton("N\u00E4chste Zeile 2", man);
-		nextLine2.setBounds(spaceX, nextLine1.getY() + nextLine1.getHeight() + spaceY, width, height);
-		nextLine2.setFont(font);
-		nextLine2.setBackground(FlatColors.BLACK);
-		nextLine2.setAnchor(Anchor.LEFT, Anchor.RIGHT);
-		nextLine2.setForeground(fgColor);
-		contentPane.add(nextLine2);
+        currentLine2 = new FlatButton("Aktuelle Zeile 2", man);
+        currentLine2.setBounds(spaceX, currentLine1.getY() + currentLine1.getHeight(), width, height);
+        currentLine2.setFont(font);
+        currentLine2.setBackground(FlatColors.BLACK);
+        currentLine2.setAnchor(Anchor.LEFT, Anchor.RIGHT);
+        contentPane.add(currentLine2);
 
-		UTEventHub.get().registerListener(new UTEventListener() {
+        height = 130;
+        spaceY = 10;
+        font = FlatFont.getInstance(100, Font.BOLD);
+        Color fgColor = FlatColors.GRAY;
 
-			@Override
-			public void onEventReceived(Packet packet) {
-				if (packet instanceof SongLinePacket) {
-					SongLinePacket sPacket = (SongLinePacket) packet;
-					if(sPacket.getSongPlayer() != null) {
-						new Thread(new Runnable() {
-							
-							@Override
-							public void run() {
-								showNewTextLines(sPacket.getSongPlayer().getSong().getTitle(), 
-										sPacket.getCurrentLines().get(0),
-										sPacket.getCurrentLines().get(1),
-										sPacket.getNextLines().get(0),
-										sPacket.getNextLines().get(1), 
-										0, 
-										sPacket.getCurrentLines()
-											.stream()
-											.filter(Objects::nonNull)
-											.filter(e -> (e.length() > 0))
-											.findFirst()
-											.isPresent() == false
-									);
-							}
-						}).start();
-					}
-				}
-			}
-		});
-		
-		man.disableAllEffects();
-	}
+        nextLine1 = new FlatButton("N\u00E4chste Zeile 1", man);
+        nextLine1.setBounds(spaceX, currentLine2.getY() + currentLine2.getHeight() + spaceY, width, height);
+        nextLine1.setFont(font);
+        nextLine1.setBackground(FlatColors.BLACK);
+        nextLine1.setAnchor(Anchor.LEFT, Anchor.RIGHT);
+        nextLine1.setForeground(fgColor);
+        contentPane.add(nextLine1);
 
-	private void showNewTextLines(String title, String line1, String line2, String line3, String line4, int delay,
-			boolean paused) {
-		new Thread(new Runnable() {
+        nextLine2 = new FlatButton("N\u00E4chste Zeile 2", man);
+        nextLine2.setBounds(spaceX, nextLine1.getY() + nextLine1.getHeight() + spaceY, width, height);
+        nextLine2.setFont(font);
+        nextLine2.setBackground(FlatColors.BLACK);
+        nextLine2.setAnchor(Anchor.LEFT, Anchor.RIGHT);
+        nextLine2.setForeground(fgColor);
+        contentPane.add(nextLine2);
 
-			@Override
-			public void run() {
-				try {
-					Thread.sleep(delay);
-				} catch (InterruptedException e) {
-				}
-				titleLine.setText(paused
-						? (String) JSONPersistence.get().getSetting(UTPersistenceConstants.BLACKOUTLINEFILLER, "")
-						: title);
-				currentLine1.setText(line1);
-				currentLine2.setText(line2);
-				nextLine1.setText(line3);
-				nextLine2.setText(line4);
-			}
-		}).start();
-	}
+        UTEventHub.get().registerListener(new UTEventListener() {
+
+            @Override
+            public void onEventReceived(Packet packet) {
+                if (packet instanceof SongLinePacket) {
+                    SongLinePacket sPacket = (SongLinePacket) packet;
+                    if (sPacket.getSongPlayer() != null) {
+                        new Thread(new Runnable() {
+
+                            @Override
+                            public void run() {
+                                showNewTextLines(sPacket.getSongPlayer().getSong().getTitle(),
+                                        sPacket.getCurrentLines().get(0),
+                                        sPacket.getCurrentLines().get(1),
+                                        sPacket.getNextLines().get(0),
+                                        sPacket.getNextLines().get(1),
+                                        0,
+                                        sPacket.getCurrentLines()
+                                                .stream()
+                                                .filter(Objects::nonNull)
+                                                .filter(e -> (e.length() > 0))
+                                                .findFirst()
+                                                .isPresent() == false
+                                );
+                            }
+                        }).start();
+                    }
+                }
+            }
+        });
+
+        man.disableAllEffects();
+    }
+
+    private void showNewTextLines(String title, String line1, String line2, String line3, String line4, int delay,
+                                  boolean paused) {
+        new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(delay);
+                } catch (InterruptedException e) {
+                }
+                titleLine.setText(paused
+                        ? (String) JSONPersistence.get().getSetting(UTPersistenceConstants.BLACKOUTLINEFILLER, "")
+                        : title);
+                currentLine1.setText(line1);
+                currentLine2.setText(line2);
+                nextLine1.setText(line3);
+                nextLine2.setText(line4);
+            }
+        }).start();
+    }
 }

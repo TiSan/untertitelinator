@@ -106,7 +106,9 @@ public class Untertitelinator
 			songs.add(new Song(song));
 		}
 
-		UTEventHub.get().publish(new SongListChangedPacket(songs), new CommandPacket(Command.CHANGE_SONG, songs.get(0).getTitle()));
+		if(songs.isEmpty() == false) {
+			UTEventHub.get().publish(new SongListChangedPacket(songs), new CommandPacket(Command.CHANGE_SONG, songs.get(0).getTitle()));
+		}
 	}
 
 	public List<Song> getSongs() {

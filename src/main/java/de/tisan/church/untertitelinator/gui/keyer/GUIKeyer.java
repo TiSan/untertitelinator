@@ -1,9 +1,6 @@
 package de.tisan.church.untertitelinator.gui.keyer;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Frame;
-import java.awt.Toolkit;
+import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 
@@ -42,7 +39,6 @@ public class GUIKeyer extends JFrame {
 
 	private GUIKeyerUntertitelPanel pnlUntertitel;
 	private GUIKeyerStartPagePanel pnlStartPage;
-	private FlatTitleBarWin10 bar;
 	private GUIKeyerLogoPanel pnlLogo;
 	private GUIKeyerEndcardPanel pnlEndcardPage;
 	private GUIKeyerUntertitelPanel pnlKollekte;
@@ -53,15 +49,22 @@ public class GUIKeyer extends JFrame {
 
 	public GUIKeyer() {
 		try {
-			Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-			screenSize = new Dimension(
-					(Integer) JSONPersistence.get().getSetting(UTPersistenceConstants.GUIKEYERWIDTH, 1024),
-					(Integer) JSONPersistence.get().getSetting(UTPersistenceConstants.GUIKEYERHEIGHT, 768));
+			String useDisplay = (String) JSONPersistence.get().getSetting(UTPersistenceConstants.GUIKEYERDISPLAYID, "\\Display1");
+			GraphicsDevice[] devices = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices();
+			GraphicsDevice display = devices[0];
+			for (GraphicsDevice device : devices) {
+				System.out.println("'" + device.getIDstring() + "'");
+				if (useDisplay.equals(device.getIDstring())) {
+					display = device;
+					break;
+				}
+			}
+			Rectangle displayRect = display.getDefaultConfiguration().getBounds();
 			setUndecorated(true);
-			setLocation((Integer) JSONPersistence.get().getSetting(UTPersistenceConstants.GUIKEYERX, 0),
-					(Integer) JSONPersistence.get().getSetting(UTPersistenceConstants.GUIKEYERY, 0));
-			setSize(screenSize);
-			setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+			setLocation(displayRect.getLocation());
+			setSize(displayRect.getSize());
+
+			setDefaultCloseOperation(EXIT_ON_CLOSE);
 			bg = (Color) Color.class.getField(
 					(String) JSONPersistence.get().getSetting(UTPersistenceConstants.GUIKEYERBACKGROUND, "GREEN"))
 					.get(new Color(0));
@@ -76,91 +79,26 @@ public class GUIKeyer extends JFrame {
 			FlatLayoutManager man = FlatLayoutManager.get(this);
 			man.disableAllEffects();
 
-			bar = new FlatTitleBarWin10(man, "");
-			bar.addFlatTitleBarListener(new FlatTitleBarListener() {
 
-				@Override
-				public void onWindowDragged() {
-				}
-
-				@Override
-				public void onMinimizeButtonReleased() {
-				}
-
-				@Override
-				public void onMinimizeButtonPressed() {
-				}
-
-				@Override
-				public void onMinimizeButtonMouseMove() {
-				}
-
-				@Override
-				public void onMaximizeButtonReleased() {
-					if ((GUIKeyer.this.getExtendedState() == Frame.MAXIMIZED_BOTH) == false) {
-						bar.setVisible(false);
-					}
-				}
-
-				@Override
-				public void onMaximizeButtonPressed() {
-				}
-
-				@Override
-				public void onMaximizeButtonMouseMove() {
-				}
-
-				@Override
-				public void onImageClicked() {
-				}
-
-				@Override
-				public void onCloseButtonReleased() {
-				}
-
-				@Override
-				public void onCloseButtonPressed() {
-				}
-
-				@Override
-				public void onCloseButtonMouseMove() {
-				}
-			});
-			bar.setOptionMenuToggleEnabled(false);
-			bar.setBounds(0, 0, getWidth(), 30);
-			bar.setBackground(new Color(0, 0, 0, 0));
-			bar.disableEffects();
-			contentPane.add(bar);
-			bar.setOpaque(true);
-			bar.addFlatTitleBarListener(new DefaultFlatTitleBarListener(this));
-			bar.setCloseable(
-					(boolean) JSONPersistence.get().getSetting(UTPersistenceConstants.GUIKEYERCLOSEABLE, false));
-			bar.setMaximizable(
-					(boolean) JSONPersistence.get().getSetting(UTPersistenceConstants.GUIKEYERMAXIMIZABLE, true));
-			bar.setMinimizable(
-					(boolean) JSONPersistence.get().getSetting(UTPersistenceConstants.GUIKEYERMINIMIZABLE, false));
-			bar.setMoveable((boolean) JSONPersistence.get().getSetting(UTPersistenceConstants.GUIKEYERMOVEABLE, false));
-			bar.setAnchor(Anchor.LEFT, Anchor.RIGHT);
-
-			pnlLogo = new GUIKeyerLogoPanel(man, this, screenSize);
+			pnlLogo = new GUIKeyerLogoPanel(man, this, getSize());
 			pnlLogo.setBounds(0, 0, getWidth(), getHeight());
 			contentPane.add(pnlLogo);
 
-			pnlStartPage = new GUIKeyerStartPagePanel(man, this, screenSize);
+			pnlStartPage = new GUIKeyerStartPagePanel(man, this, getSize());
 			pnlStartPage.setBounds(0, 0, getWidth(), getHeight());
 			contentPane.add(pnlStartPage);
 
-			pnlEndcardPage = new GUIKeyerEndcardPanel(man, this, screenSize);
+			pnlEndcardPage = new GUIKeyerEndcardPanel(man, this, getSize());
 			pnlEndcardPage.setBounds(0, 0, getWidth(), getHeight());
 			contentPane.add(pnlEndcardPage);
 			pnlEndcardPage.setVisible(false);
 
-			pnlKollekte = new GUIKeyerUntertitelPanel(man, this, screenSize);
+			pnlKollekte = new GUIKeyerUntertitelPanel(man, this, getSize());
 			pnlKollekte.setBounds(0, 0, getWidth(), getHeight());
 			contentPane.add(pnlKollekte);
 			pnlKollekte.setVisible(false);
 
-			pnlUntertitel = new GUIKeyerUntertitelPanel(man, this, screenSize);
+			pnlUntertitel = new GUIKeyerUntertitelPanel(man, this, getSize());
 			pnlUntertitel.setBounds(0, 0, getWidth(), getHeight());
 			contentPane.add(pnlUntertitel);
 			pnlUntertitel.setVisible(false);
@@ -233,7 +171,6 @@ public class GUIKeyer extends JFrame {
 					UTEventHub.get()
 							.publish(new GUIKeyerLayerChangePacket(GUIKeyerLayer.KOLLEKTE, pnlKollekte.isVisible()));
 					UTEventHub.get().publish(new GUIKeyerLayerChangePacket(GUIKeyerLayer.LOGO, pnlLogo.isVisible()));
-					UTEventHub.get().publish(new GUIKeyerLayerChangePacket(GUIKeyerLayer.MAXBUTTON, bar.isVisible()));
 					UTEventHub.get().publish(
 							new GUIKeyerLayerChangePacket(GUIKeyerLayer.UNTERTITEL, pnlUntertitel.isVisible()));
 
@@ -289,13 +226,7 @@ public class GUIKeyer extends JFrame {
 	}
 
 	private boolean toggleWindowBar() {
-		if (bar.isVisible()) {
-			bar.setVisible(false);
-		} else {
-			bar.setVisible(true);
-		}
-		return bar.isVisible();
-
+		return false;
 	}
 
 	private boolean toggleKollekte() {

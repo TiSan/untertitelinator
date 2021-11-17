@@ -24,6 +24,7 @@ public class Main {
 				return;
 			}
 		}
+		
 		GUILoad load = new GUILoad();
 		load.setVisible(true);
 	}

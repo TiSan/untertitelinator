@@ -29,7 +29,6 @@ public class GUIMain extends JFrame {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (Exception e1) {
 		}
-
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 		setUndecorated(true);
 		setSize(930, 650);

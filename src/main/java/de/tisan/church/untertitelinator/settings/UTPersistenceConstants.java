@@ -15,9 +15,9 @@ public enum UTPersistenceConstants implements PersistenceConstants{
 	GUIKEYERCLOSEABLE("guiKeyerCloseable"), GUIPRESENTATORCLOSEABLE("guiPresentatorCloseable"),
 	GUIPRESENTATORMAXIMIZABLE("guiPresentatorMaximizable"), GUIPRESENTATORMINIMIZABLE("guiPresentatorMinimizable"),
 	GUIPRESENTATORMOVEABLE("guiPresentatorMoveable"), GUIPRESENTATORCURRENTTITLETEXT("guiPresentatorCurrentTitleText"),
-	CHURCHTOOLSUSER("churchToolsUser"),CTLASTACCESSTOKEN("churchToolsLastAccessToken"), CTLASTACCESSTOKENUPDATED("churchToolsLastAccessTokenUpdated"), CHURCHTOOLSPASSWORD("churchToolsPassword"), CTCACHE("churchToolsDataCache"), CHURCHTOOLSBASEURL("churchToolsBaseUrl"), GUIKEYERKOLLEKTELINE1("guiKeyerKollekteLine1"), SERVER_PORT("serverPort"), UDP_START_PORT("discoveryUdpStartPort"), UDP_END_PORT("discoveryUdpEndPort");
+	CHURCHTOOLSUSER("churchToolsUser"),CTLASTACCESSTOKEN("churchToolsLastAccessToken"), CTLASTACCESSTOKENUPDATED("churchToolsLastAccessTokenUpdated"), CHURCHTOOLSPASSWORD("churchToolsPassword"), CTCACHE("churchToolsDataCache"), CHURCHTOOLSBASEURL("churchToolsBaseUrl"), GUIKEYERKOLLEKTELINE1("guiKeyerKollekteLine1"), SERVER_PORT("serverPort"), UDP_START_PORT("discoveryUdpStartPort"), UDP_END_PORT("discoveryUdpEndPort"), GUIPRESENTATORDISPLAYID("guiPresentatorDisplayId"), GUIKEYERDISPLAYID("guiKeyerDisplayId");
 
-	private String key;
+    private String key;
 
 	private UTPersistenceConstants(String settingsKey) {
 		this.key = settingsKey;
