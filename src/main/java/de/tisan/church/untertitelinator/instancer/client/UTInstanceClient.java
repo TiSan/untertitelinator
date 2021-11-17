@@ -60,7 +60,7 @@ public class UTInstanceClient {
 	}
 
 	public void publish(Packet packet) {
-		if (socket == null) {
+		if (socket == null || socket.isConnected() == false) {
 			queue.add(packet);
 			return;
 		}

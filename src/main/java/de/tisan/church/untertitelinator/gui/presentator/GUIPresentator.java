@@ -1,6 +1,7 @@
 package de.tisan.church.untertitelinator.gui.presentator;
 
 import java.awt.*;
+import java.util.List;
 import java.util.Objects;
 
 import javax.swing.JFrame;
@@ -29,7 +30,6 @@ public class GUIPresentator extends JFrame {
     public static GUIPresentator get() {
         if (instance == null) {
             instance = new GUIPresentator();
-//			instance.setVisible(true);
         }
         return instance;
     }
@@ -65,57 +65,47 @@ public class GUIPresentator extends JFrame {
         setContentPane(contentPane);
         contentPane.setBackground(FlatColors.BLACK);
         FlatLayoutManager man = FlatLayoutManager.get(this);
+        man.setResizable(false);
 
-
-
-        Font font = FlatFont.getInstance(195, Font.BOLD);
-        int spaceY = 60;
+        int borderY = 10;
         int spaceX = 30;
         int width = getWidth() - (spaceX * 2);
-        int height = 250;
+        int height = 100;
+        Color fgColor = FlatColors.GRAY;
 
-        titleLine = new FlatButton((String) JSONPersistence.get()
-                .getSetting(UTPersistenceConstants.GUIPRESENTATORCURRENTTITLETEXT, "Aktueller Titel"), man);
-        titleLine.setBounds(spaceX, 50, width, 150);
-        titleLine.setFont(FlatFont.getInstance(60, Font.BOLD));
+        titleLine = new FlatButton("", man);
+        titleLine.setBounds(spaceX, 30, width, height);
         titleLine.setBackground(FlatColors.BLACK);
         titleLine.setAnchor(Anchor.LEFT, Anchor.RIGHT);
+        titleLine.setForeground(fgColor);
         contentPane.add(titleLine);
 
-        currentLine1 = new FlatButton("Aktuelle Zeile 1", man);
-        currentLine1.setBounds(spaceX, titleLine.getY() + titleLine.getHeight() + spaceY, width, height);
-        currentLine1.setFont(font);
+        currentLine1 = new FlatButton("", man);
+        currentLine1.setBounds(spaceX, ((getSize().height / 2) - height / 2) - (height / 2), width, height);
         currentLine1.setBackground(FlatColors.BLACK);
         currentLine1.setAnchor(Anchor.LEFT, Anchor.RIGHT);
         contentPane.add(currentLine1);
 
-        currentLine2 = new FlatButton("Aktuelle Zeile 2", man);
-        currentLine2.setBounds(spaceX, currentLine1.getY() + currentLine1.getHeight(), width, height);
-        currentLine2.setFont(font);
+        currentLine2 = new FlatButton("", man);
+        currentLine2.setBounds(spaceX, ((getSize().height / 2) - height / 2) + (height / 2), width, height);
         currentLine2.setBackground(FlatColors.BLACK);
         currentLine2.setAnchor(Anchor.LEFT, Anchor.RIGHT);
         contentPane.add(currentLine2);
 
-        height = 130;
-        spaceY = 10;
-        font = FlatFont.getInstance(100, Font.BOLD);
-        Color fgColor = FlatColors.GRAY;
+        nextLine2 = new FlatButton("", man);
+        nextLine2.setBounds(spaceX, getSize().height - borderY - height, width, height);
+        nextLine2.setBackground(FlatColors.BLACK);
+        nextLine2.setAnchor(Anchor.LEFT, Anchor.RIGHT);
+        nextLine2.setForeground(fgColor);
+        contentPane.add(nextLine2);
 
-        nextLine1 = new FlatButton("N\u00E4chste Zeile 1", man);
-        nextLine1.setBounds(spaceX, currentLine2.getY() + currentLine2.getHeight() + spaceY, width, height);
-        nextLine1.setFont(font);
+        nextLine1 = new FlatButton("", man);
+        nextLine1.setBounds(spaceX, nextLine2.getY() - height, width, height);
         nextLine1.setBackground(FlatColors.BLACK);
         nextLine1.setAnchor(Anchor.LEFT, Anchor.RIGHT);
         nextLine1.setForeground(fgColor);
         contentPane.add(nextLine1);
 
-        nextLine2 = new FlatButton("N\u00E4chste Zeile 2", man);
-        nextLine2.setBounds(spaceX, nextLine1.getY() + nextLine1.getHeight() + spaceY, width, height);
-        nextLine2.setFont(font);
-        nextLine2.setBackground(FlatColors.BLACK);
-        nextLine2.setAnchor(Anchor.LEFT, Anchor.RIGHT);
-        nextLine2.setForeground(fgColor);
-        contentPane.add(nextLine2);
 
         UTEventHub.get().registerListener(new UTEventListener() {
 
@@ -128,6 +118,7 @@ public class GUIPresentator extends JFrame {
 
                             @Override
                             public void run() {
+                                calculateFontSize(sPacket.getSongPlayer().getSong().getSongLines());
                                 showNewTextLines(sPacket.getSongPlayer().getSong().getTitle(),
                                         sPacket.getCurrentLines().get(0),
                                         sPacket.getCurrentLines().get(1),
@@ -149,6 +140,53 @@ public class GUIPresentator extends JFrame {
         });
 
         man.disableAllEffects();
+    }
+
+    private void calculateFontSize(List<String> linesToShow) {
+        Font newFont = FlatFont.getInstance(80, Font.BOLD);
+        for (String line : linesToShow) {
+            System.out.println(line);
+            if(line.contains("\n")){
+                System.out.println("BR Gefunden!");
+                String[] s = line.split("\n", 2);
+                newFont = getFontSizeFor(s[0], newFont);
+                newFont = getFontSizeFor(s[1], newFont);
+
+            } else {
+                newFont = getFontSizeFor(line, newFont);
+            }
+        }
+        updateFont(newFont);
+    }
+
+    private Font getFontSizeFor(String line, Font newFont){
+        int x1 = 0;
+        int y1 = 0;
+        while (true) {
+            FontMetrics fm = getGraphics().getFontMetrics(newFont);
+            java.awt.geom.Rectangle2D rect = fm.getStringBounds(line, getGraphics());
+            int textHeight = (int) (rect.getHeight());
+            int textWidth = (int) (rect.getWidth());
+            int panelHeight = getHeight();
+            int panelWidth = getWidth();
+            x1 = (panelWidth - textWidth) / 2;
+            y1 = (panelHeight - textHeight) / 2 + fm.getAscent();
+            if (x1 < 2 || y1 < 2) {
+                newFont = FlatFont.getInstance(newFont.getSize() - 1, newFont.getStyle());
+            } else {
+                break;
+            }
+        }
+
+        return newFont;
+    }
+
+    private void updateFont(Font newFont) {
+        titleLine.setFont(newFont);
+        currentLine1.setFont(newFont);
+        currentLine2.setFont(newFont);
+        nextLine1.setFont(newFont);
+        nextLine2.setFont(newFont);
     }
 
     private void showNewTextLines(String title, String line1, String line2, String line3, String line4, int delay,
