@@ -172,6 +172,7 @@ public class Untertitelinator
 	public void selectEvent(Event event) {
 		if (event != null) {
 			currentEvent = event;
+
 			UTEventHub.get().publish(new EventSelectionChangedPacket(event, getServiceList()));
 		}
 	}

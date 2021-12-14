@@ -5,7 +5,6 @@ import de.tisan.church.untertitelinator.instancer.UTInstancer;
 
 public class MainInstancerPresentator {
 	public static void main(String[] args) {
-		System.out.println("hi");
 		UTInstancer instancer = new UTInstancer();
 		instancer.startModule(UTInstance.PRESENTATOR);
 	}

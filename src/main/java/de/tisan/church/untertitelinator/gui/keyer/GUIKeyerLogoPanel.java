@@ -28,7 +28,7 @@ public class GUIKeyerLogoPanel extends JPanel {
 
 		try {
 			image = ImageIO.read(GUIKeyerLogoPanel.class.getResourceAsStream(
-					"/de/tisan/church/untertitelinator/resources/evko_broadcast_watermark_v1_small.png"));
+					"/de/tisan/church/untertitelinator/resources/evko_broadcast_watermark_v2.png"));
 			layerImage.setIcon(new ImageIcon(image));
 			setBounds(0, 0, image.getWidth(), image.getHeight());
 		} catch (IOException e1) {

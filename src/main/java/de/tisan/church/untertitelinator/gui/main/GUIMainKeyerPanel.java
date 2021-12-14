@@ -32,8 +32,6 @@ public class GUIMainKeyerPanel extends AGUIMainPanel {
 
 	private FlatButton btnLogo;
 
-	private FlatButton btnMaxButton;
-
 	public GUIMainKeyerPanel(FlatLayoutManager man, GUIMain instance, Dimension preferredSize) {
 		super(man, instance, preferredSize);
 		int x = 0;
@@ -86,18 +84,6 @@ public class GUIMainKeyerPanel extends AGUIMainPanel {
 		});
 		add(btnLogo);
 
-		x += widthBtn + 5;
-
-		btnMaxButton = new FlatButton("Max-Button", man);
-		btnMaxButton.setBounds(x, y, widthBtn, heightBtn);
-		btnMaxButton.disableEffects();
-		btnMaxButton.addMouseListener(Priority.NORMAL, new MouseListenerImpl() {
-			@Override
-			public void onMouseRelease(MouseReleaseHandler handler) {
-				UTEventHub.get().publish(new CommandPacket(Command.TOGGLE_WINDOW_BAR));
-			}
-		});
-		add(btnMaxButton);
 
 		UTEventHub.get().registerListener(new UTEventListener() {
 
@@ -114,9 +100,6 @@ public class GUIMainKeyerPanel extends AGUIMainPanel {
 						break;
 					case LOGO:
 						btnLogo.setBackground(bPacket.isVisible() ? btnActiveColor : btnInactiveColor, true);
-						break;
-					case MAXBUTTON:
-						btnMaxButton.setBackground(bPacket.isVisible() ? btnActiveColor : btnInactiveColor, true);
 						break;
 					default:
 						break;

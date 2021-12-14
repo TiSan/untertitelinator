@@ -122,25 +122,6 @@
 				<artifactId>maven-jar-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>standalone-bundle</id>
-			            <goals>
-			            	<goal>jar</goal>
-			            </goals>
-			            <phase>package</phase>
-						<configuration>
-							<classifier>standalone-bundle</classifier>
-							<archive>
-								<manifest>
-									<addClasspath>true</addClasspath>
-									<classpathPrefix>lib/</classpathPrefix>
-									<mainClass>de.tisan.church.untertitelinator.main.Main</mainClass>
-									<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-									<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
-								</manifest>
-							</archive>
-						</configuration>
-					</execution>
-					<execution>
 						<id>controller</id>
 			            <goals>
 			            	<goal>jar</goal>

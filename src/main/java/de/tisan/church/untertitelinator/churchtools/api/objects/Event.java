@@ -12,114 +12,118 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Event {
 
-	@JsonIgnore
-	private static DateTimeFormatter sdf = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
-	
-	@JsonIgnore
-	private static DateTimeFormatter sdfDay = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+    @JsonIgnore
+    private static DateTimeFormatter sdf = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
 
-	long id;
-	String guid;
-	String name;
-	String description;
-	LocalDateTime startDate;
-	LocalDateTime endDate;
-	String chatStatus;
-	EventPermission permissions;
-	Domain calendar;
-	List<EventService> eventServices;
+    @JsonIgnore
+    private static DateTimeFormatter sdfDay = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
-	public long getId() {
-		return id;
-	}
+    long id;
+    String guid;
+    String name;
+    String description;
+    LocalDateTime startDate;
+    LocalDateTime endDate;
+    String chatStatus;
+    EventPermission permissions;
+    Domain calendar;
+    List<EventService> eventServices;
 
-	public void setId(long id) {
-		this.id = id;
-	}
+    public long getId() {
+        return id;
+    }
 
-	public String getGuid() {
-		return guid;
-	}
+    public void setId(long id) {
+        this.id = id;
+    }
 
-	public void setGuid(String guid) {
-		this.guid = guid;
-	}
+    public String getGuid() {
+        return guid;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public void setGuid(String guid) {
+        this.guid = guid;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public String getDescription() {
-		return description;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public String getDescription() {
+        return description;
+    }
 
-	public LocalDateTime getStartDate() {
-		ZoneId zone = ZoneId.of("Europe/Berlin");
-		return startDate.plusSeconds(zone.getRules().getOffset(startDate).get(ChronoField.OFFSET_SECONDS));
-	}
-	
-	public String getStartDateString() {
-		return sdf.format(getStartDate());
-	}
-	
-	public String getStartDayString() {
-		return sdfDay.format(getStartDate());
-	}
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-	public void setStartDate(LocalDateTime startDate) {
-		this.startDate = startDate;
-	}
+    public LocalDateTime getStartDate() {
+        return startDate;
+    }
 
-	public LocalDateTime getEndDate() {
-		return endDate;
-	}
+    public LocalDateTime getStartDateZoned() {
+        ZoneId zone = ZoneId.of("Europe/Berlin");
+        return startDate.plusSeconds(zone.getRules().getOffset(startDate).get(ChronoField.OFFSET_SECONDS));
+    }
 
-	public String getEndDateString() {
-		return sdf.format(endDate);
-	}
+    public String getStartDateString() {
+        return sdf.format(getStartDateZoned());
+    }
 
-	public void setEndDate(LocalDateTime endDate) {
-		this.endDate = endDate;
-	}
+    public String getStartDayString() {
+        return sdfDay.format(getStartDate());
+    }
 
-	public String getChatStatus() {
-		return chatStatus;
-	}
+    public void setStartDate(LocalDateTime startDate) {
+        this.startDate = startDate;
+    }
 
-	public void setChatStatus(String chatStatus) {
-		this.chatStatus = chatStatus;
-	}
+    public LocalDateTime getEndDate() {
+        return endDate;
+    }
 
-	public EventPermission getPermissions() {
-		return permissions;
-	}
+    public String getEndDateString() {
+        return sdf.format(endDate);
+    }
 
-	public void setPermissions(EventPermission permissions) {
-		this.permissions = permissions;
-	}
+    public void setEndDate(LocalDateTime endDate) {
+        this.endDate = endDate;
+    }
 
-	public Domain getCalendar() {
-		return calendar;
-	}
+    public String getChatStatus() {
+        return chatStatus;
+    }
 
-	public void setCalendar(Domain calendar) {
-		this.calendar = calendar;
-	}
+    public void setChatStatus(String chatStatus) {
+        this.chatStatus = chatStatus;
+    }
 
-	public List<EventService> getEventServices() {
-		return eventServices;
-	}
+    public EventPermission getPermissions() {
+        return permissions;
+    }
 
-	public void setEventServices(List<EventService> eventServices) {
-		this.eventServices = eventServices;
-	}
+    public void setPermissions(EventPermission permissions) {
+        this.permissions = permissions;
+    }
+
+    public Domain getCalendar() {
+        return calendar;
+    }
+
+    public void setCalendar(Domain calendar) {
+        this.calendar = calendar;
+    }
+
+    public List<EventService> getEventServices() {
+        return eventServices;
+    }
+
+    public void setEventServices(List<EventService> eventServices) {
+        this.eventServices = eventServices;
+    }
 
 }

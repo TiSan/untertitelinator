@@ -132,10 +132,6 @@ public class GUIKeyer extends JFrame {
 							UTEventHub.get()
 									.publish(new GUIKeyerLayerChangePacket(GUIKeyerLayer.UNTERTITEL, newState2));
 							break;
-						case TOGGLE_WINDOW_BAR:
-							boolean newState3 = toggleWindowBar();
-							UTEventHub.get().publish(new GUIKeyerLayerChangePacket(GUIKeyerLayer.MAXBUTTON, newState3));
-							break;
 						case TOGGLE_BEGIN_LAYER:
 							boolean newState4 = toggleBeginLayer();
 							UTEventHub.get()
@@ -184,7 +180,7 @@ public class GUIKeyer extends JFrame {
 			}
 		}).start();
 		
-		UTEventHub.get().publish(new CommandPacket(Command.SEND_EVENT));
+
 	}
 
 	private boolean toggleBeginLayer() {
@@ -223,10 +219,6 @@ public class GUIKeyer extends JFrame {
 			pnlEndcardPage.setVisible(true);
 		}
 		return pnlEndcardPage.isVisible();
-	}
-
-	private boolean toggleWindowBar() {
-		return false;
 	}
 
 	private boolean toggleKollekte() {
