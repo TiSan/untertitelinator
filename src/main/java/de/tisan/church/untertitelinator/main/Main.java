@@ -40,7 +40,7 @@ public class Main {
 			load.setVisible(true);
 			
 		} else if (result == 1) {
-			UTInstanceClient.get().connect();
+			UTInstanceClient.get().connect(null);
 		} else {
 			System.exit(1);
 		}

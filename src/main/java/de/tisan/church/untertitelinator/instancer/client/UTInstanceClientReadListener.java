@@ -17,7 +17,7 @@ public class UTInstanceClientReadListener<T> extends ObjectSocketReadListener<Pa
 	}
 
 	@Override
-	public void onReadFail(IOException ex) {
+	public void onReadFail(Exception ex) {
 		
 	}
 

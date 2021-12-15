@@ -48,7 +48,6 @@ public class UTInstanceServer {
 				Logger.getInstance().err(
 						"Write Packet to " + s.getIP() + "@" + s.getPort() + " failed! " + e.getMessage(), e,
 						UTInstanceServer.class);
-				s.disconnect();
 			}
 		});
 	}

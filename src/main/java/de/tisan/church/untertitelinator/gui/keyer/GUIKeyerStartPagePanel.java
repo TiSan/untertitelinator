@@ -112,7 +112,7 @@ public class GUIKeyerStartPagePanel extends JPanel {
 		heightCastBegin = y1;
 
 		marqueePanel = new GUIKeyerMarqueePanel("+++ Von WLAN enttäuscht: Laschet kann Frust über Ergebnis nicht twittern +++ Auf den ersten Blick: Augenarzt verliebt sich in Iris +++ Thunfisch in Öl: Gemälde ruft Tierschützer auf den Plan +++" +
-				"");
+				"", instance);
 		marqueePanel.setBounds(0, preferredSize.height - 230, preferredSize.width, height3);
 		marqueePanel.setForeground(FlatColors.BLACK);
 		marqueePanel.setFont(font);

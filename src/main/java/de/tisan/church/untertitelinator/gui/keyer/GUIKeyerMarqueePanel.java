@@ -14,7 +14,7 @@ public class GUIKeyerMarqueePanel extends JPanel {
     Integer textLength = null;
     int textY;
 
-    public GUIKeyerMarqueePanel(String text) {
+    public GUIKeyerMarqueePanel(String text, GUIKeyer instance) {
         this.text = text;
         setOpaque(false);
         new Thread(new Runnable() {
@@ -23,7 +23,9 @@ public class GUIKeyerMarqueePanel extends JPanel {
                 try {
                     Thread.sleep(1000);
                     while (true) {
-                        repaint();
+                        if(instance.getPnlStandby().isVisible() == false){
+                            repaint();
+                        }
                         Thread.sleep(7);
                     }
                 } catch (InterruptedException e) {

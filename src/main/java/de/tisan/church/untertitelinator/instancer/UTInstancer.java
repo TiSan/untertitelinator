@@ -19,12 +19,12 @@ public class UTInstancer {
 			startController();
 			break;
 		case KEYER:
-			startClientConnection();
 			startKeyer();
+			startClientConnection(instance);
 			break;
 		case PRESENTATOR:
-			startClientConnection();
 			startPresentator();
+			startClientConnection(instance);
 			break;
 		default:
 			break;
@@ -41,8 +41,8 @@ public class UTInstancer {
 		}
 	}
 
-	private void startClientConnection() {
-		UTInstanceClient.get().connect();
+	private void startClientConnection(UTInstance instance) {
+		UTInstanceClient.get().connect(instance);
 	}
 
 	private void startPresentator() {

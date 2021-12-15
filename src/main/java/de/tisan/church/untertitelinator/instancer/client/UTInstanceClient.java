@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.tisan.church.untertitelinator.instancer.UTDiscovery;
+import de.tisan.church.untertitelinator.instancer.UTEventHub;
+import de.tisan.church.untertitelinator.instancer.UTInstance;
 import de.tisan.church.untertitelinator.instancer.UTInstanceConnection;
+import de.tisan.church.untertitelinator.instancer.packets.ConnectionStatusPacket;
 import de.tisan.church.untertitelinator.instancer.packets.Packet;
 import de.tisan.tisanapi.logger.Logger;
 import de.tisan.tisanapi.sockets.ObjectSocket;
@@ -17,6 +20,7 @@ public class UTInstanceClient {
 	private List<Packet> queue;
 	private List<UTInstanceConnection> oServer;
 	private int indexServerList;
+	private UTInstance instanceType;
 
 	public static UTInstanceClient get() {
 		return instance == null ? instance = new UTInstanceClient() : instance;
@@ -27,7 +31,8 @@ public class UTInstanceClient {
 		queue = new ArrayList<Packet>();
 	}
 
-	public void connect() {
+	public void connect(UTInstance instance) {
+		this.instanceType = instance;
 		new Thread(new Runnable() {
 
 			@Override
@@ -37,10 +42,11 @@ public class UTInstanceClient {
 				}
 				for (int i = indexServerList; i < oServer.size(); i++) {
 					UTInstanceConnection connection = oServer.get(i);
-					socket = new ObjectSocket<Packet>(connection.getIp(), Integer.valueOf(connection.getPort()));
+					socket = new ObjectSocket<Packet>(connection.getIp(), Integer.valueOf(connection.getPort()), true);
 					boolean result = socket.connect();
 					if (result == true) {
-						socket.addConnectListener(new UTInstanceClientConnectListener<Packet>());
+						UTEventHub.get().publish(new ConnectionStatusPacket(ConnectionStatusPacket.ConnectionType.CLIENT, instanceType, true));
+						socket.addConnectListener(new UTInstanceClientConnectListener<Packet>(instanceType));
 						socket.addReadListener(new UTInstanceClientReadListener<Packet>());
 						break;
 					}
@@ -80,7 +86,6 @@ public class UTInstanceClient {
 					Logger.getInstance().err(
 							"Publishing Packet (" + packet.toString() + ") to socket is failed! " + e.getMessage(), e,
 							getClass());
-					socket.disconnect();
 				}
 
 			}
