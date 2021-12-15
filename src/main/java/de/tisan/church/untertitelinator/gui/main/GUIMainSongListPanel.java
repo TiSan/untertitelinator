@@ -115,6 +115,19 @@ public class GUIMainSongListPanel extends AGUIMainPanel {
 		});
 		add(btnUpdate);
 
+		y += heightBtn + 5;
+
+		FlatButton btnChangeEvent = new FlatButton("", FlatIcon.CALENDAR, man);
+		btnChangeEvent.setBounds(x, y, widthBtn, heightBtn);
+		btnChangeEvent.setBackground(FlatColors.BLUE);
+		btnChangeEvent.addMouseListener(Priority.NORMAL, new MouseListenerImpl() {
+			@Override
+			public void onMouseRelease(MouseReleaseHandler handler) {
+				GUISelectGodi ui = new GUISelectGodi();
+			}
+		});
+		add(btnChangeEvent);
+
 		list.setSelectedIndex(0);
 		
 		UTEventHub.get().registerListener(new UTEventListener() {

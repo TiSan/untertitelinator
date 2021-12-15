@@ -31,6 +31,7 @@ import de.tisan.tisanapi.logger.Logger;
 public class GUISelectGodi extends JFrame {
 
 	private static final long serialVersionUID = -6722718983818902404L;
+	private UTEventListener listener;
 	private DefaultComboBoxModel<String> comboBoxModel;
 
 	public GUISelectGodi() {
@@ -49,7 +50,7 @@ public class GUISelectGodi extends JFrame {
 		setSize(500, 300);
 		Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
 		setLocation((d.width / 2) - (getWidth() / 2), (d.height / 2) - (getHeight() / 2));
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		FlatLayoutManager man = FlatLayoutManager.get(this);
 		contentPane.setBackground(FlatColors.BACKGROUND);
 		setUndecorated(true);
@@ -76,15 +77,15 @@ public class GUISelectGodi extends JFrame {
 			public void itemStateChanged(ItemEvent e) {
 				if (isVisible()) {
 					UTEventHub.get()
-							.publish(new CommandPacket(Command.SELECT_EVENT, comboBox.getSelectedIndex() - 1 + ""));
-					Loader.selectionTaken();
-					setVisible(false);
-					dispose();
+							.publish(new CommandPacket(Command.SELECT_EVENT, comboBox.getSelectedIndex() + ""));
+					GUISelectGodi.this.setVisible(false);
+					GUISelectGodi.this.dispose();
+					UTEventHub.get().unregisterListener(listener);
 				}
 			}
 		});
 
-		UTEventHub.get().registerListener(new UTEventListener() {
+		UTEventHub.get().registerListener((listener = new UTEventListener() {
 
 			@Override
 			public void onEventReceived(Packet packet) {
@@ -94,11 +95,12 @@ public class GUISelectGodi extends JFrame {
 					sPacket.getEventList().forEach(event -> {
 						comboBoxModel.addElement(event.getStartDateString() + " - " + event.getName());
 					});
+					setVisible(true);
 				}
 			}
-		});
+		}));
 
-		UTEventHub.get().publish(new CommandPacket(Command.LOAD_EVENTS));
+		UTEventHub.get().publish(new CommandPacket(Command.GET_EVENT_LIST));
 	}
 
 }

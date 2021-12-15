@@ -15,29 +15,24 @@ import de.tisan.church.untertitelinator.churchtools.api.objects.Event;
 import de.tisan.church.untertitelinator.churchtools.api.objects.Service;
 import de.tisan.church.untertitelinator.instancer.UTEventHub;
 import de.tisan.church.untertitelinator.instancer.UTEventListener;
-import de.tisan.church.untertitelinator.instancer.packets.Command;
-import de.tisan.church.untertitelinator.instancer.packets.CommandPacket;
-import de.tisan.church.untertitelinator.instancer.packets.EventSelectionChangedPacket;
-import de.tisan.church.untertitelinator.instancer.packets.Packet;
-import de.tisan.church.untertitelinator.instancer.packets.SongListChangedPacket;
+import de.tisan.church.untertitelinator.instancer.packets.*;
 import de.tisan.church.untertitelinator.settings.UTPersistenceConstants;
 import de.tisan.tools.persistencemanager.JSONPersistence;
 
-public class Untertitelinator
-{
-	public static final String VERSION = Untertitelinator.class.getPackage().getImplementationVersion();
+public class Untertitelinator {
+    public static final String VERSION = Untertitelinator.class.getPackage().getImplementationVersion();
 
-	File currentLineFile;
-	List<Song> songs;
-	private SongPlayer currentPlayer;
+    File currentLineFile;
+    List<Song> songs;
+    private SongPlayer currentPlayer;
 
-	private List<Event> events;
+    private List<Event> events;
 
-	private Event currentEvent;
+    private Event currentEvent;
 
-	private List<Service> services;
+    private List<Service> services;
 
-	private static Untertitelinator instance;
+    private static Untertitelinator instance;
 
 //	public static Untertitelinator get()
 //	{
@@ -48,140 +43,144 @@ public class Untertitelinator
 //		return instance;
 //	}
 
-	public Untertitelinator() {
-		songs = new ArrayList<Song>();
-		// loadSongs();
+    public Untertitelinator() {
+        songs = new ArrayList<Song>();
+        // loadSongs();
 
-		UTEventHub.get().registerListener(new UTEventListener() {
+        UTEventHub.get().registerListener(new UTEventListener() {
 
-			@Override
-			public void onEventReceived(Packet packet) {
-				if (packet instanceof CommandPacket) {
-					CommandPacket sPacket = (CommandPacket) packet;
-					switch (sPacket.getCommand()) {
-					case CHANGE_SONG:
-						switchSong(getSongs().stream().filter(s -> s.getTitle().equals(sPacket.getArgs().get(0)))
-								.findFirst().get());
-						break;
-					case SEND_EVENT:
-						UTEventHub.get().publish(new EventSelectionChangedPacket(getCurrentEvent(), getServiceList()));
-						break;
-					case LOAD_SONGS:
-						loadSongs();
-						break;
-					case SELECT_EVENT:
-						selectEvent(Integer.valueOf(sPacket.getArgs().get(0)));
-						break;
-					case LOAD_EVENTS:
-						loadEvents();
-						selectEvent(events.get(0));
-						break;
-					default:
-						break;
-					}
-				}
-			}
-		});
-	}
+            @Override
+            public void onEventReceived(Packet packet) {
+                if (packet instanceof CommandPacket) {
+                    CommandPacket sPacket = (CommandPacket) packet;
+                    switch (sPacket.getCommand()) {
+                        case CHANGE_SONG:
+                            switchSong(getSongs().stream().filter(s -> s.getTitle().equals(sPacket.getArgs().get(0)))
+                                    .findFirst().get());
+                            break;
+                        case SEND_EVENT:
+                            UTEventHub.get().publish(new EventSelectionChangedPacket(getCurrentEvent(), getServiceList()));
+                            break;
+                        case LOAD_SONGS:
+                            loadSongs();
+                            break;
+                        case SELECT_EVENT:
+                            selectEvent(Integer.valueOf(sPacket.getArgs().get(0)));
+                            break;
+                        case LOAD_EVENTS:
+                            loadEvents();
+                            selectEvent(events.get(0));
+                            break;
+                        case GET_EVENT_LIST:
+                            loadEvents();
+                            UTEventHub.get().publish(new EventListPacket(events));
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+        });
+    }
 
-	public synchronized void loadSongs() {
-		songs.clear();
-		File songDir = new File(
-				(String) JSONPersistence.get().getSetting(UTPersistenceConstants.SONGSFOLDERPATH, "songs/"));
-		if (songDir.exists() == false) {
-			songDir.mkdirs();
-			return;
-		}
-		FilenameFilter filter = new FilenameFilter() {
+    public synchronized void loadSongs() {
+        songs.clear();
+        File songDir = new File(
+                (String) JSONPersistence.get().getSetting(UTPersistenceConstants.SONGSFOLDERPATH, "songs/"));
+        if (songDir.exists() == false) {
+            songDir.mkdirs();
+            return;
+        }
+        FilenameFilter filter = new FilenameFilter() {
 
-			@Override
-			public boolean accept(File dir, String name) {
-				return name.toLowerCase().endsWith(
-						(String) JSONPersistence.get().getSetting(UTPersistenceConstants.SONGFILESUFFIX, ".song"));
-			}
+            @Override
+            public boolean accept(File dir, String name) {
+                return name.toLowerCase().endsWith(
+                        (String) JSONPersistence.get().getSetting(UTPersistenceConstants.SONGFILESUFFIX, ".song"));
+            }
 
-		};
+        };
 
-		for (File song : songDir.listFiles(filter)) {
-			songs.add(new Song(song));
-		}
+        for (File song : songDir.listFiles(filter)) {
+            songs.add(new Song(song));
+        }
 
-		if(songs.isEmpty() == false) {
-			UTEventHub.get().publish(new SongListChangedPacket(songs), new CommandPacket(Command.CHANGE_SONG, songs.get(0).getTitle()));
-		}
-	}
+        if (songs.isEmpty() == false) {
+            UTEventHub.get().publish(new SongListChangedPacket(songs), new CommandPacket(Command.CHANGE_SONG, songs.get(0).getTitle()));
+        }
+    }
 
-	public List<Song> getSongs() {
-		return songs;
-	}
+    public List<Song> getSongs() {
+        return songs;
+    }
 
-	private SongPlayer createSongPlayerForSong(Song song) {
-		return new SongPlayer(song);
-	}
+    private SongPlayer createSongPlayerForSong(Song song) {
+        return new SongPlayer(song);
+    }
 
-	private void switchSong(Song song) {
-		SongPlayer newSongPlayer = createSongPlayerForSong(song);
-		newSongPlayer.enable();
-		if (this.currentPlayer != null && this.currentPlayer.isPaused()) {
-			newSongPlayer.pause();
-		}
-		if (this.currentPlayer != null) {
-			this.currentPlayer.disable();
-		}
-		this.currentPlayer = newSongPlayer;
-		this.currentPlayer.updateEvent();
-	}
+    private void switchSong(Song song) {
+        SongPlayer newSongPlayer = createSongPlayerForSong(song);
+        newSongPlayer.enable();
+        if (this.currentPlayer != null && this.currentPlayer.isPaused()) {
+            newSongPlayer.pause();
+        }
+        if (this.currentPlayer != null) {
+            this.currentPlayer.disable();
+        }
+        this.currentPlayer = newSongPlayer;
+        this.currentPlayer.updateEvent();
+    }
 
-	public SongPlayer getCurrentPlayer() {
-		return currentPlayer;
-	}
+    public SongPlayer getCurrentPlayer() {
+        return currentPlayer;
+    }
 
-	public void loadEvents() {
-		events = ChurchToolsApi.get().getEvents().orElse(Collections.emptyList());
-		services = ChurchToolsApi.get().getServices().orElse(Collections.emptyList());
-	}
+    public void loadEvents() {
+        events = ChurchToolsApi.get().getEvents().orElse(Collections.emptyList());
+        services = ChurchToolsApi.get().getServices().orElse(Collections.emptyList());
+    }
 
-	public List<EventService> getServiceList() {
-		Set<EventService> eventServices = new HashSet<EventService>();
-		for (de.tisan.church.untertitelinator.churchtools.api.objects.EventService es : currentEvent
-				.getEventServices()) {
-			if (es.getName() == null || es.getName().trim().isEmpty()) {
-				continue;
-			}
+    public List<EventService> getServiceList() {
+        Set<EventService> eventServices = new HashSet<EventService>();
+        for (de.tisan.church.untertitelinator.churchtools.api.objects.EventService es : currentEvent
+                .getEventServices()) {
+            if (es.getName() == null || es.getName().trim().isEmpty()) {
+                continue;
+            }
 
-			Service s = services.parallelStream().filter(ss -> ss.getId() == es.getServiceId()).findFirst().get();
-			if (s.getComment().equals("<NOT_VISIBLE>")) {
-				continue;
-			}
-			String serviceName = s.getComment().isEmpty() == false ? s.getComment() : s.getName();
+            Service s = services.parallelStream().filter(ss -> ss.getId() == es.getServiceId()).findFirst().get();
+            if (s.getComment().equals("<NOT_VISIBLE>")) {
+                continue;
+            }
+            String serviceName = s.getComment().isEmpty() == false ? s.getComment() : s.getName();
 
-			EventService service = eventServices.stream().filter(e -> e.getName().equalsIgnoreCase(serviceName))
-					.findFirst().orElse(new EventService(serviceName));
-			service.addCast(es.getName());
-			eventServices.add(service);
-		}
-		return eventServices.stream().sorted(Comparator.comparing(EventService::getName)).collect(Collectors.toList());
-	}
+            EventService service = eventServices.stream().filter(e -> e.getName().equalsIgnoreCase(serviceName))
+                    .findFirst().orElse(new EventService(serviceName));
+            service.addCast(es.getName());
+            eventServices.add(service);
+        }
+        return eventServices.stream().sorted(Comparator.comparing(EventService::getName)).collect(Collectors.toList());
+    }
 
-	public void selectEvent(int no) {
-		if (no >= 0 && no < events.size()) {
-			selectEvent(events.get(no));
-		}
-	}
+    public void selectEvent(int no) {
+        if (no >= 0 && no < events.size()) {
+            selectEvent(events.get(no));
+        }
+    }
 
-	public void selectEvent(Event event) {
-		if (event != null) {
-			currentEvent = event;
+    public void selectEvent(Event event) {
+        if (event != null) {
+            currentEvent = event;
 
-			UTEventHub.get().publish(new EventSelectionChangedPacket(event, getServiceList()));
-		}
-	}
+            UTEventHub.get().publish(new EventSelectionChangedPacket(event, getServiceList()));
+        }
+    }
 
-	public Event getCurrentEvent() {
-		return currentEvent;
-	}
+    public Event getCurrentEvent() {
+        return currentEvent;
+    }
 
-	public List<Event> getAllEvents() {
-		return events;
-	}
+    public List<Event> getAllEvents() {
+        return events;
+    }
 }
