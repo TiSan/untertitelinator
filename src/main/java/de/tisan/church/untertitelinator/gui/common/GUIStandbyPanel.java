@@ -21,7 +21,7 @@ public class GUIStandbyPanel extends JPanel {
     private BufferedImage image;
     private Random rnd;
 
-    public GUIStandbyPanel(FlatLayoutManager man, GUIKeyer instance, Dimension preferredSize) {
+    public GUIStandbyPanel(FlatLayoutManager man, Dimension preferredSize) {
         setLayout(null);
         setOpaque(true);
         layerImage = new JLabel();
@@ -30,7 +30,7 @@ public class GUIStandbyPanel extends JPanel {
         setBackground(FlatColors.BLACK);
         try {
             image = ImageIO.read(
-                    GUIKeyer.class.getResourceAsStream("/de/tisan/church/untertitelinator/resources/ut_logo_v1_white_small.png"));
+                    GUIStandbyPanel.class.getResourceAsStream("/de/tisan/church/untertitelinator/resources/ut_logo_v1_white_small.png"));
         } catch (IOException e1) {
             Logger.getInstance().err("Couldnt load Standby logo! " + e1.getMessage(), e1, getClass());
         }

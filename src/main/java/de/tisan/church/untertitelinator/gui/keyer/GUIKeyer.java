@@ -76,7 +76,7 @@ public class GUIKeyer extends JFrame {
             FlatLayoutManager man = FlatLayoutManager.get(this);
             man.disableAllEffects();
 
-            pnlStandby = new GUIStandbyPanel(man, this, getSize());
+            pnlStandby = new GUIStandbyPanel(man, getSize());
             pnlStandby.setBounds(0, 0, getWidth(), getHeight());
             contentPane.add(pnlStandby);
 

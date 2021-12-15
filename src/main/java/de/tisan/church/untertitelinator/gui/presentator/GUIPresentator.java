@@ -8,8 +8,11 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import de.tisan.church.untertitelinator.data.Untertitelinator;
+import de.tisan.church.untertitelinator.gui.common.GUIStandbyPanel;
 import de.tisan.church.untertitelinator.instancer.UTEventHub;
 import de.tisan.church.untertitelinator.instancer.UTEventListener;
+import de.tisan.church.untertitelinator.instancer.UTInstance;
+import de.tisan.church.untertitelinator.instancer.packets.ConnectionStatusPacket;
 import de.tisan.church.untertitelinator.instancer.packets.Packet;
 import de.tisan.church.untertitelinator.instancer.packets.SongLinePacket;
 import de.tisan.church.untertitelinator.settings.UTPersistenceConstants;
@@ -26,6 +29,7 @@ public class GUIPresentator extends JFrame {
 
     private static final long serialVersionUID = 7666681011188876592L;
     private static GUIPresentator instance;
+    private final GUIStandbyPanel pnlStandby;
 
     public static GUIPresentator get() {
         if (instance == null) {
@@ -67,6 +71,10 @@ public class GUIPresentator extends JFrame {
         FlatLayoutManager man = FlatLayoutManager.get(this);
         man.setResizable(false);
 
+        pnlStandby = new GUIStandbyPanel(man, getSize());
+        pnlStandby.setBounds(0, 0, getWidth(), getHeight());
+        contentPane.add(pnlStandby);
+        
         int borderY = 10;
         int spaceX = 30;
         int width = getWidth() - (spaceX * 2);
@@ -135,7 +143,12 @@ public class GUIPresentator extends JFrame {
                             }
                         }).start();
                     }
+                } else if (packet instanceof ConnectionStatusPacket) {
+                ConnectionStatusPacket p = (ConnectionStatusPacket) packet;
+                if (p.getModule().equals(UTInstance.PRESENTATOR)) {
+                    pnlStandby.setVisible(!p.isConnected());
                 }
+            }
             }
         });
 

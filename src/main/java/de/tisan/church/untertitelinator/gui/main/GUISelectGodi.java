@@ -3,6 +3,8 @@ package de.tisan.church.untertitelinator.gui.main;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
@@ -71,10 +73,11 @@ public class GUISelectGodi extends JFrame {
 		JComboBox<String> comboBox = new JComboBox<String>(comboBoxModel);
 		comboBox.setBounds(20, 100, getWidth() - 40, 30);
 		contentPane.add(comboBox);
-		comboBox.addItemListener(new ItemListener() {
+
+		comboBox.addActionListener(new ActionListener() {
 
 			@Override
-			public void itemStateChanged(ItemEvent e) {
+			public void actionPerformed(ActionEvent e) {
 				if (isVisible()) {
 					UTEventHub.get()
 							.publish(new CommandPacket(Command.SELECT_EVENT, comboBox.getSelectedIndex() + ""));
@@ -83,6 +86,7 @@ public class GUISelectGodi extends JFrame {
 					UTEventHub.get().unregisterListener(listener);
 				}
 			}
+
 		});
 
 		UTEventHub.get().registerListener((listener = new UTEventListener() {
