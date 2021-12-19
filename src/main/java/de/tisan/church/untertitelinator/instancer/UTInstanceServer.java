@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
+import de.tisan.church.untertitelinator.instancer.packets.KeepAlivePacket;
 import de.tisan.church.untertitelinator.instancer.packets.Packet;
 import de.tisan.church.untertitelinator.settings.UTPersistenceConstants;
 import de.tisan.tisanapi.logger.Logger;
@@ -31,6 +32,7 @@ public class UTInstanceServer {
 		discovery = new UTDiscovery();
 		discovery.startDiscoveryServer();
 		started = true;
+		startKeepAlivePacketThread();
 	}
 
 	public boolean isStarted() {
@@ -48,12 +50,29 @@ public class UTInstanceServer {
 				Logger.getInstance().err(
 						"Write Packet to " + s.getIP() + "@" + s.getPort() + " failed! " + e.getMessage(), e,
 						UTInstanceServer.class);
+				socketServer.remove(s);
 			}
 		});
 	}
 
 	public void publish(Packet packet) {
 		sendPacket(packet);
+	}
+
+	private void startKeepAlivePacketThread() {
+		new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				while (true) {
+					try {
+						Thread.sleep(2000);
+						sendPacket(new KeepAlivePacket());
+					} catch (Exception e) {
+					}
+				}
+			}
+		}).start();
 	}
 
 }

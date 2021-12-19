@@ -11,12 +11,12 @@ import de.tisan.church.untertitelinator.instancer.packets.Packet;
 import de.tisan.tisanapi.logger.Logger;
 
 public class UTEventHub {
-	private static UTEventHub instance;
+	private static UTEventHub instance = new UTEventHub();
 
 	List<UTEventListener> listeners;
 
 	public static UTEventHub get() {
-		return instance == null ? instance = new UTEventHub() : instance;
+		return instance;
 	}
 
 	private UTEventHub() {

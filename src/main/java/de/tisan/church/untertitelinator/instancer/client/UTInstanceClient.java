@@ -8,6 +8,7 @@ import de.tisan.church.untertitelinator.instancer.UTEventHub;
 import de.tisan.church.untertitelinator.instancer.UTInstance;
 import de.tisan.church.untertitelinator.instancer.UTInstanceConnection;
 import de.tisan.church.untertitelinator.instancer.packets.ConnectionStatusPacket;
+import de.tisan.church.untertitelinator.instancer.packets.KeepAlivePacket;
 import de.tisan.church.untertitelinator.instancer.packets.Packet;
 import de.tisan.tisanapi.logger.Logger;
 import de.tisan.tisanapi.sockets.ObjectSocket;
@@ -48,6 +49,7 @@ public class UTInstanceClient {
 						UTEventHub.get().publish(new ConnectionStatusPacket(ConnectionStatusPacket.ConnectionType.CLIENT, instanceType, true));
 						socket.addConnectListener(new UTInstanceClientConnectListener<Packet>(instanceType));
 						socket.addReadListener(new UTInstanceClientReadListener<Packet>());
+						startKeepAlivePacketThread();
 						break;
 					}
 					if (i == oServer.size() - 1) {
@@ -88,6 +90,22 @@ public class UTInstanceClient {
 							getClass());
 				}
 
+			}
+		}).start();
+	}
+	
+	private void startKeepAlivePacketThread() {
+		new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				while (true) {
+					try {
+						Thread.sleep(2000);
+						publish(new KeepAlivePacket());
+					} catch (Exception e) {
+					}
+				}
 			}
 		}).start();
 	}

@@ -60,6 +60,8 @@ public class Untertitelinator {
                             break;
                         case SEND_EVENT:
                             UTEventHub.get().publish(new EventSelectionChangedPacket(getCurrentEvent(), getServiceList()));
+                            UTEventHub.get().publish(new EventSelectionChangedPacket(getCurrentEvent(), getServiceList()));
+                            UTEventHub.get().publish(new EventSelectionChangedPacket(getCurrentEvent(), getServiceList()));
                             break;
                         case LOAD_SONGS:
                             loadSongs();
