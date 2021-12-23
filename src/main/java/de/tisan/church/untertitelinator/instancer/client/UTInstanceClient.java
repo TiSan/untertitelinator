@@ -20,7 +20,6 @@ public class UTInstanceClient {
 	private ObjectSocket<Packet> socket;
 	private List<Packet> queue;
 	private List<UTInstanceConnection> oServer;
-	private int indexServerList;
 	private UTInstance instanceType;
 
 	public static UTInstanceClient get() {
@@ -41,7 +40,7 @@ public class UTInstanceClient {
 				if (oServer == null) {
 					oServer = discovery.discoverServerIp();
 				}
-				for (int i = indexServerList; i < oServer.size(); i++) {
+				for (int i = 0; i < oServer.size(); i++) {
 					UTInstanceConnection connection = oServer.get(i);
 					socket = new ObjectSocket<Packet>(connection.getIp(), Integer.valueOf(connection.getPort()), true);
 					boolean result = socket.connect();
@@ -51,11 +50,6 @@ public class UTInstanceClient {
 						socket.addReadListener(new UTInstanceClientReadListener<Packet>());
 						startKeepAlivePacketThread();
 						break;
-					}
-					if (i == oServer.size() - 1) {
-						indexServerList = 0;
-					} else {
-						indexServerList = i;
 					}
 				}
 			}
@@ -102,7 +96,7 @@ public class UTInstanceClient {
 				while (true) {
 					try {
 						Thread.sleep(2000);
-						publish(new KeepAlivePacket());
+						publish(new KeepAlivePacket(instanceType));
 					} catch (Exception e) {
 					}
 				}

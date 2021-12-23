@@ -32,6 +32,7 @@ public class GUIKeyerPictureRotationPanel extends JPanel {
         setOpaque(false);
         setBackground(FlatColors.BLACK);
         layerImage = new JLabel();
+        layerImage.setHorizontalAlignment(SwingConstants.CENTER);
         addComponentListener(new ComponentAdapter() {
 
             @Override
@@ -62,11 +63,17 @@ public class GUIKeyerPictureRotationPanel extends JPanel {
 
                         BufferedImage img = imageList.get(index);
                         showImage(img);
+                        repaint();
                         index++;
-                    }
-                    try {
-                        Thread.sleep(waiting);
-                    } catch (InterruptedException e) {
+                        try {
+                            Thread.sleep(waiting);
+                        } catch (InterruptedException e) {
+                        }
+                    } else {
+                        try {
+                            Thread.sleep(250);
+                        } catch (InterruptedException e) {
+                        }
                     }
                 }
             }
@@ -102,7 +109,6 @@ public class GUIKeyerPictureRotationPanel extends JPanel {
 
         int scaledWidth = (int) (image.getWidth() * factor);
         int scaledHeight = (int) (image.getHeight() * factor);
-
 
         layerImage.setIcon(new ImageIcon(image.getScaledInstance(scaledWidth, scaledHeight, Image.SCALE_SMOOTH)));
     }

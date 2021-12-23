@@ -4,6 +4,9 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +19,10 @@ import de.tisan.church.untertitelinator.settings.UTPersistenceConstants;
 import de.tisan.flatui.components.fcommons.Anchor;
 import de.tisan.flatui.components.fcommons.FlatColors;
 import de.tisan.flatui.components.fcommons.FlatLayoutManager;
+import de.tisan.flatui.components.ficon.FlatIcon;
+import de.tisan.flatui.components.ficon.FlatIconFont;
+import de.tisan.flatui.components.fmenu.FlatMenu;
+import de.tisan.flatui.components.fmenu.FlatMenuActionListener;
 import de.tisan.flatui.components.ftitlebar.DefaultFlatTitleBarListener;
 import de.tisan.flatui.components.ftitlebar.FlatTitleBarWin10;
 import de.tisan.tools.persistencemanager.JSONPersistence;
@@ -31,7 +38,7 @@ public class GUIMain extends JFrame {
 		}
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 		setUndecorated(true);
-		setSize(930, 650);
+		setSize(930, 700);
 		setResizable(false);
 
 		setLocation((int) (dim.getWidth() / 2 - (getWidth() / 2)), (int) (dim.getHeight() / 2 - (getHeight() / 2)));
@@ -58,26 +65,27 @@ public class GUIMain extends JFrame {
 
 		contentPane.add(bar);
 
-		GUIMainControllerPanel pnlController = new GUIMainControllerPanel(man, this, new Dimension(625, 50));
-		pnlController.setLocation(290, 50);
-		contentPane.add(pnlController);
+		FlatMenu menu = new FlatMenu(man);
+		menu.setBounds(0, bar.getHeight(), getWidth(), 30);
+		menu.setAnchor(Anchor.LEFT, Anchor.RIGHT);
+		menu.addMenuPoint("Einstellungen", FlatIcon.COGS, new FlatMenuActionListener() {
+			@Override
+			public void mouseReleased(MouseEvent mouseEvent) {
+				bar.hideMenu();
+			}
+		});
+		bar.setOptionMenu(menu);
+		contentPane.add(menu);
 
-		GUIMainSongTextPanel pnlSongtext = new GUIMainSongTextPanel(man, this, new Dimension(625, 400));
-		pnlSongtext.setLocation(290, 110);
-		contentPane.add(pnlSongtext);
 
-		GUIMainSongListPanel pnlSongList = new GUIMainSongListPanel(man, this, new Dimension(265, 500));
-		pnlSongList.setLocation(10, 110);
-		contentPane.add(pnlSongList);
+		GUIMainOverview pnlOverview = new GUIMainOverview(man, this, new Dimension(getWidth(), getHeight() - 30));
+		pnlOverview.setBounds(0, 50, getWidth() - 10, getHeight() - 60);
+		contentPane.add(pnlOverview);
 
-		GUIMainKeyerPanel pnlKeyer = new GUIMainKeyerPanel(man, this, new Dimension(625, 110));
-		pnlKeyer.setLocation(pnlSongList.getX() + pnlSongList.getWidth() + 10,
-				pnlSongtext.getY() + pnlSongtext.getHeight() + 15);
-		contentPane.add(pnlKeyer);
-
-		GUIStartEndCardsPanel pnlStartEnd = new GUIStartEndCardsPanel(man, this, new Dimension(200, 585));
-		pnlStartEnd.setLocation(10, 50);
-		contentPane.add(pnlStartEnd);
+		addComponentListener(new ComponentAdapter() {
+			public void componentResized(ComponentEvent componentEvent) {
+				pnlOverview.setBounds(0, 50, getWidth(), getHeight() - 50);
+			}});
 
 		getAllComponents(this).forEach(c -> c.addKeyListener(new LukasWillsSoKeyListener()));
 	}

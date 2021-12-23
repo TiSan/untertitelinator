@@ -67,7 +67,7 @@ public class UTInstanceServer {
 				while (true) {
 					try {
 						Thread.sleep(2000);
-						sendPacket(new KeepAlivePacket());
+						sendPacket(new KeepAlivePacket(UTInstance.CONTROLLER));
 					} catch (Exception e) {
 					}
 				}
