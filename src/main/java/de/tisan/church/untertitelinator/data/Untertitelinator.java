@@ -34,18 +34,9 @@ public class Untertitelinator {
 
     private static Untertitelinator instance;
 
-//	public static Untertitelinator get()
-//	{
-//		if (instance == null)
-//		{
-//			instance = new Untertitelinator();
-//		}
-//		return instance;
-//	}
 
     public Untertitelinator() {
         songs = new ArrayList<Song>();
-        // loadSongs();
 
         UTEventHub.get().registerListener(new UTEventListener() {
 

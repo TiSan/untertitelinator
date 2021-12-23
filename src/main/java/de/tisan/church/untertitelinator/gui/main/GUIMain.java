@@ -53,6 +53,7 @@ public class GUIMain extends JFrame {
 		bar.setBounds(0, 0, getWidth(), 30);
 		bar.setAnchor(Anchor.LEFT, Anchor.RIGHT);
 		bar.setMaximizable(false);
+		bar.setBackground(FlatColors.BLACK);
 		bar.addFlatTitleBarListener(new DefaultFlatTitleBarListener(this));
 
 		contentPane.add(bar);

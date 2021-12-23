@@ -40,8 +40,8 @@ public class UTEventHub {
 	}
 
 	public void publish(Packet object, boolean sendOverSocket) {
-		Logger.getInstance().log(
-				"Publish Packet '" + object.toString() + "' (" + listeners.size() + " local listeners)", getClass());
+		//Logger.getInstance().log(
+		//		"Publish Packet '" + object.toString() + "' (" + listeners.size() + " local listeners)", getClass());
 		if (sendOverSocket) {
 			if (UTInstanceServer.get().isStarted()) {
 				UTInstanceServer.get().publish(object);

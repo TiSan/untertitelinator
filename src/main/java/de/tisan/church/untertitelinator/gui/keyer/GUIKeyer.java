@@ -24,7 +24,6 @@ import de.tisan.tools.persistencemanager.JSONPersistence;
 public class GUIKeyer extends JFrame {
 
     private static GUIKeyer instance;
-
     public static GUIKeyer get() {
         if (instance == null) {
             instance = new GUIKeyer();
@@ -33,12 +32,14 @@ public class GUIKeyer extends JFrame {
     }
 
 
+
     private GUIKeyerUntertitelPanel pnlUntertitel;
     private GUIKeyerStartPagePanel pnlStartPage;
     private GUIKeyerLogoPanel pnlLogo;
     private GUIKeyerEndcardPanel pnlEndcardPage;
     private GUIKeyerUntertitelPanel pnlKollekte;
     private GUIStandbyPanel pnlStandby;
+    private GUIKeyerPictureRotationPanel pnlPictureRotation;
 
     Color bg;
     Color fg;
@@ -84,6 +85,11 @@ public class GUIKeyer extends JFrame {
             pnlLogo.setBounds(0, 0, getWidth(), getHeight());
             contentPane.add(pnlLogo);
 
+            pnlPictureRotation = new GUIKeyerPictureRotationPanel(man, this, getSize());
+            pnlPictureRotation.setBounds(0, 0, getWidth(), getHeight());
+            contentPane.add(pnlPictureRotation);
+            pnlPictureRotation.setVisible(false);
+
             pnlStartPage = new GUIKeyerStartPagePanel(man, this, getSize());
             pnlStartPage.setBounds(0, 0, getWidth(), getHeight());
             contentPane.add(pnlStartPage);
@@ -111,6 +117,7 @@ public class GUIKeyer extends JFrame {
                     pnlKollekte.setBounds(0, 0, getWidth(), getHeight());
                     pnlLogo.setBounds(0, 0, getWidth(), getHeight());
                     pnlStandby.setBounds(0, 0, getWidth(), getHeight());
+                    pnlPictureRotation.setBounds(0, 0, getWidth(), getHeight());
                 }
             });
 
@@ -143,6 +150,9 @@ public class GUIKeyer extends JFrame {
                                 boolean newState5 = toggleEndcard();
                                 UTEventHub.get().publish(new GUIKeyerLayerChangePacket(GUIKeyerLayer.ENDCARD, newState5));
                                 break;
+                            case TOGGLE_PICTURE_ROTATION:
+                                boolean newState6 = togglePictureRotation();
+                                UTEventHub.get().publish(new GUIKeyerLayerChangePacket(GUIKeyerLayer.PICTURE_ROTATION, newState6));
                             default:
                                 break;
                         }
@@ -176,6 +186,8 @@ public class GUIKeyer extends JFrame {
                     UTEventHub.get().publish(new GUIKeyerLayerChangePacket(GUIKeyerLayer.LOGO, pnlLogo.isVisible()));
                     UTEventHub.get().publish(
                             new GUIKeyerLayerChangePacket(GUIKeyerLayer.UNTERTITEL, pnlUntertitel.isVisible()));
+                    UTEventHub.get().publish(
+                            new GUIKeyerLayerChangePacket(GUIKeyerLayer.PICTURE_ROTATION, pnlPictureRotation.isVisible()));
 
                     try {
                         Thread.sleep(1000);
@@ -186,8 +198,6 @@ public class GUIKeyer extends JFrame {
                 }
             }
         }).start();
-
-
     }
 
     private boolean toggleBeginLayer() {
@@ -202,10 +212,8 @@ public class GUIKeyer extends JFrame {
     private boolean toggleUntertitel() {
         if (pnlUntertitel.isVisible()) {
             pnlUntertitel.setVisible(false);
-            // bar.setBackground(new Color(0, 0, 0, 0));
         } else {
             pnlUntertitel.setVisible(true);
-            // bar.setBackground(bg);
         }
         return pnlUntertitel.isVisible();
     }
@@ -226,6 +234,15 @@ public class GUIKeyer extends JFrame {
             pnlEndcardPage.setVisible(true);
         }
         return pnlEndcardPage.isVisible();
+    }
+
+    private boolean togglePictureRotation() {
+        if (pnlPictureRotation.isVisible()) {
+            pnlPictureRotation.setVisible(false);
+        } else {
+            pnlPictureRotation.setVisible(true);
+        }
+        return pnlPictureRotation.isVisible();
     }
 
     private boolean toggleKollekte() {
