@@ -1,25 +1,28 @@
 package de.tisan.church.untertitelinator.gui.keyer;
 
+import java.awt.Dimension;
+import java.awt.Image;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+
 import de.tisan.church.untertitelinator.settings.UTPersistenceConstants;
 import de.tisan.flatui.components.fcommons.FlatColors;
 import de.tisan.flatui.components.fcommons.FlatLayoutManager;
 import de.tisan.tisanapi.logger.Logger;
 import de.tisan.tools.persistencemanager.JSONPersistence;
-
-import javax.imageio.ImageIO;
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FilenameFilter;
-import java.io.IOException;
-import java.nio.Buffer;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class GUIKeyerPictureRotationPanel extends JPanel {
 
@@ -94,7 +97,7 @@ public class GUIKeyerPictureRotationPanel extends JPanel {
                         try {
                             return ImageIO.read(file);
                         } catch (IOException e) {
-                            e.printStackTrace();
+                        	Logger.getInstance().err("Fehler beim Ticker für das PictureRotationPanel", e, getClass());
                         }
                         return null;
                     }).collect(Collectors.toList());

@@ -1,22 +1,8 @@
 package de.tisan.church.untertitelinator.gui.main;
 
-import de.tisan.church.untertitelinator.instancer.UTEventHub;
-import de.tisan.church.untertitelinator.instancer.UTEventListener;
-import de.tisan.church.untertitelinator.instancer.packets.Command;
-import de.tisan.church.untertitelinator.instancer.packets.CommandPacket;
-import de.tisan.church.untertitelinator.instancer.packets.Packet;
-import de.tisan.church.untertitelinator.instancer.packets.SongLinePacket;
-import de.tisan.flatui.components.fbutton.FlatButton;
-import de.tisan.flatui.components.fcommons.Anchor;
-import de.tisan.flatui.components.fcommons.FlatColors;
-import de.tisan.flatui.components.fcommons.FlatLayoutManager;
-import de.tisan.flatui.components.ficon.FlatIcon;
-import de.tisan.flatui.components.flisteners.MouseListenerImpl;
-import de.tisan.flatui.components.flisteners.MouseReleaseHandler;
-import de.tisan.flatui.components.flisteners.Priority;
-import de.tisan.flatui.helpers.resizehelpers.SwingResizeHelper;
+import java.awt.Dimension;
 
-import java.awt.*;
+import de.tisan.flatui.components.fcommons.FlatLayoutManager;
 
 public class GUIMainOverview extends AGUIMainPanel
 {

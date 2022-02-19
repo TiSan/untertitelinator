@@ -1,11 +1,15 @@
 package de.tisan.church.untertitelinator.gui.keyer;
 
-import de.tisan.flatui.components.fcommons.FlatColors;
-import de.tisan.flatui.components.fcommons.FlatUI;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.geom.Rectangle2D;
+
+import javax.swing.JPanel;
+
+import de.tisan.flatui.components.fcommons.FlatUI;
+import de.tisan.tisanapi.logger.Logger;
 
 public class GUIKeyerMarqueePanel extends JPanel {
 
@@ -29,7 +33,7 @@ public class GUIKeyerMarqueePanel extends JPanel {
                         Thread.sleep(7);
                     }
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                	Logger.getInstance().err("Fehler beim Ticker für das MarqueePanel", e, getClass());
                 }
 
 

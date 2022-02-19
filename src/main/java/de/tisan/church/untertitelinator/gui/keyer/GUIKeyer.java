@@ -1,6 +1,9 @@
 package de.tisan.church.untertitelinator.gui.keyer;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
+import java.awt.Rectangle;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 
@@ -9,15 +12,18 @@ import javax.swing.JPanel;
 
 import de.tisan.church.untertitelinator.churchtools.api.objects.Event;
 import de.tisan.church.untertitelinator.gui.common.GUIStandbyPanel;
-import de.tisan.church.untertitelinator.instancer.*;
-import de.tisan.church.untertitelinator.instancer.client.UTInstanceClient;
-import de.tisan.church.untertitelinator.instancer.packets.*;
+import de.tisan.church.untertitelinator.instancer.UTEventHub;
+import de.tisan.church.untertitelinator.instancer.UTEventListener;
+import de.tisan.church.untertitelinator.instancer.UTInstance;
+import de.tisan.church.untertitelinator.instancer.packets.Command;
+import de.tisan.church.untertitelinator.instancer.packets.CommandPacket;
+import de.tisan.church.untertitelinator.instancer.packets.ConnectionStatusPacket;
+import de.tisan.church.untertitelinator.instancer.packets.EventSelectionChangedPacket;
+import de.tisan.church.untertitelinator.instancer.packets.GUIKeyerLayerChangePacket;
+import de.tisan.church.untertitelinator.instancer.packets.Packet;
+import de.tisan.church.untertitelinator.instancer.packets.SongLinePacket;
 import de.tisan.church.untertitelinator.settings.UTPersistenceConstants;
-import de.tisan.flatui.components.fcommons.Anchor;
 import de.tisan.flatui.components.fcommons.FlatLayoutManager;
-import de.tisan.flatui.components.ftitlebar.DefaultFlatTitleBarListener;
-import de.tisan.flatui.components.ftitlebar.FlatTitleBarListener;
-import de.tisan.flatui.components.ftitlebar.FlatTitleBarWin10;
 import de.tisan.tisanapi.logger.Logger;
 import de.tisan.tools.persistencemanager.JSONPersistence;
 
@@ -51,7 +57,6 @@ public class GUIKeyer extends JFrame {
             GraphicsDevice[] devices = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices();
             GraphicsDevice display = devices[0];
             for (GraphicsDevice device : devices) {
-                System.out.println("'" + device.getIDstring() + "'");
                 if (useDisplay.equals(device.getIDstring())) {
                     display = device;
                     break;

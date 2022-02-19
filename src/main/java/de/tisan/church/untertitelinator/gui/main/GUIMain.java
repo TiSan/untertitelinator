@@ -20,7 +20,6 @@ import de.tisan.flatui.components.fcommons.Anchor;
 import de.tisan.flatui.components.fcommons.FlatColors;
 import de.tisan.flatui.components.fcommons.FlatLayoutManager;
 import de.tisan.flatui.components.ficon.FlatIcon;
-import de.tisan.flatui.components.ficon.FlatIconFont;
 import de.tisan.flatui.components.fmenu.FlatMenu;
 import de.tisan.flatui.components.fmenu.FlatMenuActionListener;
 import de.tisan.flatui.components.ftitlebar.DefaultFlatTitleBarListener;
@@ -56,7 +55,7 @@ public class GUIMain extends JFrame {
 		FlatTitleBarWin10 bar = new FlatTitleBarWin10(man,
 				(String) JSONPersistence.get().getSetting(UTPersistenceConstants.CHURCHNAME,
 						"Evangelische Kirchengemeinde Oberstedten") + " - Untertitelinator v"
-						+ Untertitelinator.VERSION);
+						+ (Untertitelinator.VERSION == null ? " DEV (only for internal purposes)" : Untertitelinator.VERSION));
 		bar.setBounds(0, 0, getWidth(), 30);
 		bar.setAnchor(Anchor.LEFT, Anchor.RIGHT);
 		bar.setMaximizable(false);

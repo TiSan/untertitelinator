@@ -1,18 +1,18 @@
 package de.tisan.church.untertitelinator.gui.common;
 
-import de.tisan.church.untertitelinator.gui.keyer.GUIKeyer;
-import de.tisan.flatui.components.fcommons.FlatColors;
-import de.tisan.flatui.components.fcommons.FlatLayoutManager;
-import de.tisan.tisanapi.logger.Logger;
-
-import javax.imageio.ImageIO;
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
+import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Random;
+
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+
+import de.tisan.flatui.components.fcommons.FlatColors;
+import de.tisan.flatui.components.fcommons.FlatLayoutManager;
+import de.tisan.tisanapi.logger.Logger;
 
 public class GUIStandbyPanel extends JPanel {
 
@@ -47,7 +47,7 @@ public class GUIStandbyPanel extends JPanel {
                     try {
                         Thread.sleep(5000);
                     } catch (InterruptedException e) {
-                        e.printStackTrace();
+                       Logger.getInstance().err("Fehler beim Ticker für das StandbyPanel", e, getClass());
                     }
                     changeLocation();
                 }
@@ -60,7 +60,6 @@ public class GUIStandbyPanel extends JPanel {
         int y = rnd.nextInt(size.height - image.getHeight());
 
         layerImage.setLocation(x, y);
-        System.out.println("x: " + x + "; y: " + y);
     }
 
 }

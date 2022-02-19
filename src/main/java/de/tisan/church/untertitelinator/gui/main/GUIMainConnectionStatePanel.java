@@ -1,22 +1,22 @@
 package de.tisan.church.untertitelinator.gui.main;
 
+import java.awt.Dimension;
+import java.awt.Font;
+
+import javax.swing.JLabel;
+
 import de.tisan.church.untertitelinator.instancer.UTEventHub;
 import de.tisan.church.untertitelinator.instancer.UTEventListener;
 import de.tisan.church.untertitelinator.instancer.UTInstance;
 import de.tisan.church.untertitelinator.instancer.packets.ConnectionStatusPacket;
 import de.tisan.church.untertitelinator.instancer.packets.KeepAlivePacket;
 import de.tisan.church.untertitelinator.instancer.packets.Packet;
-import de.tisan.church.untertitelinator.instancer.packets.SongLinePacket;
 import de.tisan.flatui.components.fbutton.FlatButton;
 import de.tisan.flatui.components.fcommons.Anchor;
 import de.tisan.flatui.components.fcommons.FlatColors;
 import de.tisan.flatui.components.fcommons.FlatLayoutManager;
 import de.tisan.flatui.components.ffont.FlatFont;
-
-import javax.swing.*;
-import java.awt.*;
-import java.sql.Connection;
-import java.util.List;
+import de.tisan.tisanapi.logger.Logger;
 
 public class GUIMainConnectionStatePanel extends AGUIMainPanel {
     private static final long serialVersionUID = 8492314016575322257L;
@@ -83,7 +83,7 @@ public class GUIMainConnectionStatePanel extends AGUIMainPanel {
                     try {
                         Thread.sleep(2000);
                     } catch (InterruptedException e) {
-                        e.printStackTrace();
+                    	Logger.getInstance().err("Fehler beim Ticker für die Aufrechterhaltung der Verbindung", e, getClass());
                     }
 
                     long current = System.currentTimeMillis();

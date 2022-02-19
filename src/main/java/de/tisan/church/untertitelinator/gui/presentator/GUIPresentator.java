@@ -1,13 +1,17 @@
 package de.tisan.church.untertitelinator.gui.presentator;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
+import java.awt.Rectangle;
 import java.util.List;
 import java.util.Objects;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import de.tisan.church.untertitelinator.data.Untertitelinator;
 import de.tisan.church.untertitelinator.gui.common.GUIStandbyPanel;
 import de.tisan.church.untertitelinator.instancer.UTEventHub;
 import de.tisan.church.untertitelinator.instancer.UTEventListener;
@@ -21,8 +25,6 @@ import de.tisan.flatui.components.fcommons.Anchor;
 import de.tisan.flatui.components.fcommons.FlatColors;
 import de.tisan.flatui.components.fcommons.FlatLayoutManager;
 import de.tisan.flatui.components.ffont.FlatFont;
-import de.tisan.flatui.components.ftitlebar.DefaultFlatTitleBarListener;
-import de.tisan.flatui.components.ftitlebar.FlatTitleBarWin10;
 import de.tisan.tools.persistencemanager.JSONPersistence;
 
 public class GUIPresentator extends JFrame {
@@ -50,7 +52,6 @@ public class GUIPresentator extends JFrame {
         GraphicsDevice[] devices = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices();
         GraphicsDevice display = devices[0];
         for (GraphicsDevice device : devices) {
-            System.out.println("'" + device.getIDstring() + "'");
             if (useDisplay.equals(device.getIDstring())) {
                 display = device;
                 break;
@@ -158,9 +159,7 @@ public class GUIPresentator extends JFrame {
     private void calculateFontSize(List<String> linesToShow) {
         Font newFont = FlatFont.getInstance(80, Font.BOLD);
         for (String line : linesToShow) {
-            System.out.println(line);
             if(line.contains("\n")){
-                System.out.println("BR Gefunden!");
                 String[] s = line.split("\n", 2);
                 newFont = getFontSizeFor(s[0], newFont);
                 newFont = getFontSizeFor(s[1], newFont);

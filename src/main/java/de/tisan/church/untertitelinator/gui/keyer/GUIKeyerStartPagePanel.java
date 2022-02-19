@@ -8,7 +8,6 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -177,7 +176,7 @@ public class GUIKeyerStartPagePanel extends JPanel {
 					try {
 						Thread.sleep(1000);
 					} catch (InterruptedException e) {
-						e.printStackTrace();
+						Logger.getInstance().err("Fehler beim Ticker für das Event-Update des Keyers", e, getClass());
 					}
 				}
 			}

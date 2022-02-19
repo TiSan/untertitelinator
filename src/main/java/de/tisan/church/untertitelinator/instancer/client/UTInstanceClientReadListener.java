@@ -1,7 +1,5 @@
 package de.tisan.church.untertitelinator.instancer.client;
 
-import java.io.IOException;
-
 import de.tisan.church.untertitelinator.instancer.UTEventHub;
 import de.tisan.church.untertitelinator.instancer.packets.Packet;
 import de.tisan.tisanapi.logger.Logger;

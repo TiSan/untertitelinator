@@ -8,7 +8,6 @@ import javax.swing.SwingUtilities;
 
 import de.tisan.church.untertitelinator.instancer.client.UTInstanceClient;
 import de.tisan.church.untertitelinator.instancer.packets.Packet;
-import de.tisan.tisanapi.logger.Logger;
 
 public class UTEventHub {
 	private static UTEventHub instance = new UTEventHub();
