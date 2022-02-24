@@ -58,6 +58,7 @@ public class GUIKeyerPictureRotationPanel extends JPanel {
                         .getSetting(UTPersistenceConstants.IMAGEROTATIONTIMEOUT, 5000, Integer.class);
                 int index = 0;
                 while (true) {
+                	System.out.println(isVisible());
                     if (isVisible()) {
 
                         if (index >= imageList.size()) {

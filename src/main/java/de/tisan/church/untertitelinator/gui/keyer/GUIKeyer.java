@@ -50,6 +50,7 @@ public class GUIKeyer extends JFrame {
     Color bg;
     Color fg;
     protected Event event;
+	private GUIKeyerVideoPanel pnlVideo;
 
     public GUIKeyer() {
         try {
@@ -94,6 +95,11 @@ public class GUIKeyer extends JFrame {
             pnlPictureRotation.setBounds(0, 0, getWidth(), getHeight());
             contentPane.add(pnlPictureRotation);
             pnlPictureRotation.setVisible(false);
+            
+            pnlVideo = new GUIKeyerVideoPanel(man, this, getSize());
+            pnlVideo.setBounds(0, 0, getWidth(), getHeight());
+            contentPane.add(pnlVideo);
+            pnlVideo.setVisible(false);
 
             pnlStartPage = new GUIKeyerStartPagePanel(man, this, getSize());
             pnlStartPage.setBounds(0, 0, getWidth(), getHeight());
@@ -123,6 +129,7 @@ public class GUIKeyer extends JFrame {
                     pnlLogo.setBounds(0, 0, getWidth(), getHeight());
                     pnlStandby.setBounds(0, 0, getWidth(), getHeight());
                     pnlPictureRotation.setBounds(0, 0, getWidth(), getHeight());
+                    pnlVideo.setBounds(0, 0, getWidth(), getHeight());
                 }
             });
 
@@ -158,6 +165,10 @@ public class GUIKeyer extends JFrame {
                             case TOGGLE_PICTURE_ROTATION:
                                 boolean newState6 = togglePictureRotation();
                                 UTEventHub.get().publish(new GUIKeyerLayerChangePacket(GUIKeyerLayer.PICTURE_ROTATION, newState6));
+                                break;
+                            case TOGGLE_VIDEO:
+                                boolean newState7 = toggleVideo();
+                                UTEventHub.get().publish(new GUIKeyerLayerChangePacket(GUIKeyerLayer.VIDEO, newState7));
                             default:
                                 break;
                         }
@@ -193,6 +204,8 @@ public class GUIKeyer extends JFrame {
                             new GUIKeyerLayerChangePacket(GUIKeyerLayer.UNTERTITEL, pnlUntertitel.isVisible()));
                     UTEventHub.get().publish(
                             new GUIKeyerLayerChangePacket(GUIKeyerLayer.PICTURE_ROTATION, pnlPictureRotation.isVisible()));
+                    UTEventHub.get().publish(
+                            new GUIKeyerLayerChangePacket(GUIKeyerLayer.VIDEO, pnlVideo.isVisible()));
 
                     try {
                         Thread.sleep(1000);
@@ -205,7 +218,8 @@ public class GUIKeyer extends JFrame {
         }).start();
     }
 
-    private boolean toggleBeginLayer() {
+    
+	private boolean toggleBeginLayer() {
         if (pnlStartPage.isVisible()) {
             pnlStartPage.setVisible(false);
         } else {
@@ -249,6 +263,16 @@ public class GUIKeyer extends JFrame {
         }
         return pnlPictureRotation.isVisible();
     }
+    
+    private boolean toggleVideo() {
+    	if (pnlVideo.isVisible()) {
+    		pnlVideo.setVisible(false);
+        } else {
+        	pnlVideo.setVisible(true);
+        }
+        return pnlVideo.isVisible();
+	}
+
 
     private boolean toggleKollekte() {
         if (pnlKollekte.isVisible()) {

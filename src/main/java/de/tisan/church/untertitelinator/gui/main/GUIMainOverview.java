@@ -23,7 +23,7 @@ public class GUIMainOverview extends AGUIMainPanel
 		pnlSongList.setLocation(10, 60);
 		add(pnlSongList);
 
-		GUIMainKeyerPanel pnlKeyer = new GUIMainKeyerPanel(man, instance, new Dimension(625, 110));
+		GUIMainKeyerPanel pnlKeyer = new GUIMainKeyerPanel(man, instance, new Dimension(625, 160));
 		pnlKeyer.setLocation(pnlSongList.getX() + pnlSongList.getWidth() + 10,
 				pnlSongtext.getY() + pnlSongtext.getHeight() + 15);
 		add(pnlKeyer);
