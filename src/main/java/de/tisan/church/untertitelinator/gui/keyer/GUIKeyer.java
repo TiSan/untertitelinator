@@ -276,4 +276,10 @@ public class GUIKeyer extends JFrame {
     public GUIStandbyPanel getPnlStandby() {
         return pnlStandby;
     }
+
+	public GUIKeyerStartPagePanel getPnlStartPage() {
+		return pnlStartPage;
+	}
+    
+    
 }

@@ -189,6 +189,8 @@ public class GUIKeyerStartPagePanel extends JPanel {
 			layerImage.setIcon(new ImageIcon(image.getScaledInstance(width, height, Image.SCALE_SMOOTH)));
 		}
 		layerImage.setBounds(0, 0, width, height);
+		marqueePanel.setBounds(marqueePanel.getX(), marqueePanel.getY(), width, marqueePanel.getHeight());
+		
 	}
 
 	private void showNextStream(String streamTitle, String streamSubtitle, String streamDate, List<EventService> cast) {

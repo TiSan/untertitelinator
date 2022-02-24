@@ -7,6 +7,7 @@ import java.awt.RenderingHints;
 import java.awt.geom.Rectangle2D;
 
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 import de.tisan.flatui.components.fcommons.FlatUI;
 import de.tisan.tisanapi.logger.Logger;
@@ -14,12 +15,13 @@ import de.tisan.tisanapi.logger.Logger;
 public class GUIKeyerMarqueePanel extends JPanel {
 
     String text;
-    Integer offsetX = null;
+    int offsetX;
     Integer textLength = null;
     int textY;
 
     public GUIKeyerMarqueePanel(String text, GUIKeyer instance) {
         this.text = text;
+        
         setOpaque(false);
         new Thread(new Runnable() {
             @Override
@@ -27,16 +29,16 @@ public class GUIKeyerMarqueePanel extends JPanel {
                 try {
                     Thread.sleep(1000);
                     while (true) {
-                        if(instance.getPnlStandby().isVisible() == false){
-                            repaint();
+                        if(instance.getPnlStandby().isVisible() == true || instance.getPnlStartPage().isVisible() == false){
+                        } else {
+                        	SwingUtilities.updateComponentTreeUI(instance);
+          
                         }
-                        Thread.sleep(7);
+                        Thread.sleep(50);
                     }
                 } catch (InterruptedException e) {
                 	Logger.getInstance().err("Fehler beim Ticker für das MarqueePanel", e, getClass());
                 }
-
-
             }
         }).start();
     }
@@ -54,17 +56,15 @@ public class GUIKeyerMarqueePanel extends JPanel {
             int textHeight = (int) rect.getHeight();
             int textWidth = (int) rect.getWidth();
             int height = this.getHeight();
-            int width = this.getWidth();
-            int x1 = (width - textWidth) / 2;
             textY = (height - textHeight) / 2 + fm.getAscent();
             textLength = textWidth;
             offsetX = getWidth();
         }
 
         g.setColor(getForeground());
-        g.drawString(text, (int) offsetX, textY);
-        offsetX-= 2;
-        if(Math.abs(offsetX) - textLength >= 0){
+        g.drawString(text, offsetX, textY);
+        offsetX-= 5;
+        if(offsetX <= 0 - textLength){
             offsetX = getWidth();
         }
     }
