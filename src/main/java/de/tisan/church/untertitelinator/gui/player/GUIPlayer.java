@@ -1,19 +1,17 @@
 package de.tisan.church.untertitelinator.gui.player;
 
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import de.tisan.flatui.components.fcommons.Anchor;
 import de.tisan.flatui.components.fcommons.FlatColors;
 import de.tisan.flatui.components.fcommons.FlatLayoutManager;
-import de.tisan.flatui.helpers.fadehelper.FadeHelper;
-import de.tisan.flatui.helpers.resizehelpers.SwingResizeHelper;
 import uk.co.caprica.vlcj.factory.MediaPlayerFactory;
-import uk.co.caprica.vlcj.media.Media;
 import uk.co.caprica.vlcj.media.MediaRef;
+import uk.co.caprica.vlcj.player.base.MediaPlayer;
 import uk.co.caprica.vlcj.player.component.EmbeddedMediaPlayerComponent;
-import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
-import uk.co.caprica.vlcj.player.embedded.videosurface.ComponentVideoSurface;
 
 public class GUIPlayer extends JFrame {
 
@@ -34,18 +32,27 @@ public class GUIPlayer extends JFrame {
 		JPanel contentPane = new JPanel();
 		contentPane.setLayout(null);
 		setContentPane(contentPane);
-		contentPane.setBackground(FlatColors.BLACK);
+		contentPane.setBackground(FlatColors.WHITE);
 
 		vlc = new EmbeddedMediaPlayerComponent();
 		vlc.setBounds(0, 0, getWidth(), getHeight());
 		contentPane.add(vlc);
-		SwingResizeHelper.getResizeHelperForSwing(this).addComponent(vlc, Anchor.LEFT, Anchor.RIGHT, Anchor.DOWN);
+		//SwingResizeHelper.getResizeHelperForSwing(this).addComponent(vlc, Anchor.LEFT, Anchor.RIGHT, Anchor.DOWN);
 
+		 addComponentListener(new ComponentAdapter() {
+             public void componentResized(ComponentEvent componentEvent) {
+            	 vlc.setBounds(0, 0, getWidth(), getHeight());
+             }
+		 });
 	}
 
 	private void play() {
-		MediaRef media = vlc.mediaPlayerFactory().media()
+		MediaPlayerFactory factory = vlc.mediaPlayerFactory();
+		MediaRef media = factory.media()
 				.newMediaRef("Wildlife.mp4");
-		vlc.mediaPlayer().media().play(media);
+		MediaPlayer player = vlc.mediaPlayer();
+		player.media().play(media);
+		
+		
 	}
 }
