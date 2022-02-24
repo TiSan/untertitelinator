@@ -50,7 +50,11 @@
 			<artifactId>vlcj</artifactId>
 			<version>4.7.0</version>
 		</dependency>
-
+		<dependency>
+			<groupId>ch.bildspur</groupId>
+			<artifactId>artnet4j</artifactId>
+			<version>0.6.2</version>
+		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.jboss.resteasy/resteasy-client -->
 		<dependency>
 			<groupId>org.jboss.resteasy</groupId>
