@@ -136,8 +136,4 @@ public class GUIMainControllerPanel extends AGUIMainPanel
 		});
 	}
 
-	@Override
-	public void updateThisComponent()
-	{
-	}
 }

@@ -7,3 +7,7 @@ settings.json
 /target/
 .project
 logs/
+.idea/
+src/main/java/de/tisan/church/untertitelinator/main/Test.java
+test/
+images/

@@ -59,8 +59,6 @@ public class GUIStartEndCardsPanel extends AGUIMainPanel {
 
 		x += widthBtn + 5;
 
-		updateThisComponent();
-		
 		UTEventHub.get().registerListener(new UTEventListener() {
 
 			@Override
@@ -80,9 +78,5 @@ public class GUIStartEndCardsPanel extends AGUIMainPanel {
 				} 
 			}
 		});
-	}
-
-	@Override
-	public void updateThisComponent() {
 	}
 }

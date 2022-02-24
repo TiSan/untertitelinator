@@ -1,6 +1,7 @@
 package de.tisan.church.untertitelinator.gui.main;
 
 import java.awt.Dimension;
+import java.util.List;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
@@ -8,11 +9,13 @@ import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import de.tisan.church.untertitelinator.data.Untertitelinator;
+import de.tisan.church.untertitelinator.data.Song;
 import de.tisan.church.untertitelinator.instancer.UTEventHub;
+import de.tisan.church.untertitelinator.instancer.UTEventListener;
 import de.tisan.church.untertitelinator.instancer.packets.Command;
 import de.tisan.church.untertitelinator.instancer.packets.CommandPacket;
-import de.tisan.church.untertitelinator.instancer.packets.UIRefreshPacket;
+import de.tisan.church.untertitelinator.instancer.packets.Packet;
+import de.tisan.church.untertitelinator.instancer.packets.SongListChangedPacket;
 import de.tisan.church.untertitelinator.main.Loader;
 import de.tisan.flatui.components.fbutton.FlatButton;
 import de.tisan.flatui.components.fcommons.FlatColors;
@@ -29,6 +32,7 @@ public class GUIMainSongListPanel extends AGUIMainPanel {
 	private static final long serialVersionUID = 8890430331107288284L;
 	private DefaultListModel<String> songListModel;
 	private JList<String> list;
+	protected List<Song> songList;
 
 	public GUIMainSongListPanel(FlatLayoutManager man, GUIMain instance, Dimension preferredSize) {
 		super(man, instance, preferredSize);
@@ -79,7 +83,7 @@ public class GUIMainSongListPanel extends AGUIMainPanel {
 		btnMoveDown.addMouseListener(Priority.NORMAL, new MouseListenerImpl() {
 			@Override
 			public void onMouseRelease(MouseReleaseHandler handler) {
-				if (list.getSelectedIndex() < songListModel.getSize() - 1) {
+				if (list.getSelectedIndex() != -1 && list.getSelectedIndex() < songListModel.getSize() - 1) {
 					String tmp = songListModel.getElementAt(list.getSelectedIndex() + 1);
 					songListModel.set(list.getSelectedIndex() + 1, songListModel.getElementAt(list.getSelectedIndex()));
 					songListModel.set(list.getSelectedIndex(), tmp);
@@ -104,37 +108,48 @@ public class GUIMainSongListPanel extends AGUIMainPanel {
 
 				if (result == JOptionPane.YES_OPTION) {
 					songListModel.clear();
-					Untertitelinator.get().loadSongs();
-					updateSongList();
+					UTEventHub.get().publish(new CommandPacket(Command.LOAD_SONGS));
 					hManager.showHintBox(new FlatHintBoxEntry("Songs neu geladen", "Alle Songs im Song-Verzeichnis wurden erneut eingelesen!", 2));
 				}
 			}
 		});
 		add(btnUpdate);
 
-		updateSongList();
+		y += heightBtn + 5;
+
+		FlatButton btnChangeEvent = new FlatButton("", FlatIcon.CALENDAR, man);
+		btnChangeEvent.setBounds(x, y, widthBtn, heightBtn);
+		btnChangeEvent.setBackground(FlatColors.BLUE);
+		btnChangeEvent.addMouseListener(Priority.NORMAL, new MouseListenerImpl() {
+			@Override
+			public void onMouseRelease(MouseReleaseHandler handler) {
+				GUISelectGodi ui = new GUISelectGodi();
+			}
+		});
+		add(btnChangeEvent);
+
 		list.setSelectedIndex(0);
+		
+		UTEventHub.get().registerListener(new UTEventListener() {
+			
+			@Override
+			public void onEventReceived(Packet packet) {
+				if(packet instanceof SongListChangedPacket) {
+					SongListChangedPacket sPacket = (SongListChangedPacket) packet;
+					songList = sPacket.getSongList();
+					updateSongList();
+				}
+			}
+		});
 	}
 
 	private void changeSong(String name) {
 		UTEventHub.get().publish(new CommandPacket(Command.CHANGE_SONG, name));
-//		if (Loader.getMainUi() != null) {
-//			Untertitelinator.get().switchSong(Untertitelinator.get().getSongs().stream()
-//					.filter(s -> s.getTitle().equals(name)).findFirst().get());
-			
-
-	//	}
 	}
 
 	private void updateSongList() {
 		list.setSelectedIndex(0);
-		Untertitelinator.get().getSongs().stream().map(song -> song.getTitle()).forEach(songListModel::addElement);
-		//Untertitelinator.get().switchSong(Untertitelinator.get().getSongs().get(0));
-		
-		UTEventHub.get().publish(new UIRefreshPacket());
+		songList.stream().map(song -> song.getTitle()).forEach(songListModel::addElement);
 	}
 
-	@Override
-	public void updateThisComponent() {
-	}
 }

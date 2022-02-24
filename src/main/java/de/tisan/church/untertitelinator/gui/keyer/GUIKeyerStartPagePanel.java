@@ -8,8 +8,8 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -18,29 +18,33 @@ import javax.swing.JPanel;
 
 import de.tisan.church.untertitelinator.churchtools.api.objects.Event;
 import de.tisan.church.untertitelinator.data.EventService;
-import de.tisan.church.untertitelinator.data.Untertitelinator;
 import de.tisan.church.untertitelinator.instancer.UTEventHub;
 import de.tisan.church.untertitelinator.instancer.UTEventListener;
+import de.tisan.church.untertitelinator.instancer.packets.Command;
+import de.tisan.church.untertitelinator.instancer.packets.CommandPacket;
 import de.tisan.church.untertitelinator.instancer.packets.EventSelectionChangedPacket;
 import de.tisan.church.untertitelinator.instancer.packets.Packet;
 import de.tisan.flatui.components.fbutton.FlatButton;
 import de.tisan.flatui.components.fcommons.Anchor;
+import de.tisan.flatui.components.fcommons.FlatColors;
 import de.tisan.flatui.components.fcommons.FlatLayoutManager;
 import de.tisan.flatui.components.ffont.FlatFont;
+import de.tisan.tisanapi.logger.Logger;
 
 public class GUIKeyerStartPagePanel extends JPanel {
 
 	private static final long serialVersionUID = 4284425054258046422L;
+	private GUIKeyerMarqueePanel marqueePanel;
 	private FlatButton layerNextStream;
 	private FlatButton layerTitle;
 	private FlatButton layerSubTitle;
 	private FlatButton layerDate;
-	private ArrayList<FlatButton> listCastLayers = new ArrayList<FlatButton>();
 	private JLabel layerImage;
 	private BufferedImage image;
 	private int heightCastBegin;
 	private FlatLayoutManager man;
 	private int widthElements;
+	private boolean eventReceived;
 
 	public GUIKeyerStartPagePanel(FlatLayoutManager man, GUIKeyer instance, Dimension preferredSize) {
 		setLayout(null);
@@ -102,16 +106,24 @@ public class GUIKeyerStartPagePanel extends JPanel {
 		layerDate.disableEffects();
 		add(layerDate);
 
+
 		y1 += layerSubTitle.getHeight() + 100;
 		heightCastBegin = y1;
 
+		marqueePanel = new GUIKeyerMarqueePanel("+++ Von WLAN enttäuscht: Laschet kann Frust über Ergebnis nicht twittern +++ Auf den ersten Blick: Augenarzt verliebt sich in Iris +++ Thunfisch in Öl: Gemälde ruft Tierschützer auf den Plan +++" +
+				"", instance);
+		marqueePanel.setBounds(0, preferredSize.height - 230, preferredSize.width, height3);
+		marqueePanel.setForeground(FlatColors.BLACK);
+		marqueePanel.setFont(font);
+		add(marqueePanel);
 		/* Bild */
 		layerImage = new JLabel();
 		try {
 			image = ImageIO.read(GUIKeyerStartPagePanel.class
-					.getResourceAsStream("/de/tisan/church/untertitelinator/resources/bg.jpg"));
+					.getResourceAsStream("/de/tisan/church/untertitelinator/resources/bg_v2.jpg"));
 		} catch (IOException e1) {
-			e1.printStackTrace();
+			Logger.getInstance().err("Couldnt load BeginCard Image! " + e1.getMessage(), e1, getClass());
+			
 		}
 		fitImage(preferredSize.width, preferredSize.height);
 		add(layerImage);
@@ -146,15 +158,29 @@ public class GUIKeyerStartPagePanel extends JPanel {
 					if (titleString.startsWith("Weitere Infos...")) {
 						titleString = "Live-Gottesdienst";
 					}
-
+					GUIKeyerStartPagePanel.this.eventReceived = true;
 					showNextStream(titleString, "Thema: \"" + themaString + "\"",
-							currentEvent.getStartDateString() + " Uhr", Untertitelinator.get().getServiceList());
+							currentEvent.getStartDateString() + " Uhr", sPacket.getServices());
 				}
 			}
 
 		});
 
 		repaint();
+
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				while(GUIKeyerStartPagePanel.this.eventReceived == false){
+					UTEventHub.get().publish(new CommandPacket(Command.SEND_EVENT));
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						Logger.getInstance().err("Fehler beim Ticker für das Event-Update des Keyers", e, getClass());
+					}
+				}
+			}
+		}).start();
 
 	}
 
@@ -170,27 +196,14 @@ public class GUIKeyerStartPagePanel extends JPanel {
 		layerSubTitle.setText(streamSubtitle);
 		layerDate.setText(streamDate);
 
-		listCastLayers.forEach(e -> remove(e));
-		listCastLayers.clear();
-
 		Font font = FlatFont.getInstance(30, Font.BOLD);
 		int heightElements = 50;
 		int x1 = 150;
 		int y1 = heightCastBegin;
-
-		for (EventService castItem : cast) {
-			FlatButton layerCast = new FlatButton(castItem.getName() + ": " + castItem.getCastListString(), man);
-			layerCast.setBounds(x1, y1, widthElements - x1, heightElements);
-			layerCast.setFont(font);
-			layerCast.setBackground(new Color(0, 0, 0, 0));
-			layerCast.setAnchor(Anchor.LEFT, Anchor.RIGHT);
-			layerCast.setCenterText(false);
-			layerCast.disableEffects();
-
-			y1 += layerCast.getHeight() + 5;
-
-			add(layerCast, 0);
-			listCastLayers.add(layerCast);
-		}
+		String castTicker =	cast
+				.stream()
+				.map(service -> service.getName() + ": " + service.getCastListString())
+				.collect(Collectors.joining(" +++ "));
+		marqueePanel.setText("Mitwirkende +++ " + castTicker);
 	}
 }

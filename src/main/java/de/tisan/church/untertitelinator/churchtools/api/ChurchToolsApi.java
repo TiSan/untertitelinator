@@ -161,7 +161,7 @@ public class ChurchToolsApi {
 
 			return Optional.ofNullable(enrichedEvents);
 		} catch (IOException e) {
-			e.printStackTrace();
+			Logger.getInstance().err("Error while fetching Events from ChurchToolsApi" + e.getMessage(), e, getClass());
 		}
 		return Optional.empty();
 	}
@@ -186,7 +186,7 @@ public class ChurchToolsApi {
 			});
 			return Optional.ofNullable(r.getData());
 		} catch (IOException e) {
-			e.printStackTrace();
+			Logger.getInstance().err("Error while fetching Services from ChurchToolsApi " + e.getMessage(), e, getClass());
 		}
 		return Optional.empty();
 	}
@@ -224,7 +224,7 @@ public class ChurchToolsApi {
 			});
 			return Optional.ofNullable(r.getData());
 		} catch (IOException e) {
-			e.printStackTrace();
+			Logger.getInstance().err("Error while fetching Agenda for Event from ChurchToolsApi " + e.getMessage(), e, getClass());
 		}
 		return Optional.empty();
 	}

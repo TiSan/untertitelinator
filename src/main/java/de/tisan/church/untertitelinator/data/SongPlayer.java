@@ -7,7 +7,6 @@ import de.tisan.church.untertitelinator.instancer.UTEventListener;
 import de.tisan.church.untertitelinator.instancer.packets.CommandPacket;
 import de.tisan.church.untertitelinator.instancer.packets.Packet;
 import de.tisan.church.untertitelinator.instancer.packets.SongLinePacket;
-import de.tisan.church.untertitelinator.instancer.packets.UIRefreshPacket;
 import de.tisan.church.untertitelinator.settings.UTPersistenceConstants;
 import de.tisan.tools.persistencemanager.JSONPersistence;
 
@@ -17,12 +16,13 @@ public class SongPlayer
 	int index;
 	boolean pause;
 	private boolean enabled;
+	private UTEventListener listener;
 
 	public SongPlayer(Song song)
 	{
 		this.song = song;
 		this.index = 0;
-		UTEventHub.get().registerListener(new UTEventListener()
+		UTEventHub.get().registerListener(listener = new UTEventListener()
 		{
 
 			@Override
@@ -35,23 +35,18 @@ public class SongPlayer
 					{
 						case JUMP_END:
 							jumpToEnd();
-							UTEventHub.get().publish(new UIRefreshPacket());
 							break;
 						case JUMP_START:
 							jumpToStart();
-							UTEventHub.get().publish(new UIRefreshPacket());
 							break;
 						case NEXT_LINE:
 							nextLine();
-							UTEventHub.get().publish(new UIRefreshPacket());
 							break;
 						case PAUSE:
 							pause();
-							UTEventHub.get().publish(new UIRefreshPacket());
 							break;
 						case PREVIOUS_LINE:
 							previousLine();
-							UTEventHub.get().publish(new UIRefreshPacket());
 							break;
 						default:
 							break;
@@ -66,7 +61,7 @@ public class SongPlayer
 	{
 	}
 
-	public void nextLine()
+	private void nextLine()
 	{
 		if (index + 1 >= song.getSongLines().size())
 		{
@@ -78,7 +73,7 @@ public class SongPlayer
 		}
 	}
 
-	public void previousLine()
+	private void previousLine()
 	{
 		if (index - 1 < 0)
 		{
@@ -90,33 +85,33 @@ public class SongPlayer
 		}
 	}
 
-	public void jumpToStart()
+	private void jumpToStart()
 	{
 		setIndex(0);
 	}
 
-	public void jumpToEnd()
+	private void jumpToEnd()
 	{
 		setIndex(song.getSongLines().size() - 1);
 	}
 
-	public boolean isOnEnd()
+	private boolean isOnEnd()
 	{
 		return index >= song.getSongLines().size() - 1;
 	}
 
-	public String getCurrentLine()
+	private String getCurrentLine()
 	{
 		return pause ? getBlackoutLine() : song.getSongLines().get(index);
 	}
 
-	public String getNextLine()
+	private String getNextLine()
 	{
 		return pause ? getBlackoutLine()
 		        : (isValidIndex(index + 1) ? song.getSongLines().get(index + 1) : getBlackoutLine());
 	}
 
-	public String[] getCurrentLines()
+	private String[] getCurrentLines()
 	{
 		if (pause == false)
 		{
@@ -135,7 +130,7 @@ public class SongPlayer
 
 	}
 
-	public String[] getNextLines()
+	private String[] getNextLines()
 	{
 		if (pause == false)
 		{
@@ -158,7 +153,7 @@ public class SongPlayer
 		return i >= 0 && i <= song.getSongLines().size() - 1;
 	}
 
-	public String getBlackoutLine()
+	private String getBlackoutLine()
 	{
 		return (String) JSONPersistence.get().getSetting(UTPersistenceConstants.BLACKOUTLINEFILLER, "    ");
 	}
@@ -209,5 +204,6 @@ public class SongPlayer
 	public void disable()
 	{
 		this.enabled = false;
+		UTEventHub.get().unregisterListener(listener);
 	}
 }

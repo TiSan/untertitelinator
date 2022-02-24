@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
+import de.tisan.church.untertitelinator.instancer.packets.KeepAlivePacket;
 import de.tisan.church.untertitelinator.instancer.packets.Packet;
 import de.tisan.church.untertitelinator.settings.UTPersistenceConstants;
 import de.tisan.tisanapi.logger.Logger;
@@ -19,13 +20,23 @@ public class UTInstanceServer {
 
 	private ObjectServerSocket<Packet> socketServer;
 	private UTDiscovery discovery;
+	private boolean started;
 
 	public void startServer() throws UnknownHostException {
-		socketServer = new ObjectServerSocket<Packet>(JSONPersistence.get().getSetting(UTPersistenceConstants.SERVER_PORT, 8080, Integer.class), InetAddress.getByName("0.0.0.0"));
+		socketServer = new ObjectServerSocket<Packet>(
+				JSONPersistence.get().getSetting(UTPersistenceConstants.SERVER_PORT, 8080, Integer.class),
+				InetAddress.getByName("0.0.0.0"));
 		socketServer.addConnectListener(new UTInstanceServerListener<Packet>());
+
 		socketServer.start();
 		discovery = new UTDiscovery();
 		discovery.startDiscoveryServer();
+		started = true;
+		startKeepAlivePacketThread();
+	}
+
+	public boolean isStarted() {
+		return started;
 	}
 
 	private void sendPacket(Packet packet) {
@@ -36,15 +47,32 @@ public class UTInstanceServer {
 			try {
 				s.writeObject(packet);
 			} catch (IOException e) {
-				Logger.getInstance().log("Write Packet to " + s.getIP() + "@" + s.getPort() + " failed! " + e.getMessage(), UTInstanceServer.class);
-				e.printStackTrace();
-				s.disconnect();
+				Logger.getInstance().err(
+						"Write Packet to " + s.getIP() + "@" + s.getPort() + " failed! " + e.getMessage(), e,
+						UTInstanceServer.class);
+				socketServer.remove(s);
 			}
 		});
 	}
 
 	public void publish(Packet packet) {
 		sendPacket(packet);
+	}
+
+	private void startKeepAlivePacketThread() {
+		new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				while (true) {
+					try {
+						Thread.sleep(2000);
+						sendPacket(new KeepAlivePacket(UTInstance.CONTROLLER));
+					} catch (Exception e) {
+					}
+				}
+			}
+		}).start();
 	}
 
 }

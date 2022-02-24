@@ -1,24 +1,31 @@
 package de.tisan.church.untertitelinator.instancer.client;
 
-import java.io.IOException;
-
+import de.tisan.church.untertitelinator.instancer.UTEventHub;
+import de.tisan.church.untertitelinator.instancer.UTInstance;
+import de.tisan.church.untertitelinator.instancer.packets.ConnectionStatusPacket;
 import de.tisan.tisanapi.logger.Logger;
 import de.tisan.tisanapi.sockets.listeners.ObjectSocketConnectListener;
 
 public class UTInstanceClientConnectListener<Packet> extends ObjectSocketConnectListener<Packet>
 {
+	UTInstance instance;
 
-	@Override
-	public void onSocketConnect()
-	{
+	public UTInstanceClientConnectListener(UTInstance instance){
+		this.instance = instance;
 
 	}
 
 	@Override
-	public void onSocketConnectFailed(IOException ex)
+	public void onSocketConnect()
+	{
+		UTEventHub.get().publish(new ConnectionStatusPacket(ConnectionStatusPacket.ConnectionType.CLIENT, instance, true));
+	}
+
+	@Override
+	public void onSocketConnectFailed(Exception ex)
 	{
 		Logger.getInstance().err("Connection failed! " + ex.getMessage(), UTInstanceClientConnectListener.class);
-		UTInstanceClient.get().connect();
+//		UTInstanceClient.get().connect();
 	}
 
 	@Override
@@ -26,7 +33,7 @@ public class UTInstanceClientConnectListener<Packet> extends ObjectSocketConnect
 	{
 		Logger.getInstance().err("Socket disconnected, bereite neue Verbindung vor...",
 		        UTInstanceClientConnectListener.class);
-		UTInstanceClient.get().connect();
+		UTEventHub.get().publish(new ConnectionStatusPacket(ConnectionStatusPacket.ConnectionType.CLIENT, instance, false), false);
 	}
 
 }

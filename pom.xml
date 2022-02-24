@@ -5,7 +5,7 @@
 	<groupId>de.tisan.church</groupId>
 	<artifactId>Untertitelinator</artifactId>
 	<packaging>jar</packaging>
-	<version>0.14.0-SNAPSHOT</version>
+	<version>0.17.0-SNAPSHOT</version>
 	<name>Untertitelinator</name>
 	<scm>
 		<connection>scm:git:https://git.dropbyte.de/tidev-apps/Untertitelinator.git</connection>
@@ -14,10 +14,9 @@
 	</scm>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<java.version>1.8</java.version>
-		<maven.compiler.source>1.8</maven.compiler.source>
-		<maven.compiler.target>1.8</maven.compiler.target>
-		<failOnMissingWebXml>false</failOnMissingWebXml>
+		<java.version>11</java.version>
+		<maven.compiler.source>11</maven.compiler.source>
+		<maven.compiler.target>11</maven.compiler.target>
 	</properties>
 	<distributionManagement>
 		<snapshotRepository>
@@ -44,7 +43,7 @@
 		<dependency>
 			<groupId>de.tisan.tools</groupId>
 			<artifactId>TisanAPI</artifactId>
-			<version>1.2.0-SNAPSHOT</version>
+			<version>1.6.0</version>
 		</dependency>
 		<dependency>
 			<groupId>uk.co.caprica</groupId>
@@ -106,6 +105,88 @@
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>copy-dependencies</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.directory}/lib</outputDirectory>
+							<overWriteReleases>false</overWriteReleases>
+							<overWriteSnapshots>true</overWriteSnapshots>
+							<overWriteIfNewer>true</overWriteIfNewer>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>controller</id>
+			            <goals>
+			            	<goal>jar</goal>
+			            </goals>
+			            <phase>package</phase>
+						<configuration>
+							<classifier>controller</classifier>
+							<archive>
+								<manifest>
+									<addClasspath>true</addClasspath>
+									<classpathPrefix>lib/</classpathPrefix>
+									<mainClass>de.tisan.church.untertitelinator.main.MainInstancerController</mainClass>
+									<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+									<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+								</manifest>
+							</archive>
+						</configuration>
+					</execution>
+					<execution>
+						<id>keyer</id>
+			            <goals>
+			            	<goal>jar</goal>
+			            </goals>
+			            <phase>package</phase>
+						<configuration>
+							<classifier>keyer</classifier>
+							<archive>
+								<manifest>
+									<addClasspath>true</addClasspath>
+									<classpathPrefix>lib/</classpathPrefix>
+									<mainClass>de.tisan.church.untertitelinator.main.MainInstancerKeyer</mainClass>
+									<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+									<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+								</manifest>
+							</archive>
+						</configuration>
+					</execution>
+					<execution>
+						<id>presentator</id>
+			            <goals>
+			            	<goal>jar</goal>
+			            </goals>
+			            <phase>package</phase>
+						<configuration>
+							<classifier>presentator</classifier>
+							<archive>
+								<manifest>
+									<addClasspath>true</addClasspath>
+									<classpathPrefix>lib/</classpathPrefix>
+									<mainClass>de.tisan.church.untertitelinator.main.MainInstancerPresentator</mainClass>
+									<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+									<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+								</manifest>
+							</archive>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<executions>
 					<execution>
@@ -124,38 +205,23 @@
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
+				<artifactId>maven-compiler-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>copy-dependencies</id>
-						<phase>package</phase>
+						<id>compile</id>
+						<phase>compile</phase>
 						<goals>
-							<goal>copy-dependencies</goal>
+							<goal>compile</goal>
 						</goals>
-						<configuration>
-							<outputDirectory>${project.build.directory}/lib</outputDirectory>
-							<overWriteReleases>false</overWriteReleases>
-							<overWriteSnapshots>true</overWriteSnapshots>
-							<overWriteIfNewer>true</overWriteIfNewer>
-						</configuration>
+					</execution>
+					<execution>
+						<id>testCompile</id>
+						<phase>test-compile</phase>
+						<goals>
+							<goal>testCompile</goal>
+						</goals>
 					</execution>
 				</executions>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<configuration>
-					<archive>
-						<manifest>
-							<addClasspath>true</addClasspath>
-							<classpathPrefix>lib/</classpathPrefix>
-							<mainClass>de.tisan.church.untertitelinator.main.Main</mainClass>
-							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-							<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
-						</manifest>
-					</archive>
-				</configuration>
 			</plugin>
 		</plugins>
 		<resources>

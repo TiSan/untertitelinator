@@ -14,6 +14,7 @@ import javax.swing.border.EmptyBorder;
 import de.tisan.church.untertitelinator.main.Loader;
 import de.tisan.flatui.components.fcommons.FlatLayoutManager;
 import de.tisan.flatui.components.fprogressbar.FlatProgressBar;
+import de.tisan.tisanapi.logger.Logger;
 
 public class GUILoad extends JFrame {
 
@@ -47,7 +48,8 @@ public class GUILoad extends JFrame {
 			label.setIcon(new ImageIcon(ImageIO
 					.read(GUILoad.class.getResourceAsStream("/de/tisan/church/untertitelinator/resources/logo.png"))));
 		} catch (Exception e1) {
-			e1.printStackTrace();
+			Logger.getInstance().err("Loading Image not found! " + e1.getMessage(), e1, getClass());
+			
 		}
 		contentPane.add(label);
 

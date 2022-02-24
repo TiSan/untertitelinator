@@ -16,6 +16,7 @@ import de.tisan.flatui.components.fbutton.FlatButton;
 import de.tisan.flatui.components.fcommons.Anchor;
 import de.tisan.flatui.components.fcommons.FlatLayoutManager;
 import de.tisan.flatui.components.ffont.FlatFont;
+import de.tisan.tisanapi.logger.Logger;
 
 public class GUIKeyerUntertitelPanel extends JPanel {
 
@@ -93,7 +94,8 @@ public class GUIKeyerUntertitelPanel extends JPanel {
 		try {
 			Thread.sleep(500);
 		} catch (InterruptedException e) {
-			e.printStackTrace();
+			Logger.getInstance().err("Timer1 for animation stopped! " + e.getMessage(), e, getClass());
+			
 		}
 
 		currentLine1.setText(line1);
@@ -108,7 +110,8 @@ public class GUIKeyerUntertitelPanel extends JPanel {
 		try {
 			Thread.sleep(500);
 		} catch (InterruptedException e) {
-			e.printStackTrace();
+			Logger.getInstance().err("Timer2 for animation stopped! " + e.getMessage(), e, getClass());
+			
 		}
 
 	}

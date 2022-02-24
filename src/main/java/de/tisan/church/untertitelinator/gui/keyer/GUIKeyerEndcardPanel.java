@@ -13,6 +13,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import de.tisan.flatui.components.fcommons.FlatLayoutManager;
+import de.tisan.tisanapi.logger.Logger;
 
 public class GUIKeyerEndcardPanel extends JPanel {
 
@@ -28,7 +29,7 @@ public class GUIKeyerEndcardPanel extends JPanel {
 			image = ImageIO.read(
 					GUIKeyer.class.getResourceAsStream("/de/tisan/church/untertitelinator/resources/bg_endcard.png"));
 		} catch (IOException e1) {
-			e1.printStackTrace();
+			Logger.getInstance().err("Couldnt load Endcard image! " + e1.getMessage(), e1, getClass());
 		}
 		fitImage(preferredSize.width, preferredSize.height);
 		add(layerImage);
