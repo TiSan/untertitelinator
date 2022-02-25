@@ -197,7 +197,7 @@ public class GUIMainKeyerPanel extends AGUIMainPanel {
 		
 		for(File file : videoFolder.listFiles()) {
 			if(file.isFile()) {
-				String key = file.getName().substring(0, file.getName().lastIndexOf("\\."));
+				String key = file.getName().substring(0, file.getName().lastIndexOf('.'));
 				videoList.put(key, file.getAbsolutePath());
 			}
 		}
