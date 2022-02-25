@@ -43,7 +43,7 @@
 		<dependency>
 			<groupId>de.tisan.tools</groupId>
 			<artifactId>TisanAPI</artifactId>
-			<version>1.6.0</version>
+			<version>1.7.0</version>
 		</dependency>
 		<dependency>
 			<groupId>uk.co.caprica</groupId>
