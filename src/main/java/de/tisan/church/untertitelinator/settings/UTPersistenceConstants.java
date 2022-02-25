@@ -21,7 +21,7 @@ public enum UTPersistenceConstants implements PersistenceConstants{
 	GUIKEYERKOLLEKTELINE1("guiKeyerKollekteLine1"), SERVER_PORT("serverPort"),
 	UDP_START_PORT("discoveryUdpStartPort"), UDP_END_PORT("discoveryUdpEndPort"),
 	GUIPRESENTATORDISPLAYID("guiPresentatorDisplayId"), GUIKEYERDISPLAYID("guiKeyerDisplayId"),
-	IMAGEROTATIONPATH("imageRotationPath"), IMAGEROTATIONTIMEOUT("imageRotationTimeout"), VIDEO_FILES("videoFiles");
+	IMAGEROTATIONPATH("imageRotationPath"), IMAGEROTATIONTIMEOUT("imageRotationTimeout"), VIDEO_FILES_PATH("videoFilesPath");
 
 	private String key;
 

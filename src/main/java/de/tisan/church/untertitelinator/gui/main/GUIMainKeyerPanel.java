@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,13 +22,10 @@ import de.tisan.flatui.components.fbutton.FlatButton;
 import de.tisan.flatui.components.fcommons.FlatColors;
 import de.tisan.flatui.components.fcommons.FlatLayoutManager;
 import de.tisan.flatui.components.ffont.FlatFont;
-import de.tisan.flatui.components.flisteners.ActionListener;
-import de.tisan.flatui.components.flisteners.MouseClickedHandler;
 import de.tisan.flatui.components.flisteners.MouseListenerImpl;
 import de.tisan.flatui.components.flisteners.MouseReleaseHandler;
 import de.tisan.flatui.components.flisteners.Priority;
 import de.tisan.tools.persistencemanager.JSONPersistence;
-import de.tisan.tools.persistencemanager.SubTypeReference;
 
 public class GUIMainKeyerPanel extends AGUIMainPanel {
 	private static final long serialVersionUID = 5033708428105225125L;
@@ -47,7 +45,7 @@ public class GUIMainKeyerPanel extends AGUIMainPanel {
 
 	private FlatButton btnVideo;
 
-	private JComboBox cmbvideoList;
+	private JComboBox<String> cmbvideoList;
 
 	public GUIMainKeyerPanel(FlatLayoutManager man, GUIMain instance, Dimension preferredSize) {
 		super(man, instance, preferredSize);
@@ -56,9 +54,7 @@ public class GUIMainKeyerPanel extends AGUIMainPanel {
 		int widthBtn = 100;
 		int heightBtn = 70;
 
-		this.videoList = JSONPersistence.get().getSetting(UTPersistenceConstants.VIDEO_FILES,
-				new HashMap<String, String>(), new SubTypeReference<HashMap<String, String>>() {
-				});
+		this.videoList = loadVideoList();
 
 		JLabel lblViewHideElements = new JLabel("Ebenen im Keyer ein-/ausblenden [Unterste --> Oberste]");
 		lblViewHideElements.setFont(FlatFont.getInstance(18, Font.PLAIN));
@@ -145,7 +141,7 @@ public class GUIMainKeyerPanel extends AGUIMainPanel {
 
 		x += 90;
 
-		cmbvideoList = new JComboBox(videoList.keySet().toArray());
+		cmbvideoList = new JComboBox<String>(videoList.keySet().toArray(new String[videoList.keySet().size()]));
 		cmbvideoList.setBounds(x, y, 250, 30);
 		add(cmbvideoList);
 		cmbvideoList.addActionListener(new java.awt.event.ActionListener() {
@@ -185,5 +181,26 @@ public class GUIMainKeyerPanel extends AGUIMainPanel {
 				}
 			}
 		});
+	}
+
+	private Map<String, String> loadVideoList()
+	{
+		String videoFolderPath = JSONPersistence.get().getSetting(UTPersistenceConstants.VIDEO_FILES_PATH, "videos", String.class);
+		Map<String, String> videoList = new HashMap<String, String>();
+		
+		File videoFolder = new File(videoFolderPath);
+		
+		if(videoFolder.exists() == false) {
+			videoFolder.mkdirs();
+		}
+		
+		for(File file : videoFolder.listFiles()) {
+			if(file.isFile()) {
+				String key = file.getName().substring(0, file.getName().lastIndexOf("\\."));
+				videoList.put(key, file.getAbsolutePath());
+			}
+		}
+		
+		return videoList;
 	}
 }
