@@ -5,7 +5,7 @@
 	<groupId>de.tisan.church</groupId>
 	<artifactId>Untertitelinator</artifactId>
 	<packaging>jar</packaging>
-	<version>0.19.0</version>
+	<version>0.19.1-SNAPSHOT</version>
 	<name>Untertitelinator</name>
 	<scm>
 		<connection>scm:git:https://git.dropbyte.de/tidev-apps/Untertitelinator.git</connection>
