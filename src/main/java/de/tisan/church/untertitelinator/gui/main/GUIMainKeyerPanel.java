@@ -187,6 +187,7 @@ public class GUIMainKeyerPanel extends AGUIMainPanel {
 	{
 		String videoFolderPath = JSONPersistence.get().getSetting(UTPersistenceConstants.VIDEO_FILES_PATH, "videos", String.class);
 		Map<String, String> videoList = new HashMap<String, String>();
+		videoList.put("Bitte Video wählen...", null);
 		
 		File videoFolder = new File(videoFolderPath);
 		
