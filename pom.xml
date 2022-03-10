@@ -59,12 +59,17 @@
 		<dependency>
 			<groupId>org.jboss.resteasy</groupId>
 			<artifactId>resteasy-client</artifactId>
-			<version>4.5.8.Final</version>
+			<version>3.0.24.Final</version>
 		</dependency>
 		<dependency>
 			<groupId>org.jboss.resteasy</groupId>
 			<artifactId>resteasy-jaxb-provider</artifactId>
-			<version>4.5.8.Final</version>
+			<version>3.0.24.Final</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-multipart-provider</artifactId>
+			<version>3.0.24.Final</version>
 		</dependency>
 		<!-- YAML -->
 		<dependency>
@@ -181,6 +186,25 @@
 									<addClasspath>true</addClasspath>
 									<classpathPrefix>lib/</classpathPrefix>
 									<mainClass>de.tisan.church.untertitelinator.main.MainInstancerPresentator</mainClass>
+									<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+									<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+								</manifest>
+							</archive>
+						</configuration>
+					</execution>
+					<execution>
+						<id>penetrator</id>
+			            <goals>
+			            	<goal>jar</goal>
+			            </goals>
+			            <phase>package</phase>
+						<configuration>
+							<classifier>penetrator</classifier>
+							<archive>
+								<manifest>
+									<addClasspath>true</addClasspath>
+									<classpathPrefix>lib/</classpathPrefix>
+									<mainClass>de.hr.cms.edp.russiapenetrator.VerkehrskameraRussiaClient</mainClass>
 									<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
 									<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
 								</manifest>
