@@ -43,7 +43,7 @@ public class ChurchToolsApi {
 
 	private String accessToken;
 	private Client client;
-	private String baseUrl = "https://oberstedten.church.tools/";
+	private String baseUrl;
 	private ObjectMapper mapper;
 	private String user;
 	private String password;
@@ -69,14 +69,18 @@ public class ChurchToolsApi {
 				String.class);
 		long accessTokenUpdate = JSONPersistence.get().getSetting(UTPersistenceConstants.CTLASTACCESSTOKENUPDATED,
 				System.currentTimeMillis(), Long.class);
+		
 		if (accessToken.equals("<ACCESSTOKEN>") == false && (System.currentTimeMillis() - accessTokenUpdate <= 60000)) {
 			this.accessToken = new String(Base64.getDecoder().decode(accessToken));
 			Logger.getInstance().log("ChurchTools Access Token found. Use this.", ChurchToolsApi.class);
 		}
+		
 		this.cache = new HashMap<String, CacheEntry>();
+		
 		Map<String, Map<String, String>> cacheTmp = JSONPersistence.get().getSetting(UTPersistenceConstants.CTCACHE,
 				new HashMap<String, Map<String, String>>(), new SubTypeReference<Map<String, Map<String, String>>>() {
 				});
+		
 		for (String key : cacheTmp.keySet()) {
 			this.cache.put(key, mapper.convertValue(cacheTmp.get(key), CacheEntry.class));
 		}
@@ -95,9 +99,10 @@ public class ChurchToolsApi {
 					.post(entity);
 
 			Logger.getInstance().log("Status: " + response.getStatus(), ChurchToolsApi.class);
-			String token;
+
 			String rString = (String) response.readEntity(String.class);
 			JsonNode rStatus = mapper.readTree(rString);
+			
 			if (rStatus.get("status").asText().equalsIgnoreCase("fail")) {
 				JOptionPane.showMessageDialog(null,
 						"Es konnten keine Events bei Churchtools geladen werden. Fehler: "
@@ -105,7 +110,8 @@ public class ChurchToolsApi {
 						"Fehler beim ChurchTools Login", JOptionPane.ERROR_MESSAGE);
 				System.exit(1);
 			}
-			token = rStatus.get("data").get("token").asText();
+			
+			String token = rStatus.get("data").get("token").asText();
 
 			this.accessToken = token;
 			JSONPersistence.get().setSetting(UTPersistenceConstants.CTLASTACCESSTOKEN,
@@ -114,8 +120,7 @@ public class ChurchToolsApi {
 					System.currentTimeMillis());
 
 		} catch (Exception e) {
-			System.out
-					.println("FEHLER! Der AccessToken konnte nicht erfolgreich vom ChurchTools Server geholt werden.");
+			Logger.getInstance().err("FEHLER! Der AccessToken konnte nicht erfolgreich vom ChurchTools Server geholt werden.", e, getClass());
 		}
 	}
 
@@ -186,7 +191,8 @@ public class ChurchToolsApi {
 			});
 			return Optional.ofNullable(r.getData());
 		} catch (IOException e) {
-			Logger.getInstance().err("Error while fetching Services from ChurchToolsApi " + e.getMessage(), e, getClass());
+			Logger.getInstance().err("Error while fetching Services from ChurchToolsApi " + e.getMessage(), e,
+					getClass());
 		}
 		return Optional.empty();
 	}
@@ -224,7 +230,8 @@ public class ChurchToolsApi {
 			});
 			return Optional.ofNullable(r.getData());
 		} catch (IOException e) {
-			Logger.getInstance().err("Error while fetching Agenda for Event from ChurchToolsApi " + e.getMessage(), e, getClass());
+			Logger.getInstance().err("Error while fetching Agenda for Event from ChurchToolsApi " + e.getMessage(), e,
+					getClass());
 		}
 		return Optional.empty();
 	}

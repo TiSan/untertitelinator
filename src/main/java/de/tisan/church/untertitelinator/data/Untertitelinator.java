@@ -37,9 +37,6 @@ public class Untertitelinator {
 
     private List<Service> services;
 
-    private static Untertitelinator instance;
-
-
     public Untertitelinator() {
         songs = new ArrayList<Song>();
 
@@ -83,12 +80,15 @@ public class Untertitelinator {
 
     public synchronized void loadSongs() {
         songs.clear();
+        
         File songDir = new File(
                 (String) JSONPersistence.get().getSetting(UTPersistenceConstants.SONGSFOLDERPATH, "songs/"));
+       
         if (songDir.exists() == false) {
             songDir.mkdirs();
             return;
         }
+        
         FilenameFilter filter = new FilenameFilter() {
 
             @Override
