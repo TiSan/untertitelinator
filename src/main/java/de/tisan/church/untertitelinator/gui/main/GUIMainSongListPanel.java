@@ -16,7 +16,6 @@ import de.tisan.church.untertitelinator.instancer.packets.Command;
 import de.tisan.church.untertitelinator.instancer.packets.CommandPacket;
 import de.tisan.church.untertitelinator.instancer.packets.Packet;
 import de.tisan.church.untertitelinator.instancer.packets.SongListChangedPacket;
-import de.tisan.church.untertitelinator.main.Loader;
 import de.tisan.flatui.components.fbutton.FlatButton;
 import de.tisan.flatui.components.fcommons.FlatColors;
 import de.tisan.flatui.components.fcommons.FlatLayoutManager;
@@ -102,7 +101,7 @@ public class GUIMainSongListPanel extends AGUIMainPanel {
 		btnUpdate.addMouseListener(Priority.NORMAL, new MouseListenerImpl() {
 			@Override
 			public void onMouseRelease(MouseReleaseHandler handler) {
-				int result = JOptionPane.showConfirmDialog(Loader.getMainUi(),
+				int result = JOptionPane.showConfirmDialog(instance,
 						"Möchtest du wirklich alle Songs neu laden? Deine Reihenfolge geht dadurch verloren!",
 						"Songs neu laden", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 

@@ -7,7 +7,6 @@ import de.tisan.church.untertitelinator.gui.main.GUIMain;
 import de.tisan.church.untertitelinator.gui.presentator.GUIPresentator;
 import de.tisan.church.untertitelinator.instancer.client.UTInstanceClient;
 import de.tisan.church.untertitelinator.main.Controller;
-import de.tisan.church.untertitelinator.main.Loader;
 import de.tisan.tisanapi.logger.Logger;
 
 public class UTInstancer {
@@ -37,7 +36,7 @@ public class UTInstancer {
 		try {
 			UTInstanceServer.get().startServer();
 		} catch (UnknownHostException e) {
-			Logger.getInstance().err("UTInstanceServer couldnt be started! " + e.getMessage(), e, Loader.class);
+			Logger.getInstance().err("UTInstanceServer couldnt be started! " + e.getMessage(), e, UTInstancer.class);
 		}
 	}
 
