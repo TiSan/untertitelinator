@@ -5,12 +5,16 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.RenderingHints;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import java.util.List;
 
 import javax.swing.JPanel;
 
+import de.tisan.church.untertitelinator.instancer.UTEventHub;
+import de.tisan.church.untertitelinator.instancer.packets.Command;
+import de.tisan.church.untertitelinator.instancer.packets.CommandPacket;
 import de.tisan.church.untertitelinator.instancer.packets.Monitor;
 import de.tisan.flatui.components.fcommons.FlatColors;
 import de.tisan.flatui.components.fcommons.FlatUI;
@@ -38,6 +42,16 @@ public class MonitorPainter extends JPanel {
 			public void mouseDragged(MouseEvent e) {
 
 			}
+		});
+
+		addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if(selectedMonitorIndex >= 0 && selectedMonitorIndex < monitorList.size()) {
+					UTEventHub.get().publish(new CommandPacket(Command.KEYER_CHANGE_DISPLAY, monitorList.get(selectedMonitorIndex).getName()));
+				}
+			}
+
 		});
 	}
 

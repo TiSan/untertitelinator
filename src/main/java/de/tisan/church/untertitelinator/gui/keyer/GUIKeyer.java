@@ -161,7 +161,8 @@ public class GUIKeyer extends JFrame {
 				@Override
 				public void onEventReceived(Packet packet) {
 					if (packet instanceof CommandPacket) {
-						switch (((CommandPacket) packet).getCommand()) {
+						CommandPacket sPacket = (CommandPacket) packet;
+						switch (sPacket.getCommand()) {
 						case TOGGLE_KOLLEKTE:
 							boolean newState = toggleKollekte();
 							UTEventHub.get().publish(new GUIKeyerLayerChangePacket(GUIKeyerLayer.KOLLEKTE, newState));
@@ -228,6 +229,21 @@ public class GUIKeyer extends JFrame {
 							} catch (Exception e) {
 								e.printStackTrace();
 							}
+							break;
+						case KEYER_CHANGE_DISPLAY:
+							
+							GraphicsDevice[] devices = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices();
+							GraphicsDevice display = devices[0];
+							for (GraphicsDevice device : devices) {
+
+								if (sPacket.getArgs().get(0).equals(device.getIDstring())) {
+									display = device;
+									break;
+								}
+							}
+							Rectangle displayRect = display.getDefaultConfiguration().getBounds();
+							setLocation(displayRect.getLocation());
+							setSize(displayRect.getSize());
 							break;
 						default:
 							break;
