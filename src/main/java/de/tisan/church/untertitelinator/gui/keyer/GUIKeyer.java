@@ -1,12 +1,16 @@
 package de.tisan.church.untertitelinator.gui.keyer;
 
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Robot;
+import java.awt.Toolkit;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -60,6 +64,7 @@ public class GUIKeyer extends JFrame {
 
 	public GUIKeyer() {
 		try {
+
 			String useDisplay = (String) JSONPersistence.get().getSetting(UTPersistenceConstants.GUIKEYERDISPLAYID,
 					"\\Display1");
 			GraphicsDevice[] devices = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices();
@@ -87,6 +92,16 @@ public class GUIKeyer extends JFrame {
 			contentPane.setLayout(null);
 			setContentPane(contentPane);
 			contentPane.setBackground(bg);
+
+			// Transparent 16 x 16 pixel cursor image.
+			BufferedImage cursorImg = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
+
+			// Create a new blank cursor.
+			Cursor blankCursor = Toolkit.getDefaultToolkit().createCustomCursor(cursorImg, new Point(0, 0),
+					"blank cursor");
+
+			// Set the blank cursor to the JFrame.
+			getContentPane().setCursor(blankCursor);
 
 			FlatLayoutManager man = FlatLayoutManager.get(this);
 			man.disableAllEffects();
@@ -201,9 +216,11 @@ public class GUIKeyer extends JFrame {
 //									g.dispose();
 
 									ByteArrayOutputStream bos = new ByteArrayOutputStream();
-									ImageIO.write(r.createScreenCapture(device.getDefaultConfiguration().getBounds()), "jpg", bos);
+									ImageIO.write(r.createScreenCapture(device.getDefaultConfiguration().getBounds()),
+											"jpg", bos);
 									mon.setImage(bos.toByteArray());
-									mon.setBounds(new int[]{device.getDefaultConfiguration().getBounds().width, device.getDefaultConfiguration().getBounds().height});
+									mon.setBounds(new int[] { device.getDefaultConfiguration().getBounds().width,
+											device.getDefaultConfiguration().getBounds().height });
 									monitorList.add(mon);
 								}
 								KeyerMonitorListPacket mlPacket = new KeyerMonitorListPacket(monitorList);
