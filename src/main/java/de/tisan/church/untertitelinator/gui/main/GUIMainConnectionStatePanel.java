@@ -8,14 +8,26 @@ import javax.swing.JLabel;
 import de.tisan.church.untertitelinator.instancer.UTEventHub;
 import de.tisan.church.untertitelinator.instancer.UTEventListener;
 import de.tisan.church.untertitelinator.instancer.UTInstance;
+import de.tisan.church.untertitelinator.instancer.packets.Command;
+import de.tisan.church.untertitelinator.instancer.packets.CommandPacket;
 import de.tisan.church.untertitelinator.instancer.packets.ConnectionStatusPacket;
 import de.tisan.church.untertitelinator.instancer.packets.KeepAlivePacket;
+import de.tisan.church.untertitelinator.instancer.packets.KeyerMonitorListPacket;
 import de.tisan.church.untertitelinator.instancer.packets.Packet;
 import de.tisan.flatui.components.fbutton.FlatButton;
 import de.tisan.flatui.components.fcommons.Anchor;
 import de.tisan.flatui.components.fcommons.FlatColors;
 import de.tisan.flatui.components.fcommons.FlatLayoutManager;
 import de.tisan.flatui.components.ffont.FlatFont;
+import de.tisan.flatui.components.flisteners.MouseClickedHandler;
+import de.tisan.flatui.components.flisteners.MouseDragHandler;
+import de.tisan.flatui.components.flisteners.MouseEnterHandler;
+import de.tisan.flatui.components.flisteners.MouseLeaveHandler;
+import de.tisan.flatui.components.flisteners.MouseListener;
+import de.tisan.flatui.components.flisteners.MouseMoveHandler;
+import de.tisan.flatui.components.flisteners.MousePressHandler;
+import de.tisan.flatui.components.flisteners.MouseReleaseHandler;
+import de.tisan.flatui.components.flisteners.Priority;
 import de.tisan.tisanapi.logger.Logger;
 
 public class GUIMainConnectionStatePanel extends AGUIMainPanel {
@@ -43,6 +55,37 @@ public class GUIMainConnectionStatePanel extends AGUIMainPanel {
         boxKeyer.setAnchor(Anchor.LEFT, Anchor.RIGHT);
         boxKeyer.disableEffects();
         boxKeyer.setBackground(FlatColors.HIGHLIGHTBACKGROUND);
+        boxKeyer.addMouseListener(Priority.NORMAL, new MouseListener() {
+			
+			@Override
+			public void onMouseRelease(MouseReleaseHandler handler) {
+				UTEventHub.get().publish(new CommandPacket(Command.KEYER_SEND_DISPLAYS));
+			}
+			
+			@Override
+			public void onMousePress(MousePressHandler handler) {
+			}
+			
+			@Override
+			public void onMouseMove(MouseMoveHandler handler) {
+			}
+			
+			@Override
+			public void onMouseLeave(MouseLeaveHandler handler) {
+			}
+			
+			@Override
+			public void onMouseEnter(MouseEnterHandler handler) {
+			}
+			
+			@Override
+			public void onMouseDrag(MouseDragHandler handler) {
+			}
+			
+			@Override
+			public void onMouseClicked(MouseClickedHandler handler) {
+			}
+		});
         add(boxKeyer);
 
         boxPresentator = new FlatButton("Presentator", man);
@@ -72,6 +115,10 @@ public class GUIMainConnectionStatePanel extends AGUIMainPanel {
                             boxPresentator.setBackground(FlatColors.RED);
                             break;
                     }
+                } else if(packet instanceof KeyerMonitorListPacket) {
+                	KeyerMonitorListPacket monitorList = (KeyerMonitorListPacket) packet;
+                	
+                	new GUISelectMonitor(monitorList.getMonitorList()).setVisible(true);
                 }
             }
         });

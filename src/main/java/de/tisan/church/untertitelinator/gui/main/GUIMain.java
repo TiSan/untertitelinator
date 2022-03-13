@@ -39,6 +39,7 @@ public class GUIMain extends JFrame {
 		setUndecorated(true);
 		setSize(930, 700);
 		setResizable(false);
+		setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/de/tisan/church/untertitelinator/resources/ut_icon4.png")));
 
 		setLocation((int) (dim.getWidth() / 2 - (getWidth() / 2)), (int) (dim.getHeight() / 2 - (getHeight() / 2)));
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
