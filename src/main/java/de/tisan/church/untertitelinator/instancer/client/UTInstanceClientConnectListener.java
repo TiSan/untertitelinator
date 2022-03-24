@@ -1,16 +1,16 @@
 package de.tisan.church.untertitelinator.instancer.client;
 
 import de.tisan.church.untertitelinator.instancer.UTEventHub;
-import de.tisan.church.untertitelinator.instancer.UTInstance;
+import de.tisan.church.untertitelinator.instancer.UTInstanceType;
 import de.tisan.church.untertitelinator.instancer.packets.ConnectionStatusPacket;
 import de.tisan.tisanapi.logger.Logger;
 import de.tisan.tisanapi.sockets.listeners.ObjectSocketConnectListener;
 
 public class UTInstanceClientConnectListener<Packet> extends ObjectSocketConnectListener<Packet>
 {
-	UTInstance instance;
+	UTInstanceType instance;
 
-	public UTInstanceClientConnectListener(UTInstance instance){
+	public UTInstanceClientConnectListener(UTInstanceType instance){
 		this.instance = instance;
 
 	}

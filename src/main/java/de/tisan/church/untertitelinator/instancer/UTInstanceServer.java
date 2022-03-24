@@ -13,7 +13,7 @@ import de.tisan.tools.persistencemanager.JSONPersistence;
 
 public class UTInstanceServer {
 	private static UTInstanceServer instance;
-
+	
 	public static UTInstanceServer get() {
 		return instance == null ? instance = new UTInstanceServer() : instance;
 	}
@@ -67,7 +67,7 @@ public class UTInstanceServer {
 				while (true) {
 					try {
 						Thread.sleep(2000);
-						sendPacket(new KeepAlivePacket(UTInstance.CONTROLLER));
+						sendPacket(new KeepAlivePacket(UTInstanceType.CONTROLLER));
 					} catch (Exception e) {
 					}
 				}

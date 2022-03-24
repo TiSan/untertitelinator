@@ -7,7 +7,7 @@ import javax.swing.JLabel;
 
 import de.tisan.church.untertitelinator.instancer.UTEventHub;
 import de.tisan.church.untertitelinator.instancer.UTEventListener;
-import de.tisan.church.untertitelinator.instancer.UTInstance;
+import de.tisan.church.untertitelinator.instancer.UTInstanceType;
 import de.tisan.church.untertitelinator.instancer.packets.Command;
 import de.tisan.church.untertitelinator.instancer.packets.CommandPacket;
 import de.tisan.church.untertitelinator.instancer.packets.ConnectionStatusPacket;
@@ -138,13 +138,13 @@ public class GUIMainConnectionStatePanel extends AGUIMainPanel {
                     if(keyerOnline && current - lastTsKeyer > 4000){
                         keyerOnline = false;
                         boxKeyer.setBackground(FlatColors.HIGHLIGHTBACKGROUND);
-                        UTEventHub.get().publish(new ConnectionStatusPacket(ConnectionStatusPacket.ConnectionType.SERVER, UTInstance.KEYER, false), false);
+                        UTEventHub.get().publish(new ConnectionStatusPacket(ConnectionStatusPacket.ConnectionType.SERVER, UTInstanceType.KEYER, false), false);
                     }
 
                     if(presentatorOnline && current - lastTsPresentator > 4000){
                         presentatorOnline = false;
                         boxPresentator.setBackground(FlatColors.HIGHLIGHTBACKGROUND);
-                        UTEventHub.get().publish(new ConnectionStatusPacket(ConnectionStatusPacket.ConnectionType.SERVER, UTInstance.PRESENTATOR, false), false);
+                        UTEventHub.get().publish(new ConnectionStatusPacket(ConnectionStatusPacket.ConnectionType.SERVER, UTInstanceType.PRESENTATOR, false), false);
                     }
 
                 }

@@ -19,7 +19,7 @@ import javax.swing.JPanel;
 import de.tisan.church.untertitelinator.gui.common.GUIStandbyPanel;
 import de.tisan.church.untertitelinator.instancer.UTEventHub;
 import de.tisan.church.untertitelinator.instancer.UTEventListener;
-import de.tisan.church.untertitelinator.instancer.UTInstance;
+import de.tisan.church.untertitelinator.instancer.UTInstanceType;
 import de.tisan.church.untertitelinator.instancer.packets.ConnectionStatusPacket;
 import de.tisan.church.untertitelinator.instancer.packets.Packet;
 import de.tisan.church.untertitelinator.instancer.packets.SongLinePacket;
@@ -152,7 +152,7 @@ public class GUIPresentator extends JFrame {
 					}
 				} else if (packet instanceof ConnectionStatusPacket) {
 					ConnectionStatusPacket p = (ConnectionStatusPacket) packet;
-					if (p.getModule().equals(UTInstance.PRESENTATOR)) {
+					if (p.getModule().equals(UTInstanceType.PRESENTATOR)) {
 						pnlStandby.setVisible(!p.isConnected());
 					}
 				}

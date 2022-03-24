@@ -15,7 +15,7 @@ public class UTInstanceServerListener<Packet> extends ObjectServerSocketConnectL
 
 	@Override
 	public void onDisconnect(ObjectSocket<Packet> socket) {
-
+		UTInstancer.get().removeInstance(UTInstancer.get().getInstanceForSocket(socket));
 	}
 
 	@Override

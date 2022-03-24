@@ -5,7 +5,7 @@ import java.util.List;
 
 import de.tisan.church.untertitelinator.instancer.UTDiscovery;
 import de.tisan.church.untertitelinator.instancer.UTEventHub;
-import de.tisan.church.untertitelinator.instancer.UTInstance;
+import de.tisan.church.untertitelinator.instancer.UTInstanceType;
 import de.tisan.church.untertitelinator.instancer.UTInstanceConnection;
 import de.tisan.church.untertitelinator.instancer.packets.ConnectionStatusPacket;
 import de.tisan.church.untertitelinator.instancer.packets.KeepAlivePacket;
@@ -20,7 +20,7 @@ public class UTInstanceClient {
 	private ObjectSocket<Packet> socket;
 	private List<Packet> queue;
 	private List<UTInstanceConnection> oServer;
-	private UTInstance instanceType;
+	private UTInstanceType instanceType;
 
 	public static UTInstanceClient get() {
 		return instance == null ? instance = new UTInstanceClient() : instance;
@@ -31,7 +31,7 @@ public class UTInstanceClient {
 		queue = new ArrayList<Packet>();
 	}
 
-	public void connect(UTInstance instance) {
+	public void connect(UTInstanceType instance) {
 		this.instanceType = instance;
 		new Thread(new Runnable() {
 

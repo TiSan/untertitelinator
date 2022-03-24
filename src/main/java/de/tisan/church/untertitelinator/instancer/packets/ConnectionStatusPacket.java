@@ -1,18 +1,18 @@
 package de.tisan.church.untertitelinator.instancer.packets;
 
-import de.tisan.church.untertitelinator.instancer.UTInstance;
+import de.tisan.church.untertitelinator.instancer.UTInstanceType;
 
 public class ConnectionStatusPacket extends Packet{
 
     ConnectionType connectionType;
-    UTInstance module;
+    UTInstanceType module;
     boolean connected;
 
     public ConnectionStatusPacket() {
 
     }
 
-    public ConnectionStatusPacket(ConnectionType type, UTInstance module, boolean connected) {
+    public ConnectionStatusPacket(ConnectionType type, UTInstanceType module, boolean connected) {
         this.connectionType = type;
         this.module = module;
         this.connected = connected;
@@ -26,7 +26,7 @@ public class ConnectionStatusPacket extends Packet{
         return connected;
     }
 
-    public UTInstance getModule() {
+    public UTInstanceType getModule() {
         return module;
     }
 

@@ -23,7 +23,7 @@ import de.tisan.church.untertitelinator.churchtools.api.objects.Event;
 import de.tisan.church.untertitelinator.gui.common.GUIStandbyPanel;
 import de.tisan.church.untertitelinator.instancer.UTEventHub;
 import de.tisan.church.untertitelinator.instancer.UTEventListener;
-import de.tisan.church.untertitelinator.instancer.UTInstance;
+import de.tisan.church.untertitelinator.instancer.UTInstanceType;
 import de.tisan.church.untertitelinator.instancer.packets.Command;
 import de.tisan.church.untertitelinator.instancer.packets.CommandPacket;
 import de.tisan.church.untertitelinator.instancer.packets.ConnectionStatusPacket;
@@ -253,7 +253,7 @@ public class GUIKeyer extends JFrame {
 						event = p.getEvent();
 					} else if (packet instanceof ConnectionStatusPacket) {
 						ConnectionStatusPacket p = (ConnectionStatusPacket) packet;
-						if (p.getModule().equals(UTInstance.KEYER)) {
+						if (p.getModule().equals(UTInstanceType.KEYER)) {
 							pnlStandby.setVisible(!p.isConnected());
 						}
 					}
