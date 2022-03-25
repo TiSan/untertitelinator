@@ -12,7 +12,7 @@ import de.tisan.church.untertitelinator.instancer.packets.Command;
 import de.tisan.church.untertitelinator.instancer.packets.CommandPacket;
 import de.tisan.church.untertitelinator.instancer.packets.ConnectionStatusPacket;
 import de.tisan.church.untertitelinator.instancer.packets.KeepAlivePacket;
-import de.tisan.church.untertitelinator.instancer.packets.KeyerMonitorListPacket;
+import de.tisan.church.untertitelinator.instancer.packets.MonitorListPacket;
 import de.tisan.church.untertitelinator.instancer.packets.Packet;
 import de.tisan.flatui.components.fbutton.FlatButton;
 import de.tisan.flatui.components.fcommons.Anchor;
@@ -53,7 +53,7 @@ public class GUIMainConnectionStatePanel extends AGUIMainPanel {
         boxKeyer = new FlatButton("Keyer", man);
         boxKeyer.setBounds(0, 25, 100, 25);
         boxKeyer.setAnchor(Anchor.LEFT, Anchor.RIGHT);
-        boxKeyer.disableEffects();
+        //boxKeyer.disableEffects();
         boxKeyer.setBackground(FlatColors.HIGHLIGHTBACKGROUND);
         boxKeyer.addMouseListener(Priority.NORMAL, new MouseListener() {
 			
@@ -92,7 +92,38 @@ public class GUIMainConnectionStatePanel extends AGUIMainPanel {
         boxPresentator.setBounds(105, 25, 100, 25);
         boxPresentator.setAnchor(Anchor.LEFT, Anchor.RIGHT);
         boxPresentator.setBackground(FlatColors.HIGHLIGHTBACKGROUND);
-        boxPresentator.disableEffects();
+        //boxPresentator.disableEffects();
+        boxPresentator.addMouseListener(Priority.NORMAL, new MouseListener() {
+			
+			@Override
+			public void onMouseRelease(MouseReleaseHandler handler) {
+				UTEventHub.get().publish(new CommandPacket(Command.PRESENTATOR_SEND_DISPLAYS));
+			}
+			
+			@Override
+			public void onMousePress(MousePressHandler handler) {
+			}
+			
+			@Override
+			public void onMouseMove(MouseMoveHandler handler) {
+			}
+			
+			@Override
+			public void onMouseLeave(MouseLeaveHandler handler) {
+			}
+			
+			@Override
+			public void onMouseEnter(MouseEnterHandler handler) {
+			}
+			
+			@Override
+			public void onMouseDrag(MouseDragHandler handler) {
+			}
+			
+			@Override
+			public void onMouseClicked(MouseClickedHandler handler) {
+			}
+		});
         add(boxPresentator);
 
         UTEventHub.get().registerListener(new UTEventListener() {
@@ -115,10 +146,10 @@ public class GUIMainConnectionStatePanel extends AGUIMainPanel {
                             boxPresentator.setBackground(FlatColors.RED);
                             break;
                     }
-                } else if(packet instanceof KeyerMonitorListPacket) {
-                	KeyerMonitorListPacket monitorList = (KeyerMonitorListPacket) packet;
+                } else if(packet instanceof MonitorListPacket) {
+                	MonitorListPacket monitorList = (MonitorListPacket) packet;
                 	
-                	new GUISelectMonitor(monitorList.getMonitorList()).setVisible(true);
+                	new GUISelectMonitor(monitorList).setVisible(true);
                 }
             }
         });

@@ -1,4 +1,4 @@
-package de.tisan.church.untertitelinator.gui.keyer;
+package de.tisan.church.untertitelinator.gui.player;
 
 import java.awt.Dimension;
 import java.awt.event.ComponentAdapter;
@@ -6,6 +6,7 @@ import java.awt.event.ComponentEvent;
 
 import javax.swing.JPanel;
 
+import de.tisan.church.untertitelinator.gui.keyer.GUIKeyerLayer;
 import de.tisan.church.untertitelinator.instancer.UTEventHub;
 import de.tisan.church.untertitelinator.instancer.UTEventListener;
 import de.tisan.church.untertitelinator.instancer.packets.Command;
@@ -19,13 +20,16 @@ import uk.co.caprica.vlcj.media.MediaRef;
 import uk.co.caprica.vlcj.player.base.MediaPlayer;
 import uk.co.caprica.vlcj.player.component.EmbeddedMediaPlayerComponent;
 
-public class GUIKeyerVideoPanel extends JPanel {
+public class GUIVideoPanel extends JPanel {
 
 	private static final long serialVersionUID = 5623162033757903847L;
 	private EmbeddedMediaPlayerComponent vlc;
 	private String url;
 
-	public GUIKeyerVideoPanel(FlatLayoutManager man, GUIKeyer instance, Dimension preferredSize) {
+	public GUIVideoPanel(FlatLayoutManager man, Dimension preferredSize) {
+		try {
+			
+		
 		setLayout(null);
 		setOpaque(false);
 		setBackground(FlatColors.BLACK);
@@ -62,7 +66,9 @@ public class GUIKeyerVideoPanel extends JPanel {
 				}
 			}
 		});
-
+		} catch(java.lang.UnsatisfiedLinkError e) {
+			e.printStackTrace();
+		}
 		repaint();
 	}
 

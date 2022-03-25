@@ -21,6 +21,7 @@ import javax.swing.JPanel;
 
 import de.tisan.church.untertitelinator.churchtools.api.objects.Event;
 import de.tisan.church.untertitelinator.gui.common.GUIStandbyPanel;
+import de.tisan.church.untertitelinator.gui.player.GUIVideoPanel;
 import de.tisan.church.untertitelinator.instancer.UTEventHub;
 import de.tisan.church.untertitelinator.instancer.UTEventListener;
 import de.tisan.church.untertitelinator.instancer.UTInstance;
@@ -29,8 +30,8 @@ import de.tisan.church.untertitelinator.instancer.packets.CommandPacket;
 import de.tisan.church.untertitelinator.instancer.packets.ConnectionStatusPacket;
 import de.tisan.church.untertitelinator.instancer.packets.EventSelectionChangedPacket;
 import de.tisan.church.untertitelinator.instancer.packets.GUIKeyerLayerChangePacket;
-import de.tisan.church.untertitelinator.instancer.packets.KeyerMonitorListPacket;
 import de.tisan.church.untertitelinator.instancer.packets.Monitor;
+import de.tisan.church.untertitelinator.instancer.packets.MonitorListPacket;
 import de.tisan.church.untertitelinator.instancer.packets.Packet;
 import de.tisan.church.untertitelinator.instancer.packets.SongLinePacket;
 import de.tisan.church.untertitelinator.settings.UTPersistenceConstants;
@@ -60,7 +61,7 @@ public class GUIKeyer extends JFrame {
 	Color bg;
 	Color fg;
 	protected Event event;
-	private GUIKeyerVideoPanel pnlVideo;
+	private GUIVideoPanel pnlVideo;
 
 	public GUIKeyer() {
 		try {
@@ -119,7 +120,7 @@ public class GUIKeyer extends JFrame {
 			contentPane.add(pnlPictureRotation);
 			pnlPictureRotation.setVisible(false);
 
-			pnlVideo = new GUIKeyerVideoPanel(man, this, getSize());
+			pnlVideo = new GUIVideoPanel(man, getSize());
 			pnlVideo.setBounds(0, 0, getWidth(), getHeight());
 			contentPane.add(pnlVideo);
 			pnlVideo.setVisible(false);
@@ -204,17 +205,6 @@ public class GUIKeyer extends JFrame {
 								for (GraphicsDevice device : devices) {
 									Monitor mon = new Monitor();
 									mon.setName(device.getIDstring());
-//									Image capture = r.createScreenCapture(device.getDefaultConfiguration().getBounds())
-//											.getScaledInstance(200, 100, Image.SCALE_SMOOTH);
-//									int width = capture.getWidth(null);
-//									int height = capture.getHeight(null);
-//
-//									// width and height are of the toolkit image
-//									BufferedImage newImage = new BufferedImage(width, height,
-//											BufferedImage.TYPE_INT_ARGB);
-//									Graphics g = newImage.getGraphics();
-//									g.drawImage(capture, 0, 0, null);
-//									g.dispose();
 
 									ByteArrayOutputStream bos = new ByteArrayOutputStream();
 									ImageIO.write(r.createScreenCapture(device.getDefaultConfiguration().getBounds()),
@@ -224,7 +214,7 @@ public class GUIKeyer extends JFrame {
 											device.getDefaultConfiguration().getBounds().height });
 									monitorList.add(mon);
 								}
-								KeyerMonitorListPacket mlPacket = new KeyerMonitorListPacket(monitorList);
+								MonitorListPacket mlPacket = new MonitorListPacket(monitorList, UTInstance.KEYER);
 								UTEventHub.get().publish(mlPacket);
 							} catch (Exception e) {
 								e.printStackTrace();

@@ -13,20 +13,22 @@ import java.util.List;
 import javax.swing.JPanel;
 
 import de.tisan.church.untertitelinator.instancer.UTEventHub;
+import de.tisan.church.untertitelinator.instancer.UTInstance;
 import de.tisan.church.untertitelinator.instancer.packets.Command;
 import de.tisan.church.untertitelinator.instancer.packets.CommandPacket;
 import de.tisan.church.untertitelinator.instancer.packets.Monitor;
+import de.tisan.church.untertitelinator.instancer.packets.MonitorListPacket;
 import de.tisan.flatui.components.fcommons.FlatColors;
 import de.tisan.flatui.components.fcommons.FlatUI;
 
 public class MonitorPainter extends JPanel {
 	private static final long serialVersionUID = 6424235908522469165L;
-	List<Monitor> monitorList;
+	List<Monitor> monitors;
 	int selectedMonitorIndex = -1;
 
-	public MonitorPainter(List<Monitor> monitorList) {
-		this.monitorList = monitorList;
-		monitorList.stream().forEach(Monitor::preRender);
+	public MonitorPainter(MonitorListPacket monitorList) {
+		this.monitors= monitorList.getMonitorList();
+		monitors.stream().forEach(Monitor::preRender);
 		addMouseMotionListener(new MouseMotionListener() {
 
 			@Override
@@ -47,8 +49,14 @@ public class MonitorPainter extends JPanel {
 		addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if(selectedMonitorIndex >= 0 && selectedMonitorIndex < monitorList.size()) {
-					UTEventHub.get().publish(new CommandPacket(Command.KEYER_CHANGE_DISPLAY, monitorList.get(selectedMonitorIndex).getName()));
+				if(selectedMonitorIndex >= 0 && selectedMonitorIndex < monitors.size()) {
+					if(monitorList.getInstanceType().equals(UTInstance.KEYER)) {
+						UTEventHub.get().publish(new CommandPacket(Command.KEYER_CHANGE_DISPLAY, monitors.get(selectedMonitorIndex).getName()));
+						
+					} else if(monitorList.getInstanceType().equals(UTInstance.PRESENTATOR)) {
+						UTEventHub.get().publish(new CommandPacket(Command.PRESENTATOR_CHANGE_DISPLAY, monitors.get(selectedMonitorIndex).getName()));
+						
+					}
 				}
 			}
 
@@ -70,7 +78,7 @@ public class MonitorPainter extends JPanel {
 		int standThickness = 10;
 		int thickness = 5;
 		int index = 0;
-		for (Monitor monitor : monitorList) {
+		for (Monitor monitor : monitors) {
 			g.setColor(index == selectedMonitorIndex ? FlatColors.RED : FlatColors.WHITE);
 
 			g.drawString(monitor.getName() + " (" + monitor.getBounds()[0] + "x" + monitor.getBounds()[1] + ")",

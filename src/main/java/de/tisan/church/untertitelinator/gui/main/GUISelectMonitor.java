@@ -1,11 +1,9 @@
 package de.tisan.church.untertitelinator.gui.main;
 
-import java.util.List;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import de.tisan.church.untertitelinator.instancer.packets.Monitor;
+import de.tisan.church.untertitelinator.instancer.packets.MonitorListPacket;
 import de.tisan.flatui.components.fcommons.FlatColors;
 import de.tisan.flatui.components.fcommons.FlatLayoutManager;
 import de.tisan.flatui.components.ftitlebar.DefaultFlatTitleBarListener;
@@ -19,7 +17,7 @@ public class GUISelectMonitor extends JFrame {
 		new GUISelectMonitor(null).setVisible(true);
 	}
 
-	public GUISelectMonitor(List<Monitor> monitorList) {
+	public GUISelectMonitor(MonitorListPacket monitorList) {
 		try {
 			setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 			setUndecorated(true);
