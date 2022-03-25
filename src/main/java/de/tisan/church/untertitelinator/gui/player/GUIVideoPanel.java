@@ -6,12 +6,10 @@ import java.awt.event.ComponentEvent;
 
 import javax.swing.JPanel;
 
-import de.tisan.church.untertitelinator.gui.keyer.GUIKeyerLayer;
 import de.tisan.church.untertitelinator.instancer.UTEventHub;
 import de.tisan.church.untertitelinator.instancer.UTEventListener;
 import de.tisan.church.untertitelinator.instancer.packets.Command;
 import de.tisan.church.untertitelinator.instancer.packets.CommandPacket;
-import de.tisan.church.untertitelinator.instancer.packets.GUIKeyerLayerChangePacket;
 import de.tisan.church.untertitelinator.instancer.packets.Packet;
 import de.tisan.flatui.components.fcommons.FlatColors;
 import de.tisan.flatui.components.fcommons.FlatLayoutManager;
@@ -54,15 +52,6 @@ public class GUIVideoPanel extends JPanel {
 					} else if (sPacket.getCommand().equals(Command.STOP_VIDEO)) {
 						stopVideo();
 					}
-				} else if (packet instanceof GUIKeyerLayerChangePacket) {
-					GUIKeyerLayerChangePacket sPacket = (GUIKeyerLayerChangePacket) packet;
-					if (sPacket.getLayerName().equals(GUIKeyerLayer.VIDEO)) {
-						if (sPacket.isVisible() && vlc.mediaPlayer().status().isPlaying() == false) {
-							showVideo();
-						} else if(sPacket.isVisible() == false && vlc.mediaPlayer().status().isPlaying() == true){
-							stopVideo();
-						}
-					}
 				}
 			}
 		});
@@ -85,6 +74,17 @@ public class GUIVideoPanel extends JPanel {
 
 	private void stopVideo() {
 		vlc.mediaPlayer().controls().stop();
+	}
+	
+	@Override
+	public void setVisible(boolean visible) {
+		super.setVisible(visible);
+		
+		if (visible == true && vlc.mediaPlayer().status().isPlaying() == false) {
+			showVideo();
+		} else if(visible == false && vlc.mediaPlayer().status().isPlaying() == true){
+			stopVideo();
+		}
 	}
 
 }

@@ -167,7 +167,9 @@ public class GUIPresentator extends JFrame {
 
 		man.disableAllEffects();
 	}
+	
 	private boolean toggleVideo() {
+		System.out.println("Toggle video!");
 		if (pnlVideo.isVisible()) {
 			pnlVideo.setVisible(false);
 		} else {
