@@ -19,18 +19,19 @@ import de.tisan.flatui.components.fcommons.Anchor;
 import de.tisan.flatui.components.fcommons.FlatColors;
 import de.tisan.flatui.components.fcommons.FlatLayoutManager;
 import de.tisan.flatui.components.ffont.FlatFont;
+import de.tisan.tisanapi.logger.Logger;
 import de.tisan.tools.persistencemanager.JSONPersistence;
 
 public class GUIPresentatorUntertitelPanel extends JPanel {
 
 	private static final long serialVersionUID = 4135343673389911574L;
-	
+
 	private FlatButton currentLine1;
 	private FlatButton currentLine2;
 	private FlatButton nextLine1;
 	private FlatButton nextLine2;
 	private FlatButton titleLine;
-	
+
 	private GUIPresentator presentator;
 
 	public GUIPresentatorUntertitelPanel(FlatLayoutManager man, GUIPresentator instance, Dimension preferredSize) {
@@ -91,13 +92,13 @@ public class GUIPresentatorUntertitelPanel extends JPanel {
 								calculateFontSize(sPacket.getSongPlayer().getSong().getSongLines());
 								showNewTextLines(sPacket.getSongPlayer().getSong().getTitle(),
 										sPacket.getCurrentLines().get(0), sPacket.getCurrentLines().get(1),
-										sPacket.getNextLines().get(0), sPacket.getNextLines().get(1), 0,
+										sPacket.getNextLines().get(0), sPacket.getNextLines().get(1),
 										sPacket.getCurrentLines().stream().filter(Objects::nonNull)
 												.filter(e -> (e.length() > 0)).findFirst().isPresent() == false);
 							}
 						}).start();
 					}
-				} 
+				}
 			}
 		});
 
@@ -148,23 +149,37 @@ public class GUIPresentatorUntertitelPanel extends JPanel {
 		nextLine2.setFont(newFont);
 	}
 
-	private void showNewTextLines(String title, String line1, String line2, String line3, String line4, int delay,
+	private void showNewTextLines(String title, String line1, String line2, String line3, String line4,
 			boolean paused) {
+
+		updateTextLineFor(titleLine,
+				paused ? (String) JSONPersistence.get().getSetting(UTPersistenceConstants.BLACKOUTLINEFILLER, "")
+						: title);
+		updateTextLineFor(currentLine1, line1);
+		updateTextLineFor(currentLine2, line2);
+		updateTextLineFor(nextLine1, line3);
+		updateTextLineFor(nextLine2, line4);
+
+	}
+
+	private void updateTextLineFor(FlatButton line, String text) {
 		new Thread(new Runnable() {
 
 			@Override
 			public void run() {
-				try {
-					Thread.sleep(delay);
-				} catch (InterruptedException e) {
+				if(line.getText().equals(text)) {
+					return;
 				}
-				titleLine.setText(paused
-						? (String) JSONPersistence.get().getSetting(UTPersistenceConstants.BLACKOUTLINEFILLER, "")
-						: title);
-				currentLine1.setText(line1);
-				currentLine2.setText(line2);
-				nextLine1.setText(line3);
-				nextLine2.setText(line4);
+				line.setForeground(FlatColors.BLACK, true);
+				try {
+					Thread.sleep(500);
+				} catch (InterruptedException e) {
+					Logger.getInstance().err("Timer1 for animation stopped! " + e.getMessage(), e, getClass());
+
+				}
+
+				line.setText(text);
+				line.setForeground(FlatColors.WHITE, true);
 			}
 		}).start();
 	}

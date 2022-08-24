@@ -1,6 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>de.tisan.church</groupId>
 	<artifactId>Untertitelinator</artifactId>
@@ -55,6 +53,13 @@
 			<artifactId>artnet4j</artifactId>
 			<version>0.6.2</version>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.jsoup/jsoup -->
+		<dependency>
+			<groupId>org.jsoup</groupId>
+			<artifactId>jsoup</artifactId>
+			<version>1.15.2</version>
+		</dependency>
+
 		<!-- https://mvnrepository.com/artifact/org.jboss.resteasy/resteasy-client -->
 		<dependency>
 			<groupId>org.jboss.resteasy</groupId>
@@ -132,10 +137,10 @@
 				<executions>
 					<execution>
 						<id>controller</id>
-			            <goals>
-			            	<goal>jar</goal>
-			            </goals>
-			            <phase>package</phase>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+						<phase>package</phase>
 						<configuration>
 							<classifier>controller</classifier>
 							<archive>
@@ -151,10 +156,10 @@
 					</execution>
 					<execution>
 						<id>keyer</id>
-			            <goals>
-			            	<goal>jar</goal>
-			            </goals>
-			            <phase>package</phase>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+						<phase>package</phase>
 						<configuration>
 							<classifier>keyer</classifier>
 							<archive>
@@ -170,10 +175,10 @@
 					</execution>
 					<execution>
 						<id>presentator</id>
-			            <goals>
-			            	<goal>jar</goal>
-			            </goals>
-			            <phase>package</phase>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+						<phase>package</phase>
 						<configuration>
 							<classifier>presentator</classifier>
 							<archive>
