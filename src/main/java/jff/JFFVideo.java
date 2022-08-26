@@ -5,6 +5,8 @@ public class JFFVideo {
 	String thumbnailUrl;
 	String filename;
 	String description;
+	Long timestamp;
+	String timeDescription;
 
 	public JFFVideo() {
 	}
@@ -39,6 +41,18 @@ public class JFFVideo {
 
 	public void setThumbnailUrl(String thumbnailUrl) {
 		this.thumbnailUrl = thumbnailUrl;
+	}
+
+	public Long getTimestamp() { return timestamp; }
+
+	public void setTimestamp(Long timestamp) { this.timestamp = timestamp; }
+
+	public String getTimeDescription() {
+		return timeDescription;
+	}
+
+	public void setTimeDescription(String timeDescription) {
+		this.timeDescription = timeDescription;
 	}
 
 }
