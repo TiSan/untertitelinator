@@ -18,6 +18,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import de.tisan.church.untertitelinator.gui.common.GUIStandbyPanel;
+import de.tisan.church.untertitelinator.gui.keyer.GUIKeyerPictureRotationPanel;
 import de.tisan.church.untertitelinator.gui.player.GUIVideoPanel;
 import de.tisan.church.untertitelinator.instancer.UTEventHub;
 import de.tisan.church.untertitelinator.instancer.UTEventListener;
@@ -40,6 +41,7 @@ public class GUIPresentator extends JFrame {
 	Color bg = FlatColors.BLACK;
 	private GUIPresentatorUntertitelPanel pnlUntertitel;
 	private GUIVideoPanel pnlVideo;
+	private GUIKeyerPictureRotationPanel pnlPictureRotation;
 	
 	
 	public static GUIPresentator get() {
@@ -92,6 +94,11 @@ public class GUIPresentator extends JFrame {
 		pnlStandby.setBounds(0, 0, getWidth(), getHeight());
 		contentPane.add(pnlStandby);
 		
+		pnlPictureRotation = new GUIKeyerPictureRotationPanel(man, getSize());
+		pnlPictureRotation.setBounds(0, 0, getWidth(), getHeight());
+		contentPane.add(pnlPictureRotation);
+		pnlPictureRotation.setVisible(false);
+		
 		pnlVideo = new GUIVideoPanel(man, getSize());
 		pnlVideo.setBounds(0, 0, getWidth(), getHeight());
 		contentPane.add(pnlVideo);
@@ -116,6 +123,9 @@ public class GUIPresentator extends JFrame {
 					switch (sPacket.getCommand()) {
 						case TOGGLE_VIDEO:
 							toggleVideo();
+							break;
+						case TOGGLE_PICTURE_ROTATION:
+							togglePictureRotation();
 							break;
 						case PRESENTATOR_SEND_DISPLAYS:
 							try {
@@ -178,4 +188,12 @@ public class GUIPresentator extends JFrame {
 		return pnlVideo.isVisible();
 	}
 	
+	private boolean togglePictureRotation() {
+		if (pnlPictureRotation.isVisible()) {
+			pnlPictureRotation.setVisible(false);
+		} else {
+			pnlPictureRotation.setVisible(true);
+		}
+		return pnlPictureRotation.isVisible();
+	}
 }
