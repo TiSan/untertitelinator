@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.tisan.church.untertitelinator.instancer.UTDiscovery;
+import de.tisan.church.untertitelinator.instancer.UTDiscoveryResult;
 import de.tisan.church.untertitelinator.instancer.UTEventHub;
 import de.tisan.church.untertitelinator.instancer.UTInstance;
-import de.tisan.church.untertitelinator.instancer.UTInstanceConnection;
 import de.tisan.church.untertitelinator.instancer.packets.ConnectionStatusPacket;
 import de.tisan.church.untertitelinator.instancer.packets.KeepAlivePacket;
 import de.tisan.church.untertitelinator.instancer.packets.Packet;
@@ -19,7 +19,7 @@ public class UTInstanceClient {
 	private UTDiscovery discovery;
 	private ObjectSocket<Packet> socket;
 	private List<Packet> queue;
-	private List<UTInstanceConnection> oServer;
+	private List<UTDiscoveryResult> oServer;
 	private UTInstance instanceType;
 
 	public static UTInstanceClient get() {
@@ -41,7 +41,7 @@ public class UTInstanceClient {
 					oServer = discovery.discoverServerIp();
 				}
 				for (int i = 0; i < oServer.size(); i++) {
-					UTInstanceConnection connection = oServer.get(i);
+					UTDiscoveryResult connection = oServer.get(i);
 					socket = new ObjectSocket<Packet>(connection.getIp(), Integer.valueOf(connection.getPort()), true);
 					boolean result = socket.connect();
 					if (result == true) {

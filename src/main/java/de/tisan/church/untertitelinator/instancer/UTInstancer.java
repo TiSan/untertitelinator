@@ -27,7 +27,6 @@ public class UTInstancer {
 			break;
 		default:
 			break;
-
 		}
 
 	}

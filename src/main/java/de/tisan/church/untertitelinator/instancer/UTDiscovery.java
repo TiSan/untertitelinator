@@ -32,8 +32,8 @@ public class UTDiscovery {
 
 	}
 
-	public List<UTInstanceConnection> discoverServerIp() {
-		List<UTInstanceConnection> connections = new ArrayList<UTInstanceConnection>();
+	public List<UTDiscoveryResult> discoverServerIp() {
+		List<UTDiscoveryResult> connections = new ArrayList<UTDiscoveryResult>();
 		try {
 			if (receiveSocket == null) {
 				Optional<DatagramSocket> oSocket = getNewDatagramSocket();
@@ -50,7 +50,7 @@ public class UTDiscovery {
 			String data = new String(packet.getData());
 			String[] spl = data.split("\\|");
 			for (String s : spl) {
-				UTInstanceConnection connection = new UTInstanceConnection();
+				UTDiscoveryResult connection = new UTDiscoveryResult();
 				String[] spl2 = s.split("_");
 				boolean completeStatement = true;
 				if (spl2[0].trim().startsWith("IP=")) {
