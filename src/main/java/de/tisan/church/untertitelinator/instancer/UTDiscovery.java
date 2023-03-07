@@ -99,12 +99,18 @@ public class UTDiscovery {
 
 			@Override
 			public void run() {
+				int attempt = 0;
 				while (true) {
 					try {
 						sendDiscoveryPacket();
 						Thread.sleep(1000);
 					} catch (Exception e) {
 						Logger.getInstance().err("SendDiscoveryPacket failed! " + e.getMessage(), e, getClass());
+					}
+					attempt++;
+					if(attempt == 10) {
+						Logger.getInstance().err("10 tries for sending a discovery packet failed. Please view the logs and try again with restarting this app.", UTDiscovery.class);
+						return;
 					}
 				}
 			}
