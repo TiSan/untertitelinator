@@ -30,9 +30,9 @@ public class GUIKeyerPictureRotationPanel extends JPanel {
     private final List<BufferedImage> imageList;
     private JLabel layerImage;
 
-    public GUIKeyerPictureRotationPanel(FlatLayoutManager man, GUIKeyer instance, Dimension preferredSize) {
+    public GUIKeyerPictureRotationPanel(FlatLayoutManager man, Dimension preferredSize) {
         setLayout(null);
-        setOpaque(false);
+        setOpaque(true);
         setBackground(FlatColors.BLACK);
         layerImage = new JLabel();
         layerImage.setHorizontalAlignment(SwingConstants.CENTER);
@@ -107,7 +107,6 @@ public class GUIKeyerPictureRotationPanel extends JPanel {
     }
 
     private void showImage(BufferedImage image) {
-        ImageIcon ico = new ImageIcon(image);
         double factor = getScaleFactorToFit(new Dimension(image.getWidth(), image.getHeight()), getSize());
 
         int scaledWidth = (int) (image.getWidth() * factor);

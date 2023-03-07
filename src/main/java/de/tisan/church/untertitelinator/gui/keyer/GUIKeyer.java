@@ -115,7 +115,7 @@ public class GUIKeyer extends JFrame {
 			pnlLogo.setBounds(0, 0, getWidth(), getHeight());
 			contentPane.add(pnlLogo);
 
-			pnlPictureRotation = new GUIKeyerPictureRotationPanel(man, this, getSize());
+			pnlPictureRotation = new GUIKeyerPictureRotationPanel(man, getSize());
 			pnlPictureRotation.setBounds(0, 0, getWidth(), getHeight());
 			contentPane.add(pnlPictureRotation);
 			pnlPictureRotation.setVisible(false);
