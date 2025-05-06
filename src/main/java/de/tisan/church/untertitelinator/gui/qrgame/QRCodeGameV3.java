@@ -89,7 +89,7 @@ public class QRCodeGameV3 extends JFrame {
         infoLabel.setText(currentHint);
     }
 
-    private void clearOldCodes(){
+    private void clearOldCodes() {
         for (QRCodeData qr : activeCodes) {
             remove(qr.label);
         }
@@ -106,7 +106,6 @@ public class QRCodeGameV3 extends JFrame {
         }
         repaint();
     }
-
 
 
 private void nextQRCode() {
@@ -139,11 +138,34 @@ private void nextQRCode() {
         }
         currentHint = "🔢 Reihenfolge: Scanne SEQ-1 → SEQ-2 → SEQ-3";
     } else {
-        String code = UUID.randomUUID().toString().substring(0, 8);
-        QRCodeData qr = new QRCodeData(code, false, false);
-        placeQRCode(qr, new ArrayList<>());
-        activeCodes.add(qr);
         inSequenceMode = false;
+        List<Rectangle> occupied = new ArrayList<>();
+        int numCodes = 3 + random.nextInt(3); // 3–5 Codes
+        for (int i = 0; i < numCodes; i++) {
+            String code = UUID.randomUUID().toString().substring(0, 8);
+            QRCodeData qr = new QRCodeData(code, false, false);
+            placeQRCode(qr, occupied);
+            activeCodes.add(qr);
+
+            // Punkte sinken linear von 100 auf 0 über 5 Sekunden
+            final int maxPoints = 100;
+            final int displayDuration = 5000;
+            long showTime = System.currentTimeMillis();
+            Timer hideTimer = new Timer(50, e -> {
+                long elapsed = System.currentTimeMillis() - showTime;
+                if (elapsed >= displayDuration) {
+                    remove(qr.label);
+                    activeCodes.remove(qr);
+                    repaint();
+                    ((Timer) e.getSource()).stop();
+                } else {
+                    int value = (int) (maxPoints * (1.0 - (double) elapsed / displayDuration));
+                    qr.label.setToolTipText("Noch " + value + " Punkte möglich");
+                    qr.label.putClientProperty("points", value);
+                }
+            });
+            hideTimer.start();
+        }
     }
 
     updateStats();
@@ -206,7 +228,8 @@ private void handleScan(String input) {
                 currentHint = "❌ Falsche Reihenfolge: Erwartet " + expected;
             }
         } else {
-            score++;
+            int dynamicPoints = qr.label.getClientProperty("points") instanceof Integer ? (Integer) qr.label.getClientProperty("points") : 1;
+            score += dynamicPoints;
             currentHint = "✔️ Korrekt!";
             nextQRCode();
         }
