@@ -1,8 +1,5 @@
 package de.tisan.church.untertitelinator.gui.qrgame;
-
 import com.google.zxing.WriterException;
-import de.tisan.church.untertitelinator.gui.qrgame.QRGenerator;
-
 import javax.swing.*;
 import javax.swing.Timer;
 import java.awt.*;
@@ -92,146 +89,159 @@ public class QRCodeGameV3 extends JFrame {
         infoLabel.setText(currentHint);
     }
 
-    private void clearOldCodes() {
+    private void clearOldCodes(){
         for (QRCodeData qr : activeCodes) {
             remove(qr.label);
+        }
+        // Entferne auch alle JLabel-Markierungen mit Zahlen unter den QR-Codes
+        Component[] components = getContentPane().getComponents();
+        List<Component> toRemove = new ArrayList<>();
+        for (Component comp : components) {
+            if (comp instanceof JLabel && ((JLabel) comp).getText().matches("[1-9]")) {
+                toRemove.add(comp);
+            }
+        }
+        for (Component comp : toRemove) {
+            remove(comp);
         }
         repaint();
     }
 
-    private void nextQRCode() {
-        clearOldCodes();
-        activeCodes.clear();
-        currentHint = "";
 
-        int chance = random.nextInt(10);
-        if (chance < 2) {
-            String bonusCode = "BONUS-" + UUID.randomUUID().toString().substring(0, 4);
-            QRCodeData qr = new QRCodeData(bonusCode, true, false);
-            placeQRCode(qr, new ArrayList<>());
+
+private void nextQRCode() {
+    clearOldCodes();
+    activeCodes.clear();
+    currentHint = "";
+
+    int chance = random.nextInt(10);
+    if (chance < 2) {
+        String bonusCode = "BONUS-" + UUID.randomUUID().toString().substring(0, 4);
+        QRCodeData qr = new QRCodeData(bonusCode, true, false);
+        placeQRCode(qr, new ArrayList<>());
+        activeCodes.add(qr);
+        currentHint = "🎁 BONUS! Scanne für +10s und +3 Punkte!";
+        inSequenceMode = false;
+    } else if (chance < 5) {
+        inSequenceMode = true;
+        currentSequenceIndex = 0;
+        List<Rectangle> occupied = new ArrayList<>();
+        for (int i = 1; i <= 3; i++) {
+            String code = "SEQ-" + i;
+            QRCodeData qr = new QRCodeData(code, false, true);
+            placeQRCode(qr, occupied);
+            JLabel label = new JLabel("" + i);
+            label.setForeground(Color.WHITE);
+            label.setFont(new Font("Arial", Font.BOLD, 20));
+            label.setBounds(qr.label.getX(), qr.label.getY() + qrSize, 50, 25);
+            add(label);
             activeCodes.add(qr);
-            currentHint = "🎁 BONUS! Scanne für +10s und +3 Punkte!";
-            inSequenceMode = false;
-        } else if (chance < 5) {
-            inSequenceMode = true;
-            currentSequenceIndex = 0;
-            List<Rectangle> occupied = new ArrayList<>();
-            for (int i = 1; i <= 3; i++) {
-                String code = "SEQ-" + i;
-                QRCodeData qr = new QRCodeData(code, false, true);
-                placeQRCode(qr, occupied);
-                JLabel label = new JLabel("" + i);
-                label.setForeground(Color.WHITE);
-                label.setFont(new Font("Arial", Font.BOLD, 20));
-                label.setBounds(qr.label.getX(), qr.label.getY() + qrSize, 50, 25);
-                add(label);
-                activeCodes.add(qr);
-            }
-            currentHint = "🔢 Reihenfolge: Scanne SEQ-1 → SEQ-2 → SEQ-3";
-        } else {
-            String code = UUID.randomUUID().toString().substring(0, 8);
-            QRCodeData qr = new QRCodeData(code, false, false);
-            placeQRCode(qr, new ArrayList<>());
-            activeCodes.add(qr);
-            inSequenceMode = false;
         }
-
-        updateStats();
+        currentHint = "🔢 Reihenfolge: Scanne SEQ-1 → SEQ-2 → SEQ-3";
+    } else {
+        String code = UUID.randomUUID().toString().substring(0, 8);
+        QRCodeData qr = new QRCodeData(code, false, false);
+        placeQRCode(qr, new ArrayList<>());
+        activeCodes.add(qr);
+        inSequenceMode = false;
     }
 
-    private void placeQRCode(QRCodeData qr, List<Rectangle> occupied) {
-        try {
-            BufferedImage qrImage = QRGenerator.generateQRCode(qr.code, qrSize, qrSize);
-            qr.label.setIcon(new ImageIcon(qrImage));
-            qr.label.setSize(qrSize, qrSize);
+    updateStats();
+}
 
-            Rectangle newRect;
-            boolean overlap;
-            int attempts = 0;
-            do {
-                int x = random.nextInt(Math.max(1, getWidth() - qrSize));
-                int y = random.nextInt(Math.max(1, getHeight() - qrSize - 50));
-                newRect = new Rectangle(x, y, qrSize, qrSize + 30);
-                Rectangle finalNewRect = newRect;
-                overlap = occupied.stream().anyMatch(r -> r.intersects(finalNewRect));
-                attempts++;
-            } while (overlap && attempts < 100);
+private void placeQRCode(QRCodeData qr, List<Rectangle> occupied) {
+    try {
+        BufferedImage qrImage = QRGenerator.generateQRCode(qr.code, qrSize, qrSize);
+        qr.label.setIcon(new ImageIcon(qrImage));
+        qr.label.setSize(qrSize, qrSize);
 
-            qr.label.setLocation(newRect.x, newRect.y);
-            add(qr.label);
-            qr.label.setVisible(true);
+        Rectangle newRect;
+        boolean overlap;
+        int attempts = 0;
+        do {
+            int x = random.nextInt(Math.max(1, getWidth() - qrSize));
+            int y = random.nextInt(Math.max(1, getHeight() - qrSize - 50));
+            newRect = new Rectangle(x, y, qrSize, qrSize + 30);
+            Rectangle finalNewRect = newRect;
+            overlap = occupied.stream().anyMatch(r -> r.intersects(finalNewRect));
+            attempts++;
+        } while (overlap && attempts < 100);
 
-            occupied.add(newRect);
-        } catch (WriterException e) {
-            e.printStackTrace();
-        }
+        qr.label.setLocation(newRect.x, newRect.y);
+        add(qr.label);
+        qr.label.setVisible(true);
+
+        occupied.add(newRect);
+    } catch (WriterException e) {
+        e.printStackTrace();
     }
+}
 
-    private void handleScan(String input) {
-        Optional<QRCodeData> matched = activeCodes.stream()
-                .filter(qr -> qr.code.equals(input))
-                .findFirst();
+private void handleScan(String input) {
+    Optional<QRCodeData> matched = activeCodes.stream()
+            .filter(qr -> qr.code.equals(input))
+            .findFirst();
 
-        if (matched.isPresent()) {
-            QRCodeData qr = matched.get();
+    if (matched.isPresent()) {
+        QRCodeData qr = matched.get();
 
-            if (qr.isBonus) {
-                timeLeft += 10;
-                score += 3;
-                currentHint = "✅ Bonus eingesammelt!";
-                nextQRCode();
-            } else if (qr.isSequence) {
-                String expected = "SEQ-" + (currentSequenceIndex + 1);
-                if (qr.code.equals(expected)) {
-                    currentSequenceIndex++;
-                    score += 2;
-                    currentHint = "✅ " + qr.code + " korrekt!";
-                    if (currentSequenceIndex >= 3) {
-                        score += 5;
-                        inSequenceMode = false;
-                        currentHint = "🏁 Reihenfolge komplett!";
-                        nextQRCode();
-                    }
-                } else {
-                    currentHint = "❌ Falsche Reihenfolge: Erwartet " + expected;
+        if (qr.isBonus) {
+            timeLeft += 10;
+            score += 3;
+            currentHint = "✅ Bonus eingesammelt!";
+            nextQRCode();
+        } else if (qr.isSequence) {
+            String expected = "SEQ-" + (currentSequenceIndex + 1);
+            if (qr.code.equals(expected)) {
+                currentSequenceIndex++;
+                score += 2;
+                currentHint = "✅ " + qr.code + " korrekt!";
+                if (currentSequenceIndex >= 3) {
+                    score += 5;
+                    inSequenceMode = false;
+                    currentHint = "🏁 Reihenfolge komplett!";
+                    nextQRCode();
                 }
             } else {
-                score++;
-                currentHint = "✔️ Korrekt!";
-                nextQRCode();
+                currentHint = "❌ Falsche Reihenfolge: Erwartet " + expected;
             }
         } else {
-            currentHint = "❌ Ungültiger Code!";
+            score++;
+            currentHint = "✔️ Korrekt!";
+            nextQRCode();
         }
-
-        updateStats();
+    } else {
+        currentHint = "❌ Ungültiger Code!";
     }
 
-    private void endGame() {
-        JOptionPane.showMessageDialog(this,
-                "Spiel beendet!\nPunkte: " + score,
-                "Game Over",
-                JOptionPane.INFORMATION_MESSAGE);
-        System.exit(0);
+    updateStats();
+}
+
+private void endGame() {
+    JOptionPane.showMessageDialog(this,
+            "Spiel beendet!\nPunkte: " + score,
+            "Game Over",
+            JOptionPane.INFORMATION_MESSAGE);
+    System.exit(0);
+}
+
+public static void main(String[] args) {
+    SwingUtilities.invokeLater(QRCodeGameV3::new);
+}
+
+private static class QRCodeData {
+    String code;
+    JLabel label;
+    boolean isBonus;
+    boolean isSequence;
+
+    QRCodeData(String code, boolean isBonus, boolean isSequence) {
+        this.code = code;
+        this.isBonus = isBonus;
+        this.isSequence = isSequence;
+        this.label = new JLabel();
     }
+}
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(QRCodeGameV3::new);
-    }
-
-    private static class QRCodeData {
-        String code;
-        JLabel label;
-        boolean isBonus;
-        boolean isSequence;
-
-        QRCodeData(String code, boolean isBonus, boolean isSequence) {
-            this.code = code;
-            this.isBonus = isBonus;
-            this.isSequence = isSequence;
-            this.label = new JLabel();
-        }
-    }
-
-    private String currentHint = "";
+private String currentHint = "";
 }
